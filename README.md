@@ -1,7 +1,7 @@
 # HeartsV
 
 ![Build](https://github.com/LeReyam/HeartsV/actions/workflows/ci.yml/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/LeReyam/HeartsV/badge.svg?branch=Development)](https://coveralls.io/github/LeReyam/HeartsV?branch=Development)
+[![Coverage Status](https://coveralls.io/repos/github/HeartsV/Hearts/badge.svg?branch=main)](https://coveralls.io/github/HeartsV/Hearts?branch=main)
 
 Ein Scala-Projekt zur Umsetzung des Kartenspiels Hearts im Rahmen einer Vorlesung.
 
@@ -32,4 +32,7 @@ card-deck:
 https://opengameart.org/content/playing-cards-vector-png
 We editet the Aces a little bit with Inkscape. Just reduced the size of the symboles in the center of the cards.
 Converted the cards zu pngs by our self with a small python script: convert_svg_to_png.py
+
+## TUI symbols
+If the consol shows strange/unexpected texts you can tipe in chcp65001
 
