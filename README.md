@@ -1,6 +1,4 @@
 # HeartsV
-
-[![Build](https://coveralls.io/repos/github/HeartsV/Hearts/badge.svg)](https://coveralls.io/github/HeartsV/Hearts)
 [![Coverage Status](https://coveralls.io/repos/github/HeartsV/Hearts/badge.svg?branch=main)](https://coveralls.io/github/HeartsV/Hearts?branch=main)
 
 Ein Scala-Projekt zur Umsetzung des Kartenspiels Hearts im Rahmen einer Vorlesung.
