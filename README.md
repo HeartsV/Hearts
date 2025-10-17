@@ -21,7 +21,7 @@ Dieses Projekt verwendet GitHub Actions zur automatischen Ausführung von Tests 
 Lokal kannst du die Tests und die Coverage-Berichte mit folgendem Befehl ausführen:
 
 ```bash
-sbt clean coverage test
+sbt clean coverage test coverageReport
 ```
 
 ## Credits/Sources of cards:
