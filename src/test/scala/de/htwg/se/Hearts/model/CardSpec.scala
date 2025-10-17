@@ -53,6 +53,5 @@ class CardSpec extends AnyWordSpec with Matchers {
 			Deck(26).suit.fileName should be ("diamonds")
 			Deck(39).suit.fileName should be ("clubs")
 		}
-
 	}
 }
