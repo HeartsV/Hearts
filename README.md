@@ -34,5 +34,7 @@ We editet the Aces a little bit with Inkscape. Just reduced the size of the symb
 Converted the cards zu pngs by our self with a small python script: convert_svg_to_png.py
 
 ## TUI symbols
-If the consol shows strange/unexpected texts you can tipe in chcp65001
-
+If the consol shows strange/unexpected texts you can tipe in
+```bash
+chcp 65001
+```
