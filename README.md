@@ -1,6 +1,4 @@
 # HeartsV
-
-[![Coverage Status](https://coveralls.io/repos/github/HeartsV/Hearts/badge.svg)](https://coveralls.io/github/HeartsV/Hearts)
 [![Coverage Status](https://coveralls.io/repos/github/HeartsV/Hearts/badge.svg?branch=main)](https://coveralls.io/github/HeartsV/Hearts?branch=main)
 
 Ein Scala-Projekt zur Umsetzung des Kartenspiels Hearts im Rahmen einer Vorlesung.
@@ -21,7 +19,7 @@ Dieses Projekt verwendet GitHub Actions zur automatischen Ausführung von Tests 
 Lokal kannst du die Tests und die Coverage-Berichte mit folgendem Befehl ausführen:
 
 ```bash
-sbt clean coverage test
+sbt clean coverage test coverageReport
 ```
 
 ## Credits/Sources of cards:
@@ -34,5 +32,7 @@ We editet the Aces a little bit with Inkscape. Just reduced the size of the symb
 Converted the cards zu pngs by our self with a small python script: convert_svg_to_png.py
 
 ## TUI symbols
-If the consol shows strange/unexpected texts you can tipe in chcp65001
-
+If the consol shows strange/unexpected texts you can tipe in
+```bash
+chcp 65001
+```
