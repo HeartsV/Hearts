@@ -29,11 +29,23 @@ class CardSpec extends AnyWordSpec with Matchers {
 			Deck(12).toString should include ("A")
 		}
 
+		"be able to compare Cards by rank" in{
+			Deck(0).compare(Deck(1)) should be < 0
+			Deck(1).compare(Deck(0)) should be > 0
+			Deck(0).compare(Deck(13)) should be (0)
+		}
+
 		"have the correct Suit" in {
 			Deck(0).toString should include ("\u2665")
 			Deck(13).toString should include ("\u2660")
 			Deck(26).toString should include ("\u2666")
 			Deck(39).toString should include ("\u2663")
 		}
+
+		"be able to compare Suits" in {
+			Deck(0).suit.compare(Deck(1).suit) should be (0)
+			Deck(0).suit.compare(Deck(13).suit) should be < 0
+		}
+
 	}
 }
