@@ -5,7 +5,7 @@ import org.scalatest.matchers.should.Matchers
 
 class PlayerSpec extends AnyWordSpec with Matchers {
     "A player" should {
-        val p1 = Player("Alice",List[Card](Card(rank = Rank.Ace,suit = Suit.Spades))) 
+        val p1 = Player(name ="Alice",hand = List[Card](Card(rank = Rank.Ace,suit = Suit.Spades)),List[Card]()) 
 
         "have a name" in {
             p1.name should be ("Alice")
