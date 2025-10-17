@@ -1,6 +1,6 @@
 # HeartsV
 
-![Build](https://github.com/LeReyam/HeartsV/actions/workflows/ci.yml/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/HeartsV/Hearts/badge.svg)](https://coveralls.io/github/HeartsV/Hearts)
 [![Coverage Status](https://coveralls.io/repos/github/HeartsV/Hearts/badge.svg?branch=main)](https://coveralls.io/github/HeartsV/Hearts?branch=main)
 
 Ein Scala-Projekt zur Umsetzung des Kartenspiels Hearts im Rahmen einer Vorlesung.
@@ -19,6 +19,11 @@ Dieses Projekt verwendet GitHub Actions zur automatischen Ausführung von Tests 
 ## Tests ausführen
 
 Lokal kannst du die Tests und die Coverage-Berichte mit folgendem Befehl ausführen:
+
+```bash
+sbt clean coverage test coverageReport
+```
+### Mit Coverage Report on Coveralls
 
 ```bash
 sbt clean coverage test
