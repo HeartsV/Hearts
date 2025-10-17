@@ -1,5 +1,5 @@
 package de.htwg.se.Hearts.model
 
-class `RankSpec.scala` {
-  
+class RankSpec {
+
 }
