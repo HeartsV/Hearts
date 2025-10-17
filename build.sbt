@@ -8,7 +8,7 @@ lazy val root = project
     name := "HeartsV",
     version := "0.1.0-SNAPSHOT",
 
-    Global / logLevel := Level.Warn,
+    
     scalaVersion := scala3Version,
     coverageEnabled := true,
     fork in Test := true,

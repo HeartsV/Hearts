@@ -15,7 +15,7 @@ class CardSpec extends AnyWordSpec with Matchers {
 			card1.suit should be (Suit.Hearts)
 		}
 		"generate the correct string" in {
-			card2string should include ("\u2665")
+			card2string should include ("\u2663")
 			card2string should include ("A")
 		}
 	}
