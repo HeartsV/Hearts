@@ -1,6 +1,6 @@
 # HeartsV
 
-![Build](https://github.com/LeReyam/HeartsV/actions/workflows/ci.yml/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/HeartsV/Hearts/badge.svg)](https://coveralls.io/github/HeartsV/Hearts)
 [![Coverage Status](https://coveralls.io/repos/github/HeartsV/Hearts/badge.svg?branch=main)](https://coveralls.io/github/HeartsV/Hearts?branch=main)
 
 Ein Scala-Projekt zur Umsetzung des Kartenspiels Hearts im Rahmen einer Vorlesung.
@@ -24,7 +24,7 @@ Lokal kannst du die Tests und die Coverage-Berichte mit folgendem Befehl ausfüh
 sbt clean coverage test
 ```
 
-Credits:
+## Credits/Sources of cards:
 Card backside:
 https://commons.wikimedia.org/wiki/File:Reverso_baraja_española_rojo.svg
 
