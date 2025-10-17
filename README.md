@@ -21,15 +21,10 @@ Dieses Projekt verwendet GitHub Actions zur automatischen Ausführung von Tests 
 Lokal kannst du die Tests und die Coverage-Berichte mit folgendem Befehl ausführen:
 
 ```bash
-sbt clean coverage test coverageReport
-```
-### Mit Coverage Report on Coveralls
-
-```bash
 sbt clean coverage test
 ```
 
-Credits:
+## Credits/Sources of cards:
 Card backside:
 https://commons.wikimedia.org/wiki/File:Reverso_baraja_española_rojo.svg
 
