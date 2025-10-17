@@ -3,7 +3,7 @@ package de.htwg.se.Hearts.model
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 
-class CardSpec extends AnyWordSpec with Matchers {
+class MainSpec extends AnyWordSpec with Matchers {
 
   "Addition" should {
 
