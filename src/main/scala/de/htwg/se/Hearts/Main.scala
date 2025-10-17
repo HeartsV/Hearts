@@ -5,13 +5,17 @@ import de.htwg.se.Hearts.model.Rank
 
 object Main {
   def main(args: Array[String]): Unit = {
-    val Hand = List(Card(rank = Rank.Five,suit = Suit.Hearts),Card(rank = Rank.Six,suit = Suit.Spades))
+    val Hand = List(Card(rank = Rank.Five,suit = Suit.Hearts),Card(rank = Rank.Six,suit = Suit.Spades),Card(rank = Rank.King,suit = Suit.Clubs))
     println("Please select card to play: ")
-    println("|  1  |  2  |")
+    val Header = List.range(1,Hand.size + 1,1)
+    for(element<- Header){
+        printf("|  %d  ",element)
+    }
+    println("|")
     for(element<-Hand)
-        {
-            printf("| %s ",element)
-        }
+    {
+        printf("| %s ",element)
+    }
     println("|")
   }
 }
