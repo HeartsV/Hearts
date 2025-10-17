@@ -11,7 +11,7 @@ class CardSpec extends AnyWordSpec with Matchers {
 				suit <- Suit.values.toList
 				rank <- Rank.values.toList
 			yield Card(rank, suit)
-		
+
 
 		"have rank the correct Ranks" in {
 			Deck(0).toString should include ("2")
@@ -45,6 +45,13 @@ class CardSpec extends AnyWordSpec with Matchers {
 		"be able to compare Suits" in {
 			Deck(0).suit.compare(Deck(1).suit) should be (0)
 			Deck(0).suit.compare(Deck(13).suit) should be < 0
+		}
+
+		"filename" in {
+			Deck(0).suit.fileName should be ("hearts")
+			Deck(13).suit.fileName should be ("spades")
+			Deck(26).suit.fileName should be ("diamonds")
+			Deck(39).suit.fileName should be ("clubs")
 		}
 
 	}
