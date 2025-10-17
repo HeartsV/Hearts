@@ -6,16 +6,34 @@ import org.scalatest.matchers.should.Matchers
 class CardSpec extends AnyWordSpec with Matchers {
 
 	"A Card" should {
-		val card1 = Card(rank = Rank.Ten, suit = Suit.Hearts)
-		val card2 = Card(rank = Rank.Ace, suit = Suit.Clubs)
+		val Deck : List[Card] =
+			for
+				suit <- Suit.values.toList
+				rank <- Rank.values.toList
+			yield Card(rank, suit)
+		
 
-		"have rank and suit" in {
-			card1.rank should be (Rank.Ten)
-			card1.suit should be (Suit.Hearts)
+		"have rank the correct Ranks" in {
+			Deck(0).toString should include ("2")
+			Deck(1).toString should include ("3")
+			Deck(2).toString should include ("4")
+			Deck(3).toString should include ("5")
+			Deck(4).toString should include ("6")
+			Deck(5).toString should include ("7")
+			Deck(6).toString should include ("8")
+			Deck(7).toString should include ("9")
+			Deck(8).toString should include ("10")
+			Deck(9).toString should include ("J")
+			Deck(10).toString should include ("Q")
+			Deck(11).toString should include ("K")
+			Deck(12).toString should include ("A")
 		}
-		"generate the correct string" in {
-			card2.toString should include ("\u2663")
-			card2.toString should include ("A")
+
+		"have the correct Suit" in {
+			Deck(0).toString should include ("\u2665")
+			Deck(13).toString should include ("\u2660")
+			Deck(26).toString should include ("\u2666")
+			Deck(39).toString should include ("\u2663")
 		}
 	}
 }
