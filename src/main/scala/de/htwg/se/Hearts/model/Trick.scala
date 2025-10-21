@@ -1,7 +1,7 @@
 package de.htwg.se.Hearts.model
 
-class Trick(val cards: List[Card],val validSuit: Option[Suit],val currentWinner: Option[Player], val firstPlayer: Option[Player]) { // mit options fals wir erst trick erstellen
-    def addCard(newCard: Card): Boolean = {
+class Trick(val cards: List[Card],val playedSuit: Option[Suit],val currentWinner: Option[Player], val firstPlayer: Option[Player]) { // mit options fals wir erst trick erstellen
+    def addCard(newCard: Card, currentPlayer: Player): Boolean = {
         true
     }
 
