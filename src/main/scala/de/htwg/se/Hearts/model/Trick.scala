@@ -11,28 +11,27 @@ object Trick {
 
     def addCard(newCard: Card, currentPlayer: Player): Boolean = {
         if(Game.firstCard == true)
-            if(newCard  == (Card(Rank.Two,Suit.Spades)))
+            if(newCard  == (Card(Rank.Two,Suit.Clubs)))
                 Trick.cards += newCard
                 Game.firstCard = false
                 true
             else
                 false
-        else if(Game.startWithHearts == false) 
-            if(!(Trick.cards == ListBuffer()))
+        else if(!(Trick.cards == ListBuffer()))
+            if( newCard.suit == playedSuit || !(currentPlayer.hand.exists(_.suit == playedSuit)))
                 Trick.cards += newCard
                 if(newCard.suit == Suit.Hearts)
                     Game.startWithHearts = true
                 true
             else
-                if(newCard.suit == Suit.Hearts)
-                    false
-                else
-                    Trick.cards += newCard
-                    true
+                false
         else
-            Trick.cards += newCard
-            true
-        
+            if (newCard.suit == Suit.Hearts && Game.startWithHearts == false)
+                false
+            else
+                Trick.cards += newCard
+                true
+
     }
 
     def updateCurrentWinner(newWinner: Player): Boolean = {

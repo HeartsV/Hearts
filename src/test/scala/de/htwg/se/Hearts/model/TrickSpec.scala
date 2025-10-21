@@ -6,68 +6,68 @@ import scala.collection.mutable.ListBuffer
 
 class TrickSpec extends AnyWordSpec with Matchers {
     "A Trick" should {
-        val p1 = Player(name ="Alice",hand = ListBuffer[Card](Card(rank = Rank.Two,suit = Suit.Clubs)),ListBuffer[Card]()) 
-        val p2 = Player(name ="Dave",hand = ListBuffer[Card](Card(rank = Rank.Ace,suit = Suit.Clubs)),ListBuffer[Card]()) 
-        
-        
-        "check if played card is valid card for first card" in { 
-            Trick.addCard(Card(rank = Rank.Ten,suit = Suit.Clubs),p1) should be (false)
+        val p1 = Player("Alice",ListBuffer[Card](Card(Rank.Two,Suit.Clubs)),ListBuffer[Card]())
+        val p2 = Player("Dave",ListBuffer[Card](Card(Rank.Ace,Suit.Clubs)),ListBuffer[Card]())
+
+
+        "check if played card is valid card for first card" in {
+            Trick.addCard(Card(Rank.Ten,Suit.Clubs),p1) should be (false)
             Game.firstCard should be (true)
             Trick.cards should be (ListBuffer())
-            Trick.addCard(Card(rank = Rank.Two,suit = Suit.Spades),p1) should be (true)
+            Trick.addCard(Card(Rank.Two,Suit.Clubs),p1) should be (true)
             Game.firstCard should be (false)
-            Trick.cards should be(ListBuffer(Card(rank = Rank.Two,suit = Suit.Spades)))
+            Trick.cards should be(ListBuffer(Card(Rank.Two,Suit.Clubs)))
         }
 
-        
+
 
         "check if played card is a heart card and first card of trick before that is allowed" in {
             Trick.cards.clear()
             Game.firstCard = false
-            Trick.addCard(Card(rank = Rank.Two,suit = Suit.Hearts),p1) should be (false)
+            Trick.addCard(Card(Rank.Two,Suit.Hearts),p1) should be (false)
             Trick.cards should be (ListBuffer())
-            Trick.addCard(Card(rank = Rank.Two,suit = Suit.Clubs),p2) should be (true)
-            Trick.cards should contain (Card(rank = Rank.Two,suit = Suit.Clubs))
+            Trick.addCard(Card(Rank.Two,Suit.Clubs),p2) should be (true)
+            Trick.cards should contain (Card(Rank.Two,Suit.Clubs))
         }
 
-        
+
 
         "update start with heart after heart is played" in {
             Game.firstCard = false
             Trick.cards.clear()
-            Trick.addCard(Card(rank = Rank.Two,suit = Suit.Clubs),p1) should be (true)
-            Trick.addCard(Card(rank = Rank.Two,suit = Suit.Hearts),p2) should be (true)
+            Trick.addCard(Card(Rank.Two,Suit.Clubs),p1) should be (true)
+            Trick.addCard(Card(Rank.Two,Suit.Hearts),p2) should be (true)
             Game.startWithHearts should be (true)
         }
 
-        
-
-        "add played card" in {
+        "if player has played valid color" in {
+            Game.firstCard = false
             Trick.cards.clear()
-            Trick.addCard(Card(rank = Rank.Ten,suit = Suit.Clubs),p1)
-            Trick.cards should contain (Card(rank = Rank.Ten,suit = Suit.Clubs))
+            Trick.addCard(Card(Rank.Two,Suit.Clubs),p1) should be (true)
+            Trick.addCard(Card(Rank.Two,Suit.Diamonds),p2) should be (false)
+            Trick.addCard(Card(Rank.Ace,Suit.Clubs),p2) should be (true)
         }
 
-        
+
 
         "check if highest card of played color" in {
-            
+
         }
 
-        
+
 
         "update currentWinner" in {
             Trick.cards.clear()
-            Trick.addCard(Card(rank = Rank.Ace,suit = Suit.Clubs),p1)
+            Trick.addCard(Card(Rank.Ace,Suit.Clubs),p1)
             Trick.currentWinner should be (p1)
         }
 
-        
+
 
         "clear when trick full" in {
             Trick.cards.clear()
-            Trick.addCard(Card(rank = Rank.Three,suit = Suit.Clubs),p1)
-            Trick.cards should be (List[Card]()) 
+            Trick.addCard(Card(Rank.Three,Suit.Clubs),p1)
+            Trick.cards should be (List[Card]())
         }
 
 
