@@ -6,9 +6,9 @@ import scala.collection.mutable.ListBuffer
 
 class GameSpec extends AnyWordSpec with Matchers {
   "A Game" should {
-    val currentGame = Game()
-    val p1 = Player("Alice",List[Card](),List[Card]())
-    val p2 = Player("Dave",List[Card](),List[Card]())
+    val currentGame = Game
+    val p1 = Player("Alice",ListBuffer[Card](),ListBuffer[Card]())
+    val p2 = Player("Dave",ListBuffer[Card](),ListBuffer[Card]())
 
     "set player number" in {
         currentGame.setPlayerNumber(6)
@@ -26,8 +26,8 @@ class GameSpec extends AnyWordSpec with Matchers {
 
     "recognize first card played" in {
         currentGame.setPlayerNumber(2)
-        currentGame.addPlayer(Player("Alice",List[Card](),List[Card]()))
-        currentGame.addPlayer(Player("Dave",List[Card](),List[Card]()))
+        currentGame.addPlayer(Player("Alice",ListBuffer[Card](),ListBuffer[Card]()))
+        currentGame.addPlayer(Player("Dave",ListBuffer[Card](),ListBuffer[Card]()))
 
     }
 

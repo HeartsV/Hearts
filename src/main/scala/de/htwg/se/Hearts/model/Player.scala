@@ -1,5 +1,7 @@
 package de.htwg.se.Hearts.model
 
-class Player(val name: String,val hand: List[Card],val wonCards:List[Card]) {
+import scala.collection.mutable.ListBuffer
+
+class Player(val name: String,val hand: ListBuffer[Card],val wonCards:ListBuffer[Card]) {
   
 }

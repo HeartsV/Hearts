@@ -5,7 +5,7 @@ import org.scalactic.Bool
 import scala.collection.mutable.ListBuffer
 
 
-class Game() {
+object  Game {
   var startWithHearts: Boolean = false
   var firstCard: Boolean = true
   var playerNumber: Option[Int] = None
