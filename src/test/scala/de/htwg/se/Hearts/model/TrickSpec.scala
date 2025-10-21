@@ -47,18 +47,16 @@ class TrickSpec extends AnyWordSpec with Matchers {
             Trick.addCard(Card(Rank.Ace,Suit.Clubs),p2) should be (true)
         }
 
-
-
-        "check if highest card of played color" in {
-
-        }
-
-
-
         "update currentWinner" in {
             Trick.cards.clear()
-            Trick.addCard(Card(Rank.Ace,Suit.Clubs),p1)
+            Trick.addCard(Card(Rank.Five,Suit.Diamonds),p1)
             Trick.currentWinner should be (p1)
+            Trick.addCard(Card(Rank.Four,Suit.Diamonds),p2)
+            Trick.currentWinner should be (p1)
+            Trick.addCard(Card(Rank.Jack, Suit.Diamonds),p2)
+            Trick.currentWinner should be (p2)
+            Trick.addCard(Card(Rank.Ace, Suit.Hearts),p1)
+            Trick.currentWinner should be (p2)
         }
 
 
