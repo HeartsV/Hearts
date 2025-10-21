@@ -36,7 +36,9 @@ object Trick {
 
     }
 
-    def updateCurrentWinner(newWinner: Player): Boolean = {
+    def updateCurrentWinner(playedCard: Card, currentPlayer: Player): Boolean = {
+        if(Trick.playedSuit.contains(playedCard.suit))
+            false
         true
     }
 
