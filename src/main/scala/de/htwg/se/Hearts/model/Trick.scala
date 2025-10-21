@@ -13,12 +13,13 @@ object Trick {
         if(Game.firstCard == true)
             if(newCard  == (Card(Rank.Two,Suit.Clubs)))
                 Trick.cards += newCard
+                Trick.playedSuit = Some(newCard.suit)
                 Game.firstCard = false
                 true
             else
                 false
         else if(!(Trick.cards == ListBuffer()))
-            if( newCard.suit == playedSuit || !(currentPlayer.hand.exists(_.suit == playedSuit)))
+            if(playedSuit.contains(newCard.suit) || !(currentPlayer.hand.exists(_.suit == playedSuit)))
                 Trick.cards += newCard
                 if(newCard.suit == Suit.Hearts)
                     Game.startWithHearts = true
@@ -30,6 +31,7 @@ object Trick {
                 false
             else
                 Trick.cards += newCard
+                Trick.playedSuit = Some(newCard.suit)
                 true
 
     }

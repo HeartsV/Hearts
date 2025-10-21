@@ -40,8 +40,7 @@ class TrickSpec extends AnyWordSpec with Matchers {
             Game.startWithHearts should be (true)
         }
 
-        "if player has played valid color" in {
-            Game.firstCard = false
+        "check if player has played valid color" in {
             Trick.cards.clear()
             Trick.addCard(Card(Rank.Two,Suit.Clubs),p1) should be (true)
             Trick.addCard(Card(Rank.Two,Suit.Diamonds),p2) should be (false)
