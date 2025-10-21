@@ -35,7 +35,7 @@ class TrickSpec extends AnyWordSpec with Matchers {
         "update start with heart after heart is played" in {
             Game.firstCard = false
             Trick.cards.clear()
-            Trick.addCard(Card(Rank.Two,Suit.Clubs),p1) should be (true)
+            Trick.addCard(Card(Rank.Two,Suit.Diamonds),p1) should be (true)
             Trick.addCard(Card(Rank.Two,Suit.Hearts),p2) should be (true)
             Game.startWithHearts should be (true)
         }

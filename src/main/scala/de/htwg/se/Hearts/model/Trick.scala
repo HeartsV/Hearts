@@ -19,7 +19,7 @@ object Trick {
             else
                 false
         else if(!(Trick.cards == ListBuffer()))
-            if(playedSuit.contains(newCard.suit) || !(currentPlayer.hand.exists(_.suit == playedSuit)))
+            if(playedSuit.contains(newCard.suit) || !playedSuit.exists(suit => currentPlayer.hand.exists(_.suit == suit)))
                 Trick.cards += newCard
                 if(newCard.suit == Suit.Hearts)
                     Game.startWithHearts = true
