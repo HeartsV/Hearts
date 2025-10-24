@@ -3,7 +3,7 @@ package de.htwg.se.Hearts.model
 import scala.collection.mutable.ListBuffer
 import de.htwg.se.Hearts.model.Game.startWithHearts
 
-object Trick {
+class Trick {
     val cards: ListBuffer[Card] = ListBuffer()
     var highestCard: Option[Card] = None
     var currentWinner: Option[Player] = None
