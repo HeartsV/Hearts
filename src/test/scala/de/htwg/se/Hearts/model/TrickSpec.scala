@@ -73,10 +73,17 @@ class TrickSpec extends AnyWordSpec with Matchers {
 
 
 
-        /*"clear when trick full" in {
+        "clear Trick when Trick is full" in {
+            Game.setPlayerNumber(2)
+            val p3 = Player("Alice",ListBuffer[Card](Card(Rank.Two,Suit.Clubs)),ListBuffer[Card]())
+            val p4 = Player("Dave",ListBuffer[Card](Card(Rank.Ace,Suit.Clubs)),ListBuffer[Card]())
+            Game.addPlayer(p3)
+            Game.addPlayer(p4)
             val CurrentTrick = Trick()
-            CurrentTrick.addCard(Card(Rank.Three,Suit.Clubs),p1)
-            Trick.cards should be (List[Card]())
-        }*/
+            CurrentTrick.addCard(Card(Rank.Three,Suit.Clubs),p3)
+            CurrentTrick.addCard(Card(Rank.Five,Suit.Clubs),p4)
+            CurrentTrick.cards should be (List[Card]())
+            p4.wonCards should be (ListBuffer(Card(Rank.Three,Suit.Clubs),Card(Rank.Five,Suit.Clubs)))
+        }
     }
 }

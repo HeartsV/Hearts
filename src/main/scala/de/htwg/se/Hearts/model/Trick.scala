@@ -23,6 +23,7 @@ class Trick {
             if(highestCard.exists(card => card.suit == newCard.suit) || !highestCard.exists(card => currentPlayer.hand.exists(_.suit == card.suit)))
                 cards += newCard
                 updateCurrentWinner(newCard,currentPlayer)
+                clearTrick()
                 if(newCard.suit == Suit.Hearts)
                     Game.startWithHearts = true
                 true
@@ -50,6 +51,11 @@ class Trick {
     }
 
     def clearTrick(): Boolean ={
-        true
+        if(Game.playerNumber.exists(pnuber => cards.size == pnuber))
+            currentWinner.foreach(_.wonCards ++= cards)
+            cards.clear()
+            true
+        else
+            false
     }
 }
