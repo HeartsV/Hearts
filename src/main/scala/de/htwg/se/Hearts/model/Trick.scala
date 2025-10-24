@@ -11,7 +11,7 @@ class Trick {
 
     def addCard(newCard: Card, currentPlayer: Player): Boolean = {
         if(Game.firstCard == true)
-            if(newCard  == (Card(Rank.Two,Suit.Clubs)))
+            if(newCard  == (Card(Rank.Two,Suit.Spades)))
                 cards += newCard
 
                 updateCurrentWinner(newCard,currentPlayer)
