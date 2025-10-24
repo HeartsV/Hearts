@@ -81,6 +81,7 @@ class TrickSpec extends AnyWordSpec with Matchers {
             Game.addPlayer(p4)
             val CurrentTrick = Trick()
             CurrentTrick.addCard(Card(Rank.Three,Suit.Clubs),p3)
+            CurrentTrick.clearTrick() should be (false)
             CurrentTrick.addCard(Card(Rank.Five,Suit.Clubs),p4)
             CurrentTrick.cards should be (List[Card]())
             p4.wonCards should be (ListBuffer(Card(Rank.Three,Suit.Clubs),Card(Rank.Five,Suit.Clubs)))
