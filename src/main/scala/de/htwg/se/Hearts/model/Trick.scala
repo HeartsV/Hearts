@@ -5,7 +5,7 @@ import de.htwg.se.Hearts.model.Game.startWithHearts
 
 object Trick {
     val cards: ListBuffer[Card] = ListBuffer()
-    var playedSuit: Option[Suit] = None
+    var highestCard: Option[Card] = None
     var currentWinner: Option[Player] = None
     var firstPlayer: Option[Player] = None
 
@@ -13,13 +13,13 @@ object Trick {
         if(Game.firstCard == true)
             if(newCard  == (Card(Rank.Two,Suit.Clubs)))
                 Trick.cards += newCard
-                Trick.playedSuit = Some(newCard.suit)
+                Trick.highestCard = Some(newCard)
                 Game.firstCard = false
                 true
             else
                 false
         else if(!(Trick.cards == ListBuffer()))
-            if(playedSuit.contains(newCard.suit) || !playedSuit.exists(suit => currentPlayer.hand.exists(_.suit == suit)))
+            if(highestCard.exists(card => card.suit == newCard.suit) || !highestCard.exists(card => currentPlayer.hand.exists(_.suit == card.suit)))
                 Trick.cards += newCard
                 if(newCard.suit == Suit.Hearts)
                     Game.startWithHearts = true
@@ -31,13 +31,13 @@ object Trick {
                 false
             else
                 Trick.cards += newCard
-                Trick.playedSuit = Some(newCard.suit)
+                Trick.highestCard = Some(newCard)
                 true
 
     }
 
     def updateCurrentWinner(playedCard: Card, currentPlayer: Player): Boolean = {
-        if(Trick.playedSuit.contains(playedCard.suit))
+        if(Trick.highestCard.exists(card => card.suit == playedCard.suit))
             false
         else
             true
