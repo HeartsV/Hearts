@@ -13,7 +13,7 @@ class Trick {
         if(Game.firstCard == true)
             if(newCard  == (Card(Rank.Two,Suit.Spades)))
                 cards += newCard
-
+                firstPlayer = Some(currentPlayer)
                 updateCurrentWinner(newCard,currentPlayer)
                 Game.firstCard = false
                 true
@@ -33,7 +33,7 @@ class Trick {
                 false
             else
                 cards += newCard
-
+                firstPlayer = Some(currentPlayer)
                 updateCurrentWinner(newCard,currentPlayer)
                 true
 

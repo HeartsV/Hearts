@@ -60,15 +60,23 @@ class TrickSpec extends AnyWordSpec with Matchers {
             CurrentTrick.currentWinner should be (Some(p2))
         }
 
+        "set first player with first card played" in {
+            Game.firstCard = true
+            val CurrentTrick = Trick()
+            CurrentTrick.addCard(Card(Rank.Two,Suit.Spades),p1)
+            CurrentTrick.firstPlayer should be (Some(p1))
+            Game.firstCard = false
+            val CurrentTrick2 = Trick()
+            CurrentTrick.addCard(Card(Rank.Five,Suit.Diamonds),p1)
+            CurrentTrick.firstPlayer should be (Some(p1))
+        }
+
 
 
         /*"clear when trick full" in {
-            Trick.cards.clear()
-            Trick.addCard(Card(Rank.Three,Suit.Clubs),p1)
+            val CurrentTrick = Trick()
+            CurrentTrick.addCard(Card(Rank.Three,Suit.Clubs),p1)
             Trick.cards should be (List[Card]())
         }*/
-
-
-
     }
 }
