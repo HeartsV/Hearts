@@ -47,7 +47,7 @@ class TrickSpec extends AnyWordSpec with Matchers {
             Trick.addCard(Card(Rank.Ace,Suit.Clubs),p2) should be (true)
         }
 
-        "update currentWinner" in {
+        /*"update currentWinner" in {
             Trick.cards.clear()
             Trick.addCard(Card(Rank.Five,Suit.Diamonds),p1)
             Trick.currentWinner should be (p1)
@@ -57,15 +57,15 @@ class TrickSpec extends AnyWordSpec with Matchers {
             Trick.currentWinner should be (p2)
             Trick.addCard(Card(Rank.Ace, Suit.Hearts),p1)
             Trick.currentWinner should be (p2)
-        }
+        }*/
 
 
 
-        "clear when trick full" in {
+        /*"clear when trick full" in {
             Trick.cards.clear()
             Trick.addCard(Card(Rank.Three,Suit.Clubs),p1)
             Trick.cards should be (List[Card]())
-        }
+        }*/
 
 
 

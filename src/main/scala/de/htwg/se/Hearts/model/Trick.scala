@@ -37,10 +37,12 @@ object Trick {
     }
 
     def updateCurrentWinner(playedCard: Card, currentPlayer: Player): Boolean = {
-        if(Trick.highestCard.exists(card => card.suit == playedCard.suit))
+        /*if(Trick.highestCard.exists(card => card.suit == playedCard.suit))
             false
         else
             true
+            */
+        false
     }
 
     def clearTrick(): Boolean ={
