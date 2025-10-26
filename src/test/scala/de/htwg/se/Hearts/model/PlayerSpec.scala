@@ -28,7 +28,9 @@ class PlayerSpec extends AnyWordSpec with Matchers {
             p1.playCard(0) should be (true)
             p1.hand should be (ListBuffer[Card](Card(Rank.Three,Suit.Hearts)))
             Game.trick should be (ListBuffer[Card](Card(Rank.Ace,Suit.Spades)))
-
+            Game.addCard(Card(Rank.Two,Suit.Spades),p1)
+            Game.addCard(Card(Rank.Three,Suit.Spades),p1)
+            Game.addCard(Card(Rank.Four,Suit.Spades),p1)
         }
     }
    
