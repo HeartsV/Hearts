@@ -10,6 +10,8 @@ class GameSpec extends AnyWordSpec with Matchers {
     val p2 = Player("Bob",ListBuffer[Card](Card(Rank.Eight,Suit.Clubs)),ListBuffer[Card]())
     val p3 = Player("Charlie",ListBuffer[Card](),ListBuffer[Card]())
     val p4 = Player("Dave",ListBuffer[Card](),ListBuffer[Card]())
+    Game.firstCard = true
+    Game.startWithHearts = false
 
     "set player number" in {
         Game.setPlayerNumber(6)
