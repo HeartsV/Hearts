@@ -54,6 +54,9 @@ class Trick {
         if(Game.playerNumber.exists(pnuber => cards.size == pnuber))
             currentWinner.foreach(_.wonCards ++= cards)
             cards.clear()
+            highestCard = None
+            currentWinner = None
+            firstPlayer = None
             true
         else
             false
