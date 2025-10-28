@@ -13,7 +13,7 @@ class TrickSpec extends AnyWordSpec with Matchers {
         Game.playerNumber = Some(2)
         Game.currentPlayer = Some(p1)
         Game.firstCard = false
-        
+
 
         "check if player has played valid color" in {
             val CurrentTrick = Trick()
@@ -24,6 +24,7 @@ class TrickSpec extends AnyWordSpec with Matchers {
 
         "update currentWinner" in {
             val CurrentTrick = Trick()
+            Game.playerNumber = Some(5)
             CurrentTrick.addCard(Card(Rank.Five,Suit.Diamonds),p1)
             CurrentTrick.highestCard should be (Some(Card(Rank.Five,Suit.Diamonds)))
             CurrentTrick.currentWinner should be (Some(p1))
@@ -34,6 +35,8 @@ class TrickSpec extends AnyWordSpec with Matchers {
             CurrentTrick.highestCard should be (Some(Card(Rank.Jack,Suit.Diamonds)))
             CurrentTrick.currentWinner should be (Some(p2))
             CurrentTrick.addCard(Card(Rank.Ace, Suit.Hearts),p1)
+            CurrentTrick.currentWinner should be (Some(p2))
+            Game.playerNumber = Some(2)
         }
 
         "set first player with first card played" in {
@@ -42,9 +45,10 @@ class TrickSpec extends AnyWordSpec with Matchers {
             CurrentTrick.addCard(Card(Rank.Two,Suit.Spades),p1)
             CurrentTrick.firstPlayer should be (Some(p1))
             Game.firstCard = false
+
             val CurrentTrick2 = Trick()
-            CurrentTrick.addCard(Card(Rank.Five,Suit.Diamonds),p1)
-            CurrentTrick.firstPlayer should be (Some(p1))
+            CurrentTrick2.addCard(Card(Rank.Five,Suit.Diamonds),p1)
+            CurrentTrick2.firstPlayer should be (Some(p1))
         }
 
         "clear Trick when Trick is full" in {
