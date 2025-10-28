@@ -10,7 +10,9 @@ object  Game {
   var firstCard: Boolean = true
   var playerNumber: Option[Int] = None
   val players: ListBuffer[Player] = ListBuffer.empty[Player]
+  var currentPlayer: Option[Player] = None
   val trick = Trick()
+
 
   def setPlayerNumber(number: Int): Boolean = {
     if (number > 1 && number < 5){
@@ -23,6 +25,10 @@ object  Game {
 
   def addPlayer(player: Player): Boolean ={
     players.addOne(player)
+    true
+  }
+
+  def updateCurrentPlayer(player: Player): Boolean = {
     true
   }
 }

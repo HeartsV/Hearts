@@ -44,5 +44,14 @@ class GameSpec extends AnyWordSpec with Matchers {
         Game.trick.addCard(Card(Rank.Two,Suit.Hearts),p1) should be (false)
         Game.trick.cards should be (ListBuffer())
     }
+
+    "update current player after Card is played" in {
+        Game.currentPlayer should be (Some(p4))
+        Game.trick.addCard(Card(Rank.Two,Suit.Spades),p4)
+        Game.currentPlayer should be (Some(p1))
+        Game.trick.addCard(Card(Rank.Three,Suit.Spades),p1)
+        Game.trick.addCard(Card(Rank.Four,Suit.Spades),p2)
+        Game.trick.addCard(Card(Rank.Five,Suit.Spades),p3)
+    }
   }
 }
