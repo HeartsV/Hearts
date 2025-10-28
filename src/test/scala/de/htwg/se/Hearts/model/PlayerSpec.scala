@@ -9,6 +9,8 @@ class PlayerSpec extends AnyWordSpec with Matchers {
         val p1 = Player(name ="Alice",hand = ListBuffer[Card](Card(Rank.Ace,Suit.Spades),Card(Rank.Three,Suit.Hearts)),ListBuffer[Card]())
         Game.firstCard = false
         Game.startWithHearts = false
+        Game.trick.cards.clear()
+        Game.trick.highestCard
 
         "have a name" in {
             p1.name should be ("Alice")

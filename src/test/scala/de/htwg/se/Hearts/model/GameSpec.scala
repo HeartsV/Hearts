@@ -50,8 +50,11 @@ class GameSpec extends AnyWordSpec with Matchers {
         Game.trick.addCard(Card(Rank.Two,Suit.Spades),p4)
         Game.currentPlayer should be (Some(p1))
         Game.trick.addCard(Card(Rank.Three,Suit.Spades),p1)
+        Game.currentPlayer should be (Some(p2))
         Game.trick.addCard(Card(Rank.Four,Suit.Spades),p2)
+        Game.currentPlayer should be (Some(p3))
         Game.trick.addCard(Card(Rank.Five,Suit.Spades),p3)
+        Game.currentPlayer should be (Some(p3))
     }
   }
 }

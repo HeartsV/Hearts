@@ -10,7 +10,10 @@ class TrickSpec extends AnyWordSpec with Matchers {
     "A Trick" should {
         val p1 = Player("Alice",ListBuffer[Card](Card(Rank.Two,Suit.Clubs)),ListBuffer[Card]())
         val p2 = Player("Dave",ListBuffer[Card](Card(Rank.Ace,Suit.Clubs)),ListBuffer[Card]())
+        Game.playerNumber = Some(2)
+        Game.currentPlayer = Some(p1)
         Game.firstCard = false
+        
 
         "check if player has played valid color" in {
             val CurrentTrick = Trick()

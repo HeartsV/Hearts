@@ -23,12 +23,19 @@ object  Game {
     }
   }
 
-  def addPlayer(player: Player): Boolean ={
+  def addPlayer(player: Player): Boolean = {
     players.addOne(player)
     true
   }
 
-  def updateCurrentPlayer(player: Player): Boolean = {
-    true
+  def updateCurrentPlayer(): Unit = {
+    if (firstCard == true)
+      currentPlayer = players.find(_.hand.contains(Card(Rank.Two,Suit.Clubs)))
+    else if(players.size == trick.cards.size)
+      currentPlayer = trick.currentWinner
+    else if(players.indexOf(currentPlayer) + 1 > players.size)
+      currentPlayer = Some(players(0))
+    else
+      currentPlayer = Some(players((players.indexOf(currentPlayer) + 1)))
   }
 }

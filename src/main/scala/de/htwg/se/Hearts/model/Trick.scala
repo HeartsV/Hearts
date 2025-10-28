@@ -2,6 +2,7 @@ package de.htwg.se.Hearts.model
 
 import scala.collection.mutable.ListBuffer
 import de.htwg.se.Hearts.model.Game
+import de.htwg.se.Hearts.model.Game.updateCurrentPlayer
 
 class Trick {
     val cards: ListBuffer[Card] = ListBuffer()
@@ -15,6 +16,7 @@ class Trick {
                 cards += newCard
                 firstPlayer = Some(currentPlayer)
                 updateCurrentWinner(newCard,currentPlayer)
+                updateCurrentPlayer()
                 Game.firstCard = false
                 true
             else
@@ -23,6 +25,7 @@ class Trick {
             if(highestCard.exists(card => card.suit == newCard.suit) || !highestCard.exists(card => currentPlayer.hand.exists(_.suit == card.suit)))
                 cards += newCard
                 updateCurrentWinner(newCard,currentPlayer)
+                updateCurrentPlayer()
                 clearTrick()
                 if(newCard.suit == Suit.Hearts)
                     Game.startWithHearts = true
@@ -36,6 +39,7 @@ class Trick {
                 cards += newCard
                 firstPlayer = Some(currentPlayer)
                 updateCurrentWinner(newCard,currentPlayer)
+                updateCurrentPlayer()
                 true
 
     }
