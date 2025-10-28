@@ -12,11 +12,9 @@ class Trick {
 
     def addCard(newCard: Card, currentPlayer: Player): Boolean = {
         if(Game.firstCard == true)
-            if(newCard  == (Card(Rank.Two,Suit.Spades)))
+            if(newCard  == (Card(Rank.Two,Suit.Clubs)))
                 cards += newCard
                 firstPlayer = Some(currentPlayer)
-                updateCurrentWinner(newCard,currentPlayer)
-                updateCurrentPlayer()
                 Game.firstCard = false
                 true
             else
@@ -24,9 +22,6 @@ class Trick {
         else if(!(cards == ListBuffer()))
             if(highestCard.exists(card => card.suit == newCard.suit) || !highestCard.exists(card => currentPlayer.hand.exists(_.suit == card.suit)))
                 cards += newCard
-                updateCurrentWinner(newCard,currentPlayer)
-                updateCurrentPlayer()
-                clearTrick()
                 if(newCard.suit == Suit.Hearts)
                     Game.startWithHearts = true
                 true
@@ -38,8 +33,6 @@ class Trick {
             else
                 cards += newCard
                 firstPlayer = Some(currentPlayer)
-                updateCurrentWinner(newCard,currentPlayer)
-                updateCurrentPlayer()
                 true
 
     }

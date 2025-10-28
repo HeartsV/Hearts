@@ -3,13 +3,14 @@ package de.htwg.se.Hearts.model
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import scala.collection.mutable.ListBuffer
+import _root_.de.htwg.se.Hearts.model.Game.updateCurrentPlayer
 
 class GameSpec extends AnyWordSpec with Matchers {
   "A Game" should {
     val p1 = Player("Alice",ListBuffer[Card](),ListBuffer[Card]())
     val p2 = Player("Bob",ListBuffer[Card](Card(Rank.Eight,Suit.Clubs)),ListBuffer[Card]())
     val p3 = Player("Charlie",ListBuffer[Card](),ListBuffer[Card]())
-    val p4 = Player("Dave",ListBuffer[Card](),ListBuffer[Card]())
+    val p4 = Player("Dave",ListBuffer[Card](Card(Rank.Two,Suit.Clubs)),ListBuffer[Card]())
     Game.firstCard = true
     Game.startWithHearts = false
 
@@ -32,29 +33,43 @@ class GameSpec extends AnyWordSpec with Matchers {
         Game.trick.addCard(Card(Rank.Ten,Suit.Clubs),p1) should be (false)
         Game.firstCard should be (true)
         Game.trick.cards should be (ListBuffer())
-        Game.trick.addCard(Card(Rank.Two,Suit.Spades),p1) should be (true)
+        Game.trick.addCard(Card(Rank.Two,Suit.Clubs),p1) should be (true)
         Game.firstCard should be (false)
-        Game.trick.cards should be(ListBuffer(Card(Rank.Two,Suit.Spades)))
-        Game.trick.addCard(Card(Rank.Three,Suit.Spades),p2)
-        Game.trick.addCard(Card(Rank.Four,Suit.Spades),p3)
-        Game.trick.addCard(Card(Rank.Five,Suit.Spades),p4)
+        Game.trick.cards should be(ListBuffer(Card(Rank.Two,Suit.Clubs)))
+        Game.trick.addCard(Card(Rank.Three,Suit.Clubs),p2)
+        Game.trick.addCard(Card(Rank.Four,Suit.Clubs),p3)
+        Game.trick.addCard(Card(Rank.Five,Suit.Clubs),p4)
     }
 
-    "check if played card is a heart card and first card of trick before that is allowed" in {
-        Game.trick.addCard(Card(Rank.Two,Suit.Hearts),p1) should be (false)
-        Game.trick.cards should be (ListBuffer())
-    }
-
-    "update current player after Card is played" in {
+    "update current player when trick is full" in{
+        Game.trick.updateCurrentWinner(Card(Rank.Five,Suit.Clubs),p4)
+        updateCurrentPlayer()
         Game.currentPlayer should be (Some(p4))
-        Game.trick.addCard(Card(Rank.Two,Suit.Spades),p4)
+        Game.trick.clearTrick()
+    }
+
+    "update current player" in {
+        Game.firstCard = true
+        Game.updateCurrentPlayer()
+        Game.currentPlayer should be (Some(p4))
+        Game.firstCard = false
+        Game.updateCurrentPlayer()
         Game.currentPlayer should be (Some(p1))
-        Game.trick.addCard(Card(Rank.Three,Suit.Spades),p1)
+        Game.updateCurrentPlayer()
         Game.currentPlayer should be (Some(p2))
-        Game.trick.addCard(Card(Rank.Four,Suit.Spades),p2)
+        Game.updateCurrentPlayer()
         Game.currentPlayer should be (Some(p3))
-        Game.trick.addCard(Card(Rank.Five,Suit.Spades),p3)
-        Game.currentPlayer should be (Some(p3))
+        Game.updateCurrentPlayer()
+        Game.currentPlayer should be (Some(p4))
+    }
+
+    "update start with hearts when heart gets played" in {
+        Game.trick.addCard(Card(Rank.Two,Suit.Clubs),p1)
+        Game.trick.addCard(Card(Rank.Three,Suit.Clubs),p2)
+        Game.trick.addCard(Card(Rank.Four,Suit.Hearts),p3)
+        Game.startWithHearts should be (true)
+        Game.trick.addCard(Card(Rank.Five,Suit.Clubs),p4)
+            
     }
   }
 }
