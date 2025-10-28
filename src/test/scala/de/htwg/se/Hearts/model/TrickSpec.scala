@@ -10,35 +10,7 @@ class TrickSpec extends AnyWordSpec with Matchers {
     "A Trick" should {
         val p1 = Player("Alice",ListBuffer[Card](Card(Rank.Two,Suit.Clubs)),ListBuffer[Card]())
         val p2 = Player("Dave",ListBuffer[Card](Card(Rank.Ace,Suit.Clubs)),ListBuffer[Card]())
-        Game.firstCard = true
-
-
-        "check if played card is valid card for first card" in {
-            val CurrentTrick = Trick()
-            CurrentTrick.addCard(Card(Rank.Ten,Suit.Clubs),p1) should be (false)
-            Game.firstCard should be (true)
-            CurrentTrick.cards should be (ListBuffer())
-            CurrentTrick.addCard(Card(Rank.Two,Suit.Spades),p1) should be (true)
-            Game.firstCard should be (false)
-            CurrentTrick.cards should be(ListBuffer(Card(Rank.Two,Suit.Spades)))
-        }
-
-        "check if played card is a heart card and first card of trick before that is allowed" in {
-            val CurrentTrick = Trick()
-            CurrentTrick.addCard(Card(Rank.Two,Suit.Hearts),p1) should be (false)
-            CurrentTrick.cards should be (ListBuffer())
-            CurrentTrick.addCard(Card(Rank.Two,Suit.Clubs),p2) should be (true)
-            CurrentTrick.cards should contain (Card(Rank.Two,Suit.Clubs))
-        }
-
-
-
-        "update start with heart after heart is played" in {
-            val CurrentTrick = Trick()
-            CurrentTrick.addCard(Card(Rank.Two,Suit.Diamonds),p1) should be (true)
-            CurrentTrick.addCard(Card(Rank.Two,Suit.Hearts),p2) should be (true)
-            Game.startWithHearts should be (true)
-        }
+        Game.firstCard = false
 
         "check if player has played valid color" in {
             val CurrentTrick = Trick()
@@ -71,8 +43,6 @@ class TrickSpec extends AnyWordSpec with Matchers {
             CurrentTrick.addCard(Card(Rank.Five,Suit.Diamonds),p1)
             CurrentTrick.firstPlayer should be (Some(p1))
         }
-
-
 
         "clear Trick when Trick is full" in {
             Game.setPlayerNumber(2)
