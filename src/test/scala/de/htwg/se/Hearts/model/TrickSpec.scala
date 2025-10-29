@@ -43,8 +43,8 @@ class TrickSpec extends AnyWordSpec with Matchers {
             val CurrentTrick = Trick()
             CurrentTrick.addCard(Card(Rank.Two,Suit.Clubs),p1)
             CurrentTrick.firstPlayer should be (Some(p1))
-            Game.firstCard = false
 
+            Game.firstCard = false
             val CurrentTrick2 = Trick()
             CurrentTrick2.addCard(Card(Rank.Five,Suit.Diamonds),p1)
             CurrentTrick2.firstPlayer should be (Some(p1))

@@ -69,7 +69,7 @@ class GameSpec extends AnyWordSpec with Matchers {
         Game.trick.addCard(Card(Rank.Four,Suit.Hearts),p3)
         Game.startWithHearts should be (true)
         Game.trick.addCard(Card(Rank.Five,Suit.Clubs),p4)
-            
+        Game.trick.clearTrick()
     }
   }
 }
