@@ -6,12 +6,19 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import scala.collection.mutable.ListBuffer
 import scalafx.scene.input.KeyCode.C
+import _root_.de.htwg.se.Hearts.model.Game.updateCurrentPlayer
+import _root_.de.htwg.se.Hearts.model.Game.addPlayer
 
 class TrickSpec extends AnyWordSpec with Matchers {
     "A Trick" should {
         val p1 = Player("Alice",ListBuffer[Card](Card(Rank.Two,Suit.Clubs)),ListBuffer[Card]())
         val p2 = Player("Dave",ListBuffer[Card](Card(Rank.Ace,Suit.Clubs)),ListBuffer[Card]())
-        val p3 = Player("Charlie",ListBuffer[Card](Card(Rank.Three,Suit.Clubs)),ListBuffer[Card]())
+        val p3 = Player("Charlie",ListBuffer[Card](Card(Rank.Jack,Suit.Clubs)),ListBuffer[Card]())
+        val p4 = Player("David",ListBuffer[Card](Card(Rank.Ten,Suit.Clubs)),ListBuffer[Card]())
+        addPlayer(p1)
+        addPlayer(p2)
+        addPlayer(p3)
+        addPlayer(p4)
         Game.currentPlayer = Some(p1)
         Game.firstCard = false
 
@@ -27,15 +34,23 @@ class TrickSpec extends AnyWordSpec with Matchers {
         "update currentWinner" in {
             val CurrentTrick = Trick()
             Game.playerNumber = Some(4)
+            Game.currentPlayer = Some(p1)
+            CurrentTrick.addCard(Card(Rank.Five,Suit.Diamonds), p1)
             CurrentTrick.updateCurrentWinner()
+            updateCurrentPlayer()
             CurrentTrick.highestCard should be (Some(Card(Rank.Five,Suit.Diamonds)))
             CurrentTrick.currentWinner should be (Some(p1))
+            CurrentTrick.addCard(Card(Rank.Four,Suit.Diamonds), p2)
             CurrentTrick.updateCurrentWinner()
+            updateCurrentPlayer()
             CurrentTrick.highestCard should be (Some(Card(Rank.Five,Suit.Diamonds)))
             CurrentTrick.currentWinner should be (Some(p1))
+            CurrentTrick.addCard(Card(Rank.Jack,Suit.Diamonds), p3)
             CurrentTrick.updateCurrentWinner()
+            updateCurrentPlayer()
             CurrentTrick.highestCard should be (Some(Card(Rank.Jack,Suit.Diamonds)))
             CurrentTrick.currentWinner should be (Some(p3))
+
         }
 
         "set first player with first card played" in {
@@ -58,19 +73,17 @@ class TrickSpec extends AnyWordSpec with Matchers {
         }
 
         "clear Trick when Trick is full" in {
-            Game.setPlayerNumber(2)
-            val p3 = Player("Alice",ListBuffer[Card](Card(Rank.Two,Suit.Clubs)),ListBuffer[Card]())
-            val p4 = Player("Dave",ListBuffer[Card](Card(Rank.Ace,Suit.Clubs)),ListBuffer[Card]())
-            Game.addPlayer(p3)
-            Game.addPlayer(p4)
             val CurrentTrick = Trick()
-            CurrentTrick.addCard(Card(Rank.Three,Suit.Clubs),p3)
+            p4.wonCards.clear()
+            CurrentTrick.addCard(Card(Rank.Two, Suit.Clubs), p1)
+            CurrentTrick.addCard(Card(Rank.Three, Suit.Clubs), p2)
+            CurrentTrick.addCard(Card(Rank.Four,Suit.Clubs),p3)
             CurrentTrick.clearTrick() should be (false)
             CurrentTrick.addCard(Card(Rank.Five,Suit.Clubs),p4)
             CurrentTrick.updateCurrentWinner()
             CurrentTrick.clearTrick() should be (true)
             CurrentTrick.cards should be (List[Card]())
-            p4.wonCards should be (ListBuffer(Card(Rank.Three,Suit.Clubs),Card(Rank.Five,Suit.Clubs)))
+            p4.wonCards should be (ListBuffer(Card(Rank.Two, Suit.Clubs),Card(Rank.Three, Suit.Clubs),Card(Rank.Four,Suit.Clubs),Card(Rank.Five,Suit.Clubs)))
         }
     }
 }

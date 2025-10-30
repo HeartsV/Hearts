@@ -30,6 +30,7 @@ class GameSpec extends AnyWordSpec with Matchers {
     }
 
     "check if played card is valid card for first card" in {
+        updateCurrentPlayer()
         Game.trick.addCard(Card(Rank.Ten,Suit.Clubs),p1) should be (false)
         Game.firstCard should be (true)
         Game.trick.cards should be (ListBuffer())
