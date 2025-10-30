@@ -37,10 +37,10 @@ class Trick {
 
     }
 
-    def updateCurrentWinner(playedCard: Card, currentPlayer: Player): Boolean = {
-        if(highestCard == None || highestCard.exists(card => card.suit == playedCard.suit && playedCard.rank.compare(card.rank) > 0))
-            highestCard = Some(playedCard)
-            currentWinner = Some(currentPlayer)
+    def updateCurrentWinner(): Boolean = {
+        if(highestCard == None || highestCard.exists(card => card.suit == cards.last.suit && cards.last.rank.compare(card.rank) > 0))
+            highestCard = Some(cards.last)
+            currentWinner = Some(Game.currentPlayer.get)
             true
         else
             false

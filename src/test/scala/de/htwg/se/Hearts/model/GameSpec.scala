@@ -42,7 +42,7 @@ class GameSpec extends AnyWordSpec with Matchers {
     }
 
     "update current player when trick is full" in{
-        Game.trick.updateCurrentWinner(Card(Rank.Five,Suit.Clubs),p4)
+        Game.trick.updateCurrentWinner()
         updateCurrentPlayer()
         Game.currentPlayer should be (Some(p4))
         Game.trick.clearTrick()

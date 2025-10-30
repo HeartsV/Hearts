@@ -19,7 +19,7 @@ class TrickSpec extends AnyWordSpec with Matchers {
         "check if player has played valid color" in {
             val CurrentTrick = Trick()
             CurrentTrick.addCard(Card(Rank.Two,Suit.Clubs),p1) should be (true)
-            CurrentTrick.updateCurrentWinner(Card(Rank.Two,Suit.Clubs),p1)
+            CurrentTrick.updateCurrentWinner()
             CurrentTrick.addCard(Card(Rank.Two,Suit.Diamonds),p2) should be (false)
             CurrentTrick.addCard(Card(Rank.Ace,Suit.Clubs),p2) should be (true)
         }
@@ -27,13 +27,13 @@ class TrickSpec extends AnyWordSpec with Matchers {
         "update currentWinner" in {
             val CurrentTrick = Trick()
             Game.playerNumber = Some(4)
-            CurrentTrick.updateCurrentWinner(Card(Rank.Five,Suit.Diamonds),p1)
+            CurrentTrick.updateCurrentWinner()
             CurrentTrick.highestCard should be (Some(Card(Rank.Five,Suit.Diamonds)))
             CurrentTrick.currentWinner should be (Some(p1))
-            CurrentTrick.updateCurrentWinner(Card(Rank.Four,Suit.Diamonds),p2)
+            CurrentTrick.updateCurrentWinner()
             CurrentTrick.highestCard should be (Some(Card(Rank.Five,Suit.Diamonds)))
             CurrentTrick.currentWinner should be (Some(p1))
-            CurrentTrick.updateCurrentWinner(Card(Rank.Jack, Suit.Diamonds),p3)
+            CurrentTrick.updateCurrentWinner()
             CurrentTrick.highestCard should be (Some(Card(Rank.Jack,Suit.Diamonds)))
             CurrentTrick.currentWinner should be (Some(p3))
         }
@@ -67,7 +67,7 @@ class TrickSpec extends AnyWordSpec with Matchers {
             CurrentTrick.addCard(Card(Rank.Three,Suit.Clubs),p3)
             CurrentTrick.clearTrick() should be (false)
             CurrentTrick.addCard(Card(Rank.Five,Suit.Clubs),p4)
-            CurrentTrick.updateCurrentWinner(Card(Rank.Five,Suit.Clubs),p4)
+            CurrentTrick.updateCurrentWinner()
             CurrentTrick.clearTrick() should be (true)
             CurrentTrick.cards should be (List[Card]())
             p4.wonCards should be (ListBuffer(Card(Rank.Three,Suit.Clubs),Card(Rank.Five,Suit.Clubs)))
