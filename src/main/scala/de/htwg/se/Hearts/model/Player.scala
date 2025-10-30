@@ -2,7 +2,10 @@ package de.htwg.se.Hearts.model
 
 import scala.collection.mutable.ListBuffer
 
-class Player(val name: String,val hand: ListBuffer[Card],val wonCards:ListBuffer[Card]) {
+class Player(val name: String) {
+
+    val hand: ListBuffer[Card] = ListBuffer()
+    val wonCards:ListBuffer[Card] = ListBuffer()
 
     def playCard(index : Int) : Boolean = {
         if(hand.size > index && Game.trick.addCard(hand(index)))
@@ -12,5 +15,10 @@ class Player(val name: String,val hand: ListBuffer[Card],val wonCards:ListBuffer
             false
     }
 
-
+    def handToString(): String =
+        var handString = "|"
+        for(element<-hand)
+            handString += (" " + element.toString +  " ")
+            handString += "|"
+        handString
 }

@@ -12,10 +12,14 @@ import _root_.de.htwg.se.Hearts.model.Game.currentPlayer
 
 class TrickSpec extends AnyWordSpec with Matchers {
     "A Trick" should {
-        val p1 = Player("Alice",ListBuffer[Card](Card(Rank.Two,Suit.Clubs)),ListBuffer[Card]())
-        val p2 = Player("Dave",ListBuffer[Card](Card(Rank.Ace,Suit.Clubs)),ListBuffer[Card]())
-        val p3 = Player("Charlie",ListBuffer[Card](Card(Rank.Jack,Suit.Clubs)),ListBuffer[Card]())
-        val p4 = Player("David",ListBuffer[Card](Card(Rank.Ten,Suit.Clubs)),ListBuffer[Card]())
+        val p1 = Player("Alice")
+        val p2 = Player("Dave")
+        val p3 = Player("Charlie")
+        val p4 = Player("David")
+        p1.hand +=(Card(Rank.Two,Suit.Clubs))
+        p2.hand +=(Card(Rank.Ace,Suit.Clubs))
+        p3.hand +=(Card(Rank.Jack,Suit.Clubs))
+        p4.hand +=(Card(Rank.Ten,Suit.Clubs))
         addPlayer(p1)
         addPlayer(p2)
         addPlayer(p3)
@@ -88,6 +92,42 @@ class TrickSpec extends AnyWordSpec with Matchers {
             CurrentTrick.cards should be (List[Card]())
             p4.wonCards should be (ListBuffer(Card(Rank.Two, Suit.Clubs),Card(Rank.Three, Suit.Clubs),Card(Rank.Four,Suit.Clubs),Card(Rank.Five,Suit.Clubs)))
         }
+
+        "output the correct strings for played Cards in a Trick with 4 Players" in {
+            val CurrentTrick = Trick()
+            CurrentTrick.trickToString() should be ("|     |     |     |     |")
+            CurrentTrick.addCard(Card(Rank.Two, Suit.Diamonds))
+            CurrentTrick.trickToString() should be ("| 2 \u2666 |     |     |     |")
+            CurrentTrick.addCard(Card(Rank.Ten, Suit.Diamonds))
+            CurrentTrick.trickToString() should be ("| 2 \u2666 | 10\u2666 |     |     |")
+            CurrentTrick.addCard(Card(Rank.Three, Suit.Diamonds))
+            CurrentTrick.trickToString() should be ("| 2 \u2666 | 10\u2666 | 3 \u2666 |     |")
+            CurrentTrick.addCard(Card(Rank.Queen, Suit.Diamonds))
+            CurrentTrick.trickToString() should be ("| 2 \u2666 | 10\u2666 | 3 \u2666 | Q \u2666 |")
+        }
+
+        "output the correct strings for played Cards in a Trick with 3 Players" in {
+            val CurrentTrick = Trick()
+            Game.playerNumber = Some(3)
+            CurrentTrick.trickToString() should be ("|     |     |     |")
+            CurrentTrick.addCard(Card(Rank.Two, Suit.Diamonds))
+            CurrentTrick.trickToString() should be ("| 2 \u2666 |     |     |")
+            CurrentTrick.addCard(Card(Rank.Ten, Suit.Diamonds))
+            CurrentTrick.trickToString() should be ("| 2 \u2666 | 10\u2666 |     |")
+            CurrentTrick.addCard(Card(Rank.Three, Suit.Diamonds))
+            CurrentTrick.trickToString() should be ("| 2 \u2666 | 10\u2666 | 3 \u2666 |")
+        }
+
+        "output the correct strings for played Cards in a Trick with 2 Players" in {
+            val CurrentTrick = Trick()
+            Game.playerNumber = Some(2)
+            CurrentTrick.trickToString() should be ("|     |     |")
+            CurrentTrick.addCard(Card(Rank.Two, Suit.Diamonds))
+            CurrentTrick.trickToString() should be ("| 2 \u2666 |     |")
+            CurrentTrick.addCard(Card(Rank.Ten, Suit.Diamonds))
+            CurrentTrick.trickToString() should be ("| 2 \u2666 | 10\u2666 |")
+        }
+
     }
 }
 

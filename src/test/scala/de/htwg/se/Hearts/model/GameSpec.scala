@@ -7,10 +7,12 @@ import _root_.de.htwg.se.Hearts.model.Game.updateCurrentPlayer
 
 class GameSpec extends AnyWordSpec with Matchers {
   "A Game" should {
-    val p1 = Player("Alice",ListBuffer[Card](),ListBuffer[Card]())
-    val p2 = Player("Bob",ListBuffer[Card](Card(Rank.Eight,Suit.Clubs)),ListBuffer[Card]())
-    val p3 = Player("Charlie",ListBuffer[Card](),ListBuffer[Card]())
-    val p4 = Player("Dave",ListBuffer[Card](Card(Rank.Two,Suit.Clubs)),ListBuffer[Card]())
+    val p1 = Player("Alice")
+    val p2 = Player("Bob")
+    p2.hand += (Card(Rank.Eight,Suit.Clubs))
+    val p3 = Player("Charlie")
+    val p4 = Player("Dave")
+    p4.hand += (Card(Rank.Two,Suit.Clubs))
     Game.firstCard = true
     Game.startWithHearts = false
 

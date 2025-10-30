@@ -58,4 +58,17 @@ class Trick {
         else
             false
     }
+
+    def trickToString(): String = {
+        var trickString = "|"
+        var amountPlayedCards = 0
+        for(element<-cards)
+            trickString += (" " + element.toString +  " ")
+            trickString += "|"
+            amountPlayedCards += 1
+        while (amountPlayedCards < Game.playerNumber.get)
+            trickString += "     |"
+            amountPlayedCards += 1
+        trickString
+    }
 }
