@@ -31,15 +31,15 @@ class GameSpec extends AnyWordSpec with Matchers {
 
     "check if played card is valid card for first card" in {
         updateCurrentPlayer()
-        Game.trick.addCard(Card(Rank.Ten,Suit.Clubs),p1) should be (false)
+        Game.trick.addCard(Card(Rank.Ten,Suit.Clubs)) should be (false)
         Game.firstCard should be (true)
         Game.trick.cards should be (ListBuffer())
-        Game.trick.addCard(Card(Rank.Two,Suit.Clubs),p1) should be (true)
+        Game.trick.addCard(Card(Rank.Two,Suit.Clubs)) should be (true)
         Game.firstCard should be (false)
         Game.trick.cards should be(ListBuffer(Card(Rank.Two,Suit.Clubs)))
-        Game.trick.addCard(Card(Rank.Three,Suit.Clubs),p2)
-        Game.trick.addCard(Card(Rank.Four,Suit.Clubs),p3)
-        Game.trick.addCard(Card(Rank.Five,Suit.Clubs),p4)
+        Game.trick.addCard(Card(Rank.Three,Suit.Clubs))
+        Game.trick.addCard(Card(Rank.Four,Suit.Clubs))
+        Game.trick.addCard(Card(Rank.Five,Suit.Clubs))
     }
 
     "update current player when trick is full" in{
@@ -65,11 +65,11 @@ class GameSpec extends AnyWordSpec with Matchers {
     }
 
     "update start with hearts when heart gets played" in {
-        Game.trick.addCard(Card(Rank.Two,Suit.Clubs),p1)
-        Game.trick.addCard(Card(Rank.Three,Suit.Clubs),p2)
-        Game.trick.addCard(Card(Rank.Four,Suit.Hearts),p3)
+        Game.trick.addCard(Card(Rank.Two,Suit.Clubs))
+        Game.trick.addCard(Card(Rank.Three,Suit.Clubs))
+        Game.trick.addCard(Card(Rank.Four,Suit.Hearts))
         Game.startWithHearts should be (true)
-        Game.trick.addCard(Card(Rank.Five,Suit.Clubs),p4)
+        Game.trick.addCard(Card(Rank.Five,Suit.Clubs))
         Game.trick.clearTrick()
     }
   }

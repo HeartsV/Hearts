@@ -30,9 +30,9 @@ class PlayerSpec extends AnyWordSpec with Matchers {
             p1.playCard(0) should be (true)
             p1.hand should be (ListBuffer[Card](Card(Rank.Three,Suit.Hearts)))
             Game.trick.cards should be (ListBuffer[Card](Card(Rank.Ace,Suit.Spades)))
-            Game.trick.addCard(Card(Rank.Two,Suit.Spades),p1)
-            Game.trick.addCard(Card(Rank.Three,Suit.Spades),p1)
-            Game.trick.addCard(Card(Rank.Four,Suit.Spades),p1)
+            Game.trick.addCard(Card(Rank.Two,Suit.Spades))
+            Game.trick.addCard(Card(Rank.Three,Suit.Spades))
+            Game.trick.addCard(Card(Rank.Four,Suit.Spades))
         }
     }
 

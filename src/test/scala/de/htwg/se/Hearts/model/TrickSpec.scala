@@ -8,6 +8,7 @@ import scala.collection.mutable.ListBuffer
 import scalafx.scene.input.KeyCode.C
 import _root_.de.htwg.se.Hearts.model.Game.updateCurrentPlayer
 import _root_.de.htwg.se.Hearts.model.Game.addPlayer
+import _root_.de.htwg.se.Hearts.model.Game.currentPlayer
 
 class TrickSpec extends AnyWordSpec with Matchers {
     "A Trick" should {
@@ -25,27 +26,27 @@ class TrickSpec extends AnyWordSpec with Matchers {
 
         "check if player has played valid color" in {
             val CurrentTrick = Trick()
-            CurrentTrick.addCard(Card(Rank.Two,Suit.Clubs),p1) should be (true)
+            CurrentTrick.addCard(Card(Rank.Two,Suit.Clubs)) should be (true)
             CurrentTrick.updateCurrentWinner()
-            CurrentTrick.addCard(Card(Rank.Two,Suit.Diamonds),p2) should be (false)
-            CurrentTrick.addCard(Card(Rank.Ace,Suit.Clubs),p2) should be (true)
+            CurrentTrick.addCard(Card(Rank.Two,Suit.Diamonds)) should be (false)
+            CurrentTrick.addCard(Card(Rank.Ace,Suit.Clubs)) should be (true)
         }
 
         "update currentWinner" in {
             val CurrentTrick = Trick()
             Game.playerNumber = Some(4)
             Game.currentPlayer = Some(p1)
-            CurrentTrick.addCard(Card(Rank.Five,Suit.Diamonds), p1)
+            CurrentTrick.addCard(Card(Rank.Five,Suit.Diamonds))
             CurrentTrick.updateCurrentWinner()
             updateCurrentPlayer()
             CurrentTrick.highestCard should be (Some(Card(Rank.Five,Suit.Diamonds)))
             CurrentTrick.currentWinner should be (Some(p1))
-            CurrentTrick.addCard(Card(Rank.Four,Suit.Diamonds), p2)
+            CurrentTrick.addCard(Card(Rank.Four,Suit.Diamonds))
             CurrentTrick.updateCurrentWinner()
             updateCurrentPlayer()
             CurrentTrick.highestCard should be (Some(Card(Rank.Five,Suit.Diamonds)))
             CurrentTrick.currentWinner should be (Some(p1))
-            CurrentTrick.addCard(Card(Rank.Jack,Suit.Diamonds), p3)
+            CurrentTrick.addCard(Card(Rank.Jack,Suit.Diamonds))
             CurrentTrick.updateCurrentWinner()
             updateCurrentPlayer()
             CurrentTrick.highestCard should be (Some(Card(Rank.Jack,Suit.Diamonds)))
@@ -55,31 +56,33 @@ class TrickSpec extends AnyWordSpec with Matchers {
 
         "set first player with first card played" in {
             Game.firstCard = true
+            Game.currentPlayer = Some(p1)
             val CurrentTrick = Trick()
-            CurrentTrick.addCard(Card(Rank.Two,Suit.Clubs),p1)
+            CurrentTrick.addCard(Card(Rank.Two,Suit.Clubs))
             CurrentTrick.firstPlayer should be (Some(p1))
 
             Game.firstCard = false
             val CurrentTrick2 = Trick()
-            CurrentTrick2.addCard(Card(Rank.Five,Suit.Diamonds),p1)
+            CurrentTrick2.addCard(Card(Rank.Five,Suit.Diamonds))
             CurrentTrick2.firstPlayer should be (Some(p1))
         }
 
         "check if played card is a heart card and first card of trick before that is allowed" in {
             Game.startWithHearts = false
             val CurrentTrick = Trick ()
-            CurrentTrick.addCard(Card(Rank.Two,Suit.Hearts),p1) should be (false)
+            CurrentTrick.addCard(Card(Rank.Two,Suit.Hearts)) should be (false)
             CurrentTrick.cards should be (ListBuffer())
         }
 
         "clear Trick when Trick is full" in {
             val CurrentTrick = Trick()
             p4.wonCards.clear()
-            CurrentTrick.addCard(Card(Rank.Two, Suit.Clubs), p1)
-            CurrentTrick.addCard(Card(Rank.Three, Suit.Clubs), p2)
-            CurrentTrick.addCard(Card(Rank.Four,Suit.Clubs),p3)
+            CurrentTrick.addCard(Card(Rank.Two, Suit.Clubs))
+            CurrentTrick.addCard(Card(Rank.Three, Suit.Clubs))
+            CurrentTrick.addCard(Card(Rank.Four,Suit.Clubs))
             CurrentTrick.clearTrick() should be (false)
-            CurrentTrick.addCard(Card(Rank.Five,Suit.Clubs),p4)
+            CurrentTrick.addCard(Card(Rank.Five,Suit.Clubs))
+            currentPlayer = Some(p4)
             CurrentTrick.updateCurrentWinner()
             CurrentTrick.clearTrick() should be (true)
             CurrentTrick.cards should be (List[Card]())

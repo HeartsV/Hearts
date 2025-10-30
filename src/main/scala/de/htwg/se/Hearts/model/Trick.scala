@@ -10,17 +10,17 @@ class Trick {
     var currentWinner: Option[Player] = None
     var firstPlayer: Option[Player] = None
 
-    def addCard(newCard: Card, currentPlayer: Player): Boolean = {
+    def addCard(newCard: Card): Boolean = {
         if(Game.firstCard == true)
             if(newCard  == (Card(Rank.Two,Suit.Clubs)))
                 cards += newCard
-                firstPlayer = Some(currentPlayer)
+                firstPlayer = Some(Game.currentPlayer.get)
                 Game.firstCard = false
                 true
             else
                 false
         else if(!(cards == ListBuffer()))
-            if(highestCard.exists(card => card.suit == newCard.suit) || !highestCard.exists(card => currentPlayer.hand.exists(_.suit == card.suit)))
+            if(highestCard.exists(card => card.suit == newCard.suit) || !highestCard.exists(card => Game.currentPlayer.get.hand.exists(_.suit == card.suit)))
                 cards += newCard
                 if(newCard.suit == Suit.Hearts)
                     Game.startWithHearts = true
@@ -32,7 +32,7 @@ class Trick {
                 false
             else
                 cards += newCard
-                firstPlayer = Some(currentPlayer)
+                firstPlayer = Some(Game.currentPlayer.get)
                 true
 
     }
