@@ -7,6 +7,7 @@ import scala.collection.mutable.ListBuffer
 
 object  Game {
   var startWithHearts: Boolean = false
+  var gameOver: Boolean = false
   var firstCard: Boolean = true
   var playerNumber: Option[Int] = None
   val players: ListBuffer[Player] = ListBuffer.empty[Player]
