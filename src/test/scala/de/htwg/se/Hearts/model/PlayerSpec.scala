@@ -25,7 +25,7 @@ class PlayerSpec extends AnyWordSpec with Matchers {
             p1.handToString() should be ("| A \u2660 | 10\u2665 |")
         }
 
-        "be able to play Cards" in {
+        "be able to play Cards according to the rules" in {
             p1.playCard(2) should be (false)
             p1.hand should be (ListBuffer[Card](Card(Rank.Ace,Suit.Spades),Card(Rank.Ten,Suit.Hearts)))
             Game.trick.cards should be (ListBuffer())
