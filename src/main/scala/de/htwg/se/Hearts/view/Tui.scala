@@ -1,8 +1,9 @@
 package de.htwg.se.Hearts.view
 
 import de.htwg.se.Hearts.model.Game
+import scala.io.StdIn.readLine
 
-class Tui {
+object Tui {
 	def getPlayerNumberStateString(): String =
 		""
 
@@ -18,8 +19,9 @@ class Tui {
 	def getGameOverStateString(): String =
 		""
 
-	def parseUserInput(): Int =
-		6
+	def parseUserInput(): Option[Int] =
+		readLine().toIntOption
+
 
 
 
