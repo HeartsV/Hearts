@@ -1,9 +1,10 @@
-package de.htwg.se.Hearts.view
+package de.htwg.se.Hearts.aview
 
 import de.htwg.se.Hearts.model.Game
 import scala.io.StdIn.readLine
 
-object Tui {
+class Tui {
+	val newLine = "\n"
 	def getPlayerNumberStateString(): String =
 		""
 
@@ -11,10 +12,9 @@ object Tui {
 		""
 
 	def getGameplayStateString(): String =
-		Game.currentPlayer.get.name +
-		" please select card to play:\n" +
-		Game.trick.trickToString() + "\n" +
-		Game.currentPlayer.get.handToString()
+		Game.trick.trickToString() + newLine +
+		Game.currentPlayer.get.name +" please select card to play:" + newLine +
+		Game.currentPlayer.get.handToString() + newLine
 
 	def getGameOverStateString(): String =
 		""

@@ -1,7 +1,6 @@
 package de.htwg.se.Hearts
 import de.htwg.se.Hearts.model.*
-import de.htwg.se.Hearts.controller.GameController
-
+import de.htwg.se.Hearts.controller.*
 object Main {
   def main(args: Array[String]): Unit = {
     Game.playerNumber = Some(4)
@@ -17,7 +16,7 @@ object Main {
     Game.addPlayer(p2)
     Game.addPlayer(p3)
     Game.addPlayer(p4)
-    val gameCo = GameController()
+    val gameCo = Controller()
     gameCo.rungame()
   }
 }
