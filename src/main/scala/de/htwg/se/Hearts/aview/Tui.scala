@@ -1,9 +1,12 @@
 package de.htwg.se.Hearts.aview
 
 import de.htwg.se.Hearts.model.Game
-import scala.io.StdIn.readLine
+import de.htwg.se.Hearts.controller
 
-class Tui {
+import scala.io.StdIn.readLine
+import de.htwg.se.Hearts.controller.Observer
+
+class Tui  extends Observer{
 	val newLine = "\n"
 	def getPlayerNumberStateString(): String =
 		""
@@ -23,7 +26,6 @@ class Tui {
 	def parseUserInput(): Option[Int] =
 		readLine().toIntOption
 
-
-
-
+	def update(): Unit =
+		print(getGameplayStateString())
 }
