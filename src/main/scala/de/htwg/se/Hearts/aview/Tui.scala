@@ -12,6 +12,7 @@ class Tui {
 		""
 
 	def getGameplayStateString(): String =
+		"Trick:" + newLine +
 		Game.trick.trickToString() + newLine +
 		Game.currentPlayer.get.name +" please select card to play:" + newLine +
 		Game.currentPlayer.get.handToString() + newLine
