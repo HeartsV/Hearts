@@ -5,8 +5,9 @@ import de.htwg.se.Hearts.controller
 
 import scala.io.StdIn.readLine
 import de.htwg.se.Hearts.controller.Observer
+import de.htwg.se.Hearts.controller.Controller
 
-class Tui  extends Observer{
+class Tui(gameController: Controller)  extends Observer{
 	val newLine = "\n"
 	def getPlayerNumberStateString(): String =
 		""
@@ -23,9 +24,15 @@ class Tui  extends Observer{
 	def getGameOverStateString(): String =
 		""
 
-	def parseUserInput(): Option[Int] =
-		readLine().toIntOption
 
 	def update(): Unit =
 		print(getGameplayStateString())
+
+
+	def runGame(): Unit =
+		gameController.processInput("999")
+		while (!Game.gameOver)
+			gameController.processInput(readLine())
+
+
 }

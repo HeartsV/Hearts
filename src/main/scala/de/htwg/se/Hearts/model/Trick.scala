@@ -47,7 +47,7 @@ class Trick {
     }
 
     def clearTrick(): Boolean ={
-        if(Game.playerNumber.exists(pnuber => cards.size == pnuber))
+        if(Game.playerNumber.exists(pnumber => cards.size == pnumber))
             currentWinner.foreach(_.wonCards ++= cards)
             cards.clear()
             highestCard = None
