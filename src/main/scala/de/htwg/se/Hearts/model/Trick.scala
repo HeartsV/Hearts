@@ -1,7 +1,6 @@
 package de.htwg.se.Hearts.model
 
 import scala.collection.mutable.ListBuffer
-import de.htwg.se.Hearts.model.Game
 
 class Trick {
     val cards: ListBuffer[Card] = ListBuffer()

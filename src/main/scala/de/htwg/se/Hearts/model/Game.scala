@@ -1,7 +1,6 @@
 package de.htwg.se.Hearts.model
 
 import scala.compiletime.ops.boolean
-import org.scalactic.Bool
 import scala.collection.mutable.ListBuffer
 
 

@@ -1,7 +1,6 @@
 package de.htwg.se.Hearts.controller
 
 import de.htwg.se.Hearts.model.*
-import de.htwg.se.Hearts.aview.*
 import scala.collection.mutable.ListBuffer
 
 
