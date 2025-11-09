@@ -4,7 +4,6 @@ import de.htwg.se.Hearts.controller.*
 import de.htwg.se.Hearts.aview.*
 object Main {
   def main(args: Array[String]): Unit = {
-    Game.playerNumber = Some(4)
     val p1 = Player("Alice")
     val p2 = Player("Dave")
     val p3 = Player("Charlie")
@@ -17,11 +16,12 @@ object Main {
     p3.hand +=(Card(Rank.Jack,Suit.Diamonds))
     p4.hand +=(Card(Rank.Ten,Suit.Clubs))
     p4.hand +=(Card(Rank.Ten,Suit.Diamonds))
-    Game.addPlayer(p1)
-    Game.addPlayer(p2)
-    Game.addPlayer(p3)
-    Game.addPlayer(p4)
-    val gameCo = Controller()
+    val game = Game()
+    game.addPlayer(p1)
+    game.addPlayer(p2)
+    game.addPlayer(p3)
+    game.addPlayer(p4)
+    val gameCo = Controller(game)
     val gameTui = Tui(gameCo)
     gameCo.add(gameTui)
     gameTui.runGame()

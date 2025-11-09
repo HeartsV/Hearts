@@ -7,12 +7,9 @@ class Player(val name: String) {
     val hand: ListBuffer[Card] = ListBuffer()
     val wonCards:ListBuffer[Card] = ListBuffer()
 
-    def playCard(index : Int) : Boolean = {
-        if(hand.size > index-1 && index-1>= 0 && Game.trick.addCard(hand(index-1)))
-            hand.remove(index-1)
-            true
-        else
-            false
+    def removeCard(index : Int) : Boolean = {
+        hand.remove(index-1)
+        true
     }
 
     def handToString(): String =

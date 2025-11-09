@@ -5,24 +5,13 @@ import org.scalactic.Bool
 import scala.collection.mutable.ListBuffer
 
 
-object Game {
+class Game () {
   var startWithHearts: Boolean = false
   var gameOver: Boolean = false
   var firstCard: Boolean = true
-  var playerNumber: Option[Int] = None
   val players: ListBuffer[Player] = ListBuffer.empty[Player]
   var currentPlayer: Option[Player] = None
   val trick = Trick()
-
-
-  def setPlayerNumber(number: Int): Boolean = {
-    if (number > 1 && number < 5){
-        playerNumber = Some(number)
-        true
-    } else {
-        false
-    }
-  }
 
   def addPlayer(player: Player): Boolean = {
     players.addOne(player)

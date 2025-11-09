@@ -17,9 +17,9 @@ class Tui(gameController: Controller)  extends Observer{
 
 	def getGameplayStateString(): String =
 		"Trick:" + newLine +
-		Game.trick.trickToString() + newLine +
-		Game.currentPlayer.get.name +" please select card to play:" + newLine +
-		Game.currentPlayer.get.handToString() + newLine
+		gameController.completeTrickString() + newLine +
+		gameController.getCurrentPlayerName() +" please select card to play:" + newLine +
+		gameController.getCurrentPlayerHand() + newLine
 
 	def getGameOverStateString(): String =
 		""
@@ -30,8 +30,8 @@ class Tui(gameController: Controller)  extends Observer{
 
 
 	def runGame(): Unit =
-		gameController.processInput("999")
-		while (!Game.gameOver)
+		gameController.processInput("-1")
+		while (!gameController.checkGameOver())
 			gameController.processInput(readLine())
 
 
