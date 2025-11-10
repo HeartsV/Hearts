@@ -14,10 +14,10 @@ class Controller(game: Game) extends Observable() {
             updateCurrentWinner()
             game.updateCurrentPlayer()
             notifyObservers
-            true    
+            true
         else
             notifyObservers
-            false     
+            false
     }
 
 
@@ -71,21 +71,14 @@ class Controller(game: Game) extends Observable() {
     def completeTrickString(): String = {
         var string = game.trick.trickToString()
         for(i <- 1 to game.players.size - game.trick.cards.size)
-            string += "     |" 
+            string += "     |"
         string
 
     }
 
-    def getCurrentPlayerHand(): String = {
-        game.currentPlayer.get.handToString()
-    }
+    def getCurrentPlayerHand(): String = game.currentPlayer.get.handToString()
 
-    def getCurrentPlayerName(): String = {
-        game.currentPlayer.get.name
-    }
+    def getCurrentPlayerName(): String = game.currentPlayer.get.name
 
-
-    def checkGameOver(): Boolean = {
-        game.gameOver
-    }
+    def checkGameOver(): Boolean = game.gameOver
 }

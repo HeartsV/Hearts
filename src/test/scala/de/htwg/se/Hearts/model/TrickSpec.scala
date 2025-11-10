@@ -33,21 +33,21 @@ class TrickSpec extends AnyWordSpec with Matchers {
         }
 
         "output the correct strings for played Cards" in {
-            val CurrentTrick = Trick()
-            CurrentTrick.trickToString() should be ("|")
-            CurrentTrick.addCard(Card(Rank.Two, Suit.Diamonds))
-            CurrentTrick.trickToString() should be ("| 2 \u2666 |")
-            CurrentTrick.addCard(Card(Rank.Ten, Suit.Diamonds))
-            CurrentTrick.trickToString() should be ("| 2 \u2666 | 10\u2666 |")
-            CurrentTrick.addCard(Card(Rank.Three, Suit.Diamonds))
-            CurrentTrick.trickToString() should be ("| 2 \u2666 | 10\u2666 | 3 \u2666 |")
-            CurrentTrick.addCard(Card(Rank.Queen, Suit.Diamonds))
-            CurrentTrick.trickToString() should be ("| 2 \u2666 | 10\u2666 | 3 \u2666 | Q \u2666 |")
+            val trick = Trick()
+            trick.trickToString() should be ("|")
+            trick.addCard(Card(Rank.Two, Suit.Diamonds))
+            trick.trickToString() should be ("| 2 \u2666 |")
+            trick.addCard(Card(Rank.Ten, Suit.Diamonds))
+            trick.trickToString() should be ("| 2 \u2666 | 10\u2666 |")
+            trick.addCard(Card(Rank.Three, Suit.Diamonds))
+            trick.trickToString() should be ("| 2 \u2666 | 10\u2666 | 3 \u2666 |")
+            trick.addCard(Card(Rank.Queen, Suit.Diamonds))
+            trick.trickToString() should be ("| 2 \u2666 | 10\u2666 | 3 \u2666 | Q \u2666 |")
         }
 
 
 
-        
+
 
     }
 }
