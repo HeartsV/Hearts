@@ -6,14 +6,18 @@ import scala.collection.mutable.ListBuffer
 
 class Controller(game: Game) extends Observable() {
 
-    def processInput(input: String): Unit  = {
+    def processInput(input: String): Boolean  = {
         if(game.firstCard == true)
             game.updateCurrentPlayer()
         if(input.toIntOption.exists(index => playCard(index)))
             if(game.firstCard == true) game.firstCard = false
             updateCurrentWinner()
             game.updateCurrentPlayer()
-        notifyObservers
+            notifyObservers
+            true    
+        else
+            notifyObservers
+            false     
     }
 
 

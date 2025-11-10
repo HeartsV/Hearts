@@ -9,7 +9,7 @@ class Trick {
     var firstPlayer: Option[Player] = None
 
     def addCard(newCard: Card): Boolean = { 
-        cards += newCard
+        cards.addOne(newCard)
         true
     }
 

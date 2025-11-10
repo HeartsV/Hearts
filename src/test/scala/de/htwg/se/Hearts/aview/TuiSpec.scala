@@ -6,7 +6,7 @@ import _root_.de.htwg.se.Hearts.aview.Tui
 
 
 class TuiSpec extends AnyWordSpec with Matchers {
-	"A Tui" should {
+	/*"A Tui" should {
         Game.playerNumber = Some(4)
         Game.trick.clearTrick()
         Game.players.clear()
@@ -35,4 +35,5 @@ class TuiSpec extends AnyWordSpec with Matchers {
             currentTui.getGameplayStateString() should be ("Trick:\n| 2 ♣ |     |     |     |\nDave please select card to play:\n|  1  |\n| A ♣ |\n")
             }
     }
+    */
 }

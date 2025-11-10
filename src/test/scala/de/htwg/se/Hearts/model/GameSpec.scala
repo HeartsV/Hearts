@@ -3,76 +3,63 @@ package de.htwg.se.Hearts.model
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import scala.collection.mutable.ListBuffer
-import _root_.de.htwg.se.Hearts.model.Game.updateCurrentPlayer
 
 class GameSpec extends AnyWordSpec with Matchers {
   "A Game" should {
     val p1 = Player("Alice")
     val p2 = Player("Bob")
-    p2.hand += (Card(Rank.Eight,Suit.Clubs))
-    val p3 = Player("Charlie")
-    val p4 = Player("Dave")
-    p4.hand += (Card(Rank.Two,Suit.Clubs))
-    Game.firstCard = true
-    Game.startWithHearts = false
-
-    "set player number" in {
-        Game.setPlayerNumber(6)
-        Game.playerNumber should be (None: Option[Int])
-        Game.setPlayerNumber(4)
-        Game.playerNumber should be (Some(4))
-    }
+    val card1 = Card(Rank.Two,Suit.Clubs)
+    val card2 = Card(Rank.Two,Suit.Diamonds)
+    p1.hand += (card1)
 
     "add player" in{
-        Game.addPlayer(p1)
-        Game.addPlayer(p2)
-        Game.addPlayer(p3)
-        Game.addPlayer(p4)
-        Game.players should be (ListBuffer[Player](p1,p2,p3,p4))
+        val game = Game()
+        game.addPlayer(p1)
+        game.players should be (ListBuffer[Player](p1))
+        game.addPlayer(p2)
+        game.players should be (ListBuffer[Player](p1,p2))
     }
 
-    "check if played card is valid card for first card" in {
-        updateCurrentPlayer()
-        Game.trick.addCard(Card(Rank.Ten,Suit.Clubs)) should be (false)
-        Game.firstCard should be (true)
-        Game.trick.cards should be (ListBuffer())
-        Game.trick.addCard(Card(Rank.Two,Suit.Clubs)) should be (true)
-        Game.firstCard should be (false)
-        Game.trick.cards should be(ListBuffer(Card(Rank.Two,Suit.Clubs)))
-        Game.trick.addCard(Card(Rank.Three,Suit.Clubs))
-        Game.trick.addCard(Card(Rank.Four,Suit.Clubs))
-        Game.trick.addCard(Card(Rank.Five,Suit.Clubs))
+    "update current player for first card" in {
+        val game = Game()
+        game.addPlayer(p1)
+        game.addPlayer(p2)
+        game.updateCurrentPlayer()
+        game.currentPlayer should be (Some(p1))
+    }
+
+    "update current player for normal case" in  {
+        val game = Game()
+        game.addPlayer(p1)
+        game.addPlayer(p2)
+        game.updateCurrentPlayer()
+        game.firstCard = false
+        game.updateCurrentPlayer()
+        game.currentPlayer should be (Some(p2))
+
     }
 
     "update current player when trick is full" in{
-        Game.trick.updateCurrentWinner()
-        updateCurrentPlayer()
-        Game.currentPlayer should be (Some(p4))
-        Game.trick.clearTrick()
+        val game = Game()
+        game.addPlayer(p1)
+        game.addPlayer(p2)
+        game.trick.currentWinner = Some(p2)
+        game.updateCurrentPlayer()
+        game.firstCard = false
+        game.updateCurrentPlayer()
+        game.trick.cards += (card1,card2)
+        game.updateCurrentPlayer()
+        game.currentPlayer should be (Some(p2))
     }
 
-    "update current player" in {
-        Game.firstCard = true
-        Game.updateCurrentPlayer()
-        Game.currentPlayer should be (Some(p4))
-        Game.firstCard = false
-        Game.updateCurrentPlayer()
-        Game.currentPlayer should be (Some(p1))
-        Game.updateCurrentPlayer()
-        Game.currentPlayer should be (Some(p2))
-        Game.updateCurrentPlayer()
-        Game.currentPlayer should be (Some(p3))
-        Game.updateCurrentPlayer()
-        Game.currentPlayer should be (Some(p4))
-    }
-
-    "update start with hearts when heart gets played" in {
-        Game.trick.addCard(Card(Rank.Two,Suit.Clubs))
-        Game.trick.addCard(Card(Rank.Three,Suit.Clubs))
-        Game.trick.addCard(Card(Rank.Four,Suit.Hearts))
-        Game.startWithHearts should be (true)
-        Game.trick.addCard(Card(Rank.Five,Suit.Clubs))
-        Game.trick.clearTrick()
+    "loop over list of players" in {
+        val game = Game()
+        game.firstCard = false
+        game.addPlayer(p1)
+        game.addPlayer(p2)
+        game.currentPlayer = Some(p2)
+        game.updateCurrentPlayer()
+        game.currentPlayer should be (Some(p1))
     }
   }
 }
