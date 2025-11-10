@@ -29,7 +29,7 @@ class Tui(gameController: Controller)  extends Observer{
 
 
 	def runGame(): Unit =
-		//gameController.processInput("-1")
+		gameController.processInput("-1")
 		while (!gameController.checkGameOver())
 			gameController.processInput(readLine())
 
