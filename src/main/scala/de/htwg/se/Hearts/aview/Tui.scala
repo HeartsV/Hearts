@@ -8,7 +8,7 @@ import de.htwg.se.Hearts.controller.Observer
 import de.htwg.se.Hearts.controller.Controller
 
 class Tui(gameController: Controller)  extends Observer{
-	val newLine = "\n"
+	val nl = "\n"
 	def getPlayerNumberStateString(): String =
 		""
 
@@ -16,10 +16,10 @@ class Tui(gameController: Controller)  extends Observer{
 		""
 
 	def getGameplayStateString(): String =
-		"Trick:" + newLine +
-		gameController.completeTrickString() + newLine +
-		gameController.getCurrentPlayerName() +" please select card to play:" + newLine +
-		gameController.getCurrentPlayerHand() + newLine
+		"Trick:" + nl +
+		gameController.completeTrickString() + nl +
+		gameController.getCurrentPlayerName() +" please select card to play:" + nl +
+		gameController.getCurrentPlayerHand() + nl
 
 	def getGameOverStateString(): String =
 		""

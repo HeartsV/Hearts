@@ -24,6 +24,14 @@ class TuiSpec extends AnyWordSpec with Matchers {
         p3.hand +=(Card(Rank.Jack,Suit.Clubs))
         p4.hand +=(Card(Rank.Ten,Suit.Clubs))
 
+        "get the correct getPlayerNumberStateString" in {
+            tui.getPlayerNumberStateString() should be ("")
+        }
+
+        "get the correct getPlayerNamesStateString" in {
+            tui.getPlayerNamesStateString() should be ("")
+        }
+
         "get the correct GameplayStateString" in {
             gameController.updateCurrentPlayer()
             tui.getGameplayStateString() should be ("Trick:\n|     |     |     |     |\nAlice please select card to play:\n|  1  |\n| 2 ♣ |\n")
@@ -33,7 +41,12 @@ class TuiSpec extends AnyWordSpec with Matchers {
             tui.getGameplayStateString() should be ("Trick:\n| 2 ♣ |     |     |     |\nDave please select card to play:\n|  1  |\n| A ♣ |\n")
             gameController.playCard(2)
             tui.getGameplayStateString() should be ("Trick:\n| 2 ♣ |     |     |     |\nDave please select card to play:\n|  1  |\n| A ♣ |\n")
-            }
+        }
+
+
+        "get the correct getGameOverStateString" in {
+            tui.getGameOverStateString() should be ("")
+        }
     }
 
 }

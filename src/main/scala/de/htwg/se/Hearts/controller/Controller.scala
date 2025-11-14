@@ -68,7 +68,7 @@ class Controller(game: Game) extends Observable() {
     def completeTrickString(): String = {
         var string = game.trick.trickToString()
         for(i <- 1 to game.players.size - game.trick.cards.size)
-            string += "     |"
+            string ++= "     |"
         string
     }
 
