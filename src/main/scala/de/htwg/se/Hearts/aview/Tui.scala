@@ -1,6 +1,5 @@
 package de.htwg.se.Hearts.aview
 
-import de.htwg.se.Hearts.model.Game
 import de.htwg.se.Hearts.controller
 
 import scala.io.StdIn.readLine
