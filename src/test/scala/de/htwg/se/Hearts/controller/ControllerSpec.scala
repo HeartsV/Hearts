@@ -24,9 +24,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             game.addPlayer(p1)
             game.currentPlayer = Some(p1)
             val gameController = Controller(game)
-            p1.hand +=(card1,card2)
+            p1.hand ++= List(card1,card2)
             gameController.processInput("a") should be (false)
             gameController.processInput("1") should be (true)
+            game.firstCard should be (false)
         }
 
         "play cards only if input is valid" in{
@@ -35,7 +36,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val game = Game()
             game.firstCard = false
             game.addPlayer(p1)
-            p1.hand +=(card1,card2)
+            p1.hand ++= List(card1,card2)
             game.currentPlayer = Some(p1)
             val gameController = Controller(game)
             gameController.playCard(3) should be (false)
@@ -55,8 +56,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val game = Game()
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand += (card1,card2)
-            p2.hand += (card3,card4)
+            p1.hand ++= List(card1,card2)
+            p2.hand ++= List(card3,card4)
             game.firstCard = false
             game.currentPlayer = Some(p1)
             val gameController = Controller(game)
@@ -72,8 +73,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val game = Game()
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand += (card1,card5)
-            p2.hand += (card5,card6)
+            p1.hand ++= List(card1,card5)
+            p2.hand ++= List(card5,card6)
             game.firstCard = false
             game.currentPlayer = Some(p1)
             val gameController = Controller(game)
@@ -92,8 +93,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val gameController = Controller(game)
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand += (card1,card5)
-            p2.hand += (card3,card6)
+            p1.hand ++= List(card1,card5)
+            p2.hand ++= List(card3,card6)
             gameController.updateCurrentPlayer()
             gameController.addCard(card1)
             gameController.updateCurrentWinner() should be (true)
@@ -112,8 +113,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val game = Game()
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand += (card3,card5)
-            p2.hand += (card1,card6)
+            p1.hand ++= List(card3,card5)
+            p2.hand ++= List(card1,card6)
             game.currentPlayer = Some(p1)
             game.firstCard = false
             val gameController = Controller(game)
@@ -174,8 +175,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val game = Game()
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand += (card1,card2)
-            p2.hand += (card3,card4)
+            p1.hand ++= List(card1,card2)
+            p2.hand ++= List(card3,card4)
             game.currentPlayer = Some(p1)
             game.firstCard = false
             val gameController = Controller(game)
@@ -196,7 +197,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val gameController = Controller(game)
             val p1 = Player(name = "Alice")
             game.currentPlayer = Some(p1)
-            p1.hand += (card1,card2)
+            p1.hand ++= List(card1,card2)
             gameController.getCurrentPlayerHand() should be ("|  1  |  2  |\n| 2 \u2663 | 2 \u2666 |")
         }
         "get the name of current player" in{
@@ -212,10 +213,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val gameController = Controller(game)
             val p1 = Player("Alice")
             val p2 = Player("Dave")
+            p1.hand ++= List(card1,card6)
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand += (card1,card6)
-            p2.hand += (card3,card5)
+            p2.hand ++= List(card3,card5)
             gameController.updateCurrentPlayer() should be (true)
             game.currentPlayer should be (Some(p1))
             game
@@ -228,8 +229,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val p2 = Player("Dave")
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand += (card1,card6)
-            p2.hand += (card3,card5)
+            p1.hand ++= List(card1,card6)
+            p2.hand ++= List(card3,card5)
             gameController.updateCurrentPlayer()
             game.firstCard = false
             gameController.updateCurrentPlayer()
@@ -243,13 +244,13 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val p2 = Player("Dave")
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand += (card1,card6)
-            p2.hand += (card3,card5)
+            p1.hand ++= List(card1,card6)
+            p2.hand ++= List(card3,card5)
             game.trick.currentWinner = Some(p2)
             gameController.updateCurrentPlayer()
             game.firstCard = false
             gameController.updateCurrentPlayer()
-            game.trick.cards += (card1,card2)
+            game.trick.cards ++= List(card1,card2)
             gameController.updateCurrentPlayer()
             game.currentPlayer should be (Some(p2))
         }
@@ -262,8 +263,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             game.firstCard = false
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand += (card1,card6)
-            p2.hand += (card3,card5)
+            p1.hand ++= List(card1,card6)
+            p2.hand ++= List(card3,card5)
             game.currentPlayer = Some(p2)
             gameController.updateCurrentPlayer()
             game.currentPlayer should be (Some(p1))

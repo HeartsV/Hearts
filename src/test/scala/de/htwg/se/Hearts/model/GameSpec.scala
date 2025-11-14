@@ -10,7 +10,7 @@ class GameSpec extends AnyWordSpec with Matchers {
     val p2 = Player("Bob")
     val card1 = Card(Rank.Two,Suit.Clubs)
     val card2 = Card(Rank.Two,Suit.Diamonds)
-    p1.hand += (card1)
+    p1.hand ++= List(card1)
 
     "add player" in{
         val game = Game()

@@ -16,12 +16,12 @@ class Player(val name: String) {
         var handString = "|"
 
         for(i <- 1 to hand.size )
-            handString += ("  " + i.toString().padTo(2, ' ') +  " ")
-            handString += "|"
+            handString ++= ("  " + i.toString().padTo(2, ' ') +  " ")
+            handString ++= "|"
         handString += "\n|"
 
         for(element<-hand)
-            handString += (" " + element.toString +  " ")
-            handString += "|"
+            handString ++= (" " + element.toString +  " ")
+            handString ++= "|"
         handString
 }

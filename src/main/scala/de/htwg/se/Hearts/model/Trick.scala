@@ -8,7 +8,7 @@ class Trick {
     var currentWinner: Option[Player] = None
     var firstPlayer: Option[Player] = None
 
-    def addCard(newCard: Card): Boolean = { 
+    def addCard(newCard: Card): Boolean = {
         cards.addOne(newCard)
         true
     }
@@ -30,8 +30,8 @@ class Trick {
     def trickToString(): String = {
         var trickString = "|"
         for(element<-cards)
-            trickString += (" " + element.toString +  " ")
-            trickString += "|"
+            trickString ++= (" " + element.toString +  " ")
+            trickString ++= "|"
         trickString
     }
 }

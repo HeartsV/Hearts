@@ -8,8 +8,6 @@ import scala.compiletime.ops.boolean
 class Controller(game: Game) extends Observable() {
 
     def processInput(input: String): Boolean  = {
-        if(game.firstCard == true)
-            updateCurrentPlayer()
         if(input.toIntOption.exists(index => playCard(index)))
             if(game.firstCard == true) game.firstCard = false
             updateCurrentWinner()
