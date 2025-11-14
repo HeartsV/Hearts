@@ -28,6 +28,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             gameController.processInput("a") should be (false)
             gameController.processInput("1") should be (true)
             game.firstCard should be (false)
+            gameController.processInput("1")
+            
         }
 
         "play cards only if input is valid" in{
