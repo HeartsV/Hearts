@@ -27,11 +27,5 @@ class Trick {
         true
     }
 
-    def trickToString(): String = {
-        var trickString = "|"
-        for(element<-cards)
-            trickString ++= (" " + element.toString +  " ")
-            trickString ++= "|"
-        trickString
-    }
+    def trickToString(): String = cards.map(card => s" $card ").mkString("|", "|", "|")
 }
