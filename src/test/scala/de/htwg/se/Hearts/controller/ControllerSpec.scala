@@ -6,8 +6,6 @@ import de.htwg.se.Hearts.model.*
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A Controller" should {
-        val p3 = Player("Charlie")
-        val p4 = Player("David")
         val card1 = Card(Rank.Two,Suit.Clubs)
         val card2 = Card(Rank.Two,Suit.Diamonds)
         val card3 = Card(Rank.Ace,Suit.Clubs)
@@ -63,7 +61,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             game.currentPlayer = Some(p1)
             val gameController = Controller(game)
             gameController.addCard(card1) should be (true)
-            game.updateCurrentPlayer()
+            gameController.updateCurrentPlayer()
             gameController.addCard(card4) should be (false)
             gameController.addCard(card3) should be (true)
         }
@@ -81,7 +79,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val gameController = Controller(game)
             gameController.addCard(card5) should be (false)
             gameController.addCard(card1) should be (true)
-            game.updateCurrentPlayer()
+            gameController.updateCurrentPlayer()
             game.startWithHearts should be (false)
             gameController.addCard(card6) should be (true)
             game.startWithHearts should be (true)
@@ -91,21 +89,21 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val p1 = Player("Alice")
             val p2 = Player("Dave")
             val game = Game()
+            val gameController = Controller(game)
             game.addPlayer(p1)
             game.addPlayer(p2)
             p1.hand += (card1,card5)
             p2.hand += (card3,card6)
-            game.updateCurrentPlayer()
-            val gameController = Controller(game)
+            gameController.updateCurrentPlayer()
             gameController.addCard(card1)
             gameController.updateCurrentWinner() should be (true)
             game.firstCard = false
             game.trick.currentWinner should be (Some(p1))
-            game.updateCurrentPlayer()
+            gameController.updateCurrentPlayer()
             gameController.addCard(card3)
             gameController.updateCurrentWinner() should be (true)
             game.trick.currentWinner should be (Some(p2))
-            game.updateCurrentPlayer()
+            gameController.updateCurrentPlayer()
         }
 
         "not update current winner when unnecessary" in {
@@ -121,7 +119,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val gameController = Controller(game)
             gameController.addCard(card3)
             gameController.updateCurrentWinner()
-            game.updateCurrentPlayer()
+            gameController.updateCurrentPlayer()
             gameController.addCard(card1)
             gameController.updateCurrentWinner() should be (false)
         }
@@ -183,10 +181,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val gameController = Controller(game)
             gameController.playCard(1)
             gameController.updateCurrentWinner()
-            game.updateCurrentPlayer()
+            gameController.updateCurrentPlayer()
             gameController.playCard(1)
             gameController.updateCurrentWinner()
-            game.updateCurrentPlayer()
+            gameController.updateCurrentPlayer()
             game.currentPlayer should be (Some(p2))
             gameController.playCard(1)
             game.players(1).wonCards should be (List(card1,card3))
@@ -209,8 +207,70 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             gameController.getCurrentPlayerName() should be ("Alice")
         }
 
+        "update current player for first card" in {
+            val game = Game()
+            val gameController = Controller(game)
+            val p1 = Player("Alice")
+            val p2 = Player("Dave")
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            p1.hand += (card1,card6)
+            p2.hand += (card3,card5)
+            gameController.updateCurrentPlayer() should be (true)
+            game.currentPlayer should be (Some(p1))
+            game
+        }
+
+        "update current player for normal case" in  {
+            val game = Game()
+            val gameController = Controller(game)
+            val p1 = Player("Alice")
+            val p2 = Player("Dave")
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            p1.hand += (card1,card6)
+            p2.hand += (card3,card5)
+            gameController.updateCurrentPlayer()
+            game.firstCard = false
+            gameController.updateCurrentPlayer()
+            game.currentPlayer should be (Some(p2))
+        }
+
+        "update current player when trick is full" in{
+            val game = Game()
+            val gameController = Controller(game)
+            val p1 = Player("Alice")
+            val p2 = Player("Dave")
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            p1.hand += (card1,card6)
+            p2.hand += (card3,card5)
+            game.trick.currentWinner = Some(p2)
+            gameController.updateCurrentPlayer()
+            game.firstCard = false
+            gameController.updateCurrentPlayer()
+            game.trick.cards += (card1,card2)
+            gameController.updateCurrentPlayer()
+            game.currentPlayer should be (Some(p2))
+        }
+
+        "loop over list of players" in {
+            val game = Game()
+            val gameController = Controller(game)
+            val p1 = Player("Alice")
+            val p2 = Player("Dave")
+            game.firstCard = false
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            p1.hand += (card1,card6)
+            p2.hand += (card3,card5)
+            game.currentPlayer = Some(p2)
+            gameController.updateCurrentPlayer()
+            game.currentPlayer should be (Some(p1))
+        }
+
         "check if the game is over" in{
-            
+
         }
     }
 }

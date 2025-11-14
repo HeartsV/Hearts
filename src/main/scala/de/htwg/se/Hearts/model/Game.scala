@@ -16,15 +16,4 @@ class Game () {
     players.addOne(player)
     true
   }
-
-  def updateCurrentPlayer(): Unit = {
-    if (firstCard == true)
-      currentPlayer = players.find(_.hand.contains(Card(Rank.Two,Suit.Clubs)))
-    else if(players.size == trick.cards.size)
-      currentPlayer = trick.currentWinner
-    else if(players.indexOf(currentPlayer.get) + 1 == players.size)
-      currentPlayer = Some(players(0))
-    else
-      currentPlayer = Some(players((players.indexOf(currentPlayer.get) + 1)))
-  }
 }

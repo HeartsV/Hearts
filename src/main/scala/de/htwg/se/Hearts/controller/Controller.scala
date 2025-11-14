@@ -2,17 +2,18 @@ package de.htwg.se.Hearts.controller
 
 import de.htwg.se.Hearts.model.*
 import scala.collection.mutable.ListBuffer
+import scala.compiletime.ops.boolean
 
 
 class Controller(game: Game) extends Observable() {
 
     def processInput(input: String): Boolean  = {
         if(game.firstCard == true)
-            game.updateCurrentPlayer()
+            updateCurrentPlayer()
         if(input.toIntOption.exists(index => playCard(index)))
             if(game.firstCard == true) game.firstCard = false
             updateCurrentWinner()
-            game.updateCurrentPlayer()
+            updateCurrentPlayer()
             notifyObservers
             true
         else
@@ -30,7 +31,6 @@ class Controller(game: Game) extends Observable() {
             true
         else
             false
-
     }
 
     def addCard(newCard: Card): Boolean = {
@@ -65,7 +65,6 @@ class Controller(game: Game) extends Observable() {
             true
         else
             false
-
     }
 
     def completeTrickString(): String = {
@@ -73,8 +72,22 @@ class Controller(game: Game) extends Observable() {
         for(i <- 1 to game.players.size - game.trick.cards.size)
             string += "     |"
         string
-
     }
+
+    def updateCurrentPlayer(): Boolean = {
+    if (game.firstCard == true)
+      game.currentPlayer = game.players.find(_.hand.contains(Card(Rank.Two,Suit.Clubs)))
+      true
+    else if(game.players.size == game.trick.cards.size)
+      game.currentPlayer = game.trick.currentWinner
+      true
+    else if(game.players.indexOf(game.currentPlayer.get) + 1 == game.players.size)
+      game.currentPlayer = Some(game.players(0))
+      true
+    else
+      game.currentPlayer = Some(game.players((game.players.indexOf(game.currentPlayer.get) + 1)))
+      true
+  }
 
     def getCurrentPlayerHand(): String = game.currentPlayer.get.handToString()
 

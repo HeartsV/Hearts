@@ -29,9 +29,8 @@ class Tui(gameController: Controller)  extends Observer{
 
 
 	def runGame(): Unit =
-		gameController.processInput("-1")
+		gameController.updateCurrentPlayer()
+		update()
 		while (!gameController.checkGameOver())
 			gameController.processInput(readLine())
-
-
 }

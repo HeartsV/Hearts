@@ -19,47 +19,5 @@ class GameSpec extends AnyWordSpec with Matchers {
         game.addPlayer(p2)
         game.players should be (ListBuffer[Player](p1,p2))
     }
-
-    "update current player for first card" in {
-        val game = Game()
-        game.addPlayer(p1)
-        game.addPlayer(p2)
-        game.updateCurrentPlayer()
-        game.currentPlayer should be (Some(p1))
-    }
-
-    "update current player for normal case" in  {
-        val game = Game()
-        game.addPlayer(p1)
-        game.addPlayer(p2)
-        game.updateCurrentPlayer()
-        game.firstCard = false
-        game.updateCurrentPlayer()
-        game.currentPlayer should be (Some(p2))
-
-    }
-
-    "update current player when trick is full" in{
-        val game = Game()
-        game.addPlayer(p1)
-        game.addPlayer(p2)
-        game.trick.currentWinner = Some(p2)
-        game.updateCurrentPlayer()
-        game.firstCard = false
-        game.updateCurrentPlayer()
-        game.trick.cards += (card1,card2)
-        game.updateCurrentPlayer()
-        game.currentPlayer should be (Some(p2))
-    }
-
-    "loop over list of players" in {
-        val game = Game()
-        game.firstCard = false
-        game.addPlayer(p1)
-        game.addPlayer(p2)
-        game.currentPlayer = Some(p2)
-        game.updateCurrentPlayer()
-        game.currentPlayer should be (Some(p1))
-    }
   }
 }

@@ -16,7 +16,6 @@ class TuiSpec extends AnyWordSpec with Matchers {
         val p3 = Player("Charlie")
         val p4 = Player("David")
         game.addPlayer(p1)
-        game.currentPlayer = Some(p1)
         game.addPlayer(p2)
         game.addPlayer(p3)
         game.addPlayer(p4)
@@ -25,15 +24,15 @@ class TuiSpec extends AnyWordSpec with Matchers {
         p3.hand +=(Card(Rank.Jack,Suit.Clubs))
         p4.hand +=(Card(Rank.Ten,Suit.Clubs))
 
-        "get the correct GameplayStateString (it doesn't test anything right now, because its commented out and replaced by always true test)" in {/*
-            gameController.processInput("1")
+        "get the correct GameplayStateString" in {
+            gameController.updateCurrentPlayer()
             tui.getGameplayStateString() should be ("Trick:\n|     |     |     |     |\nAlice please select card to play:\n|  1  |\n| 2 ♣ |\n")
             gameController.playCard(1)
-            game.updateCurrentPlayer()
+            game.firstCard = false
+            gameController.updateCurrentPlayer()
             tui.getGameplayStateString() should be ("Trick:\n| 2 ♣ |     |     |     |\nDave please select card to play:\n|  1  |\n| A ♣ |\n")
             gameController.playCard(2)
-            tui.getGameplayStateString() should be ("Trick:\n| 2 ♣ |     |     |     |\nDave please select card to play:\n|  1  |\n| A ♣ |\n")*/
-            true should be (true)
+            tui.getGameplayStateString() should be ("Trick:\n| 2 ♣ |     |     |     |\nDave please select card to play:\n|  1  |\n| A ♣ |\n")
             }
     }
 
