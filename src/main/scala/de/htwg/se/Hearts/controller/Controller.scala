@@ -65,12 +65,7 @@ class Controller(game: Game) extends Observable() {
             false
     }
 
-    def completeTrickString(): String = {
-        var string = game.trick.trickToString()
-        for(i <- 1 to game.players.size - game.trick.cards.size)
-            string ++= "     |"
-        string
-    }
+    def completeTrickString(): String = game.trick.trickToString()  + "     |" * (game.players.size - game.trick.cards.size)
 
     def updateCurrentPlayer(): Boolean = {
     if (game.firstCard == true)

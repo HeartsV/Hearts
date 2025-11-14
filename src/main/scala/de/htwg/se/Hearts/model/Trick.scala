@@ -8,24 +8,24 @@ class Trick {
     var currentWinner: Option[Player] = None
     var firstPlayer: Option[Player] = None
 
-    def addCard(newCard: Card): Boolean = {
+    def addCard(newCard: Card): Boolean =
         cards.addOne(newCard)
         true
-    }
 
-    def initializeTrick(player: Player, card: Card) = {
+    def initializeTrick(player: Player, card: Card) =
         highestCard = Some(card)
         firstPlayer = Some(player)
         currentWinner = Some(player)
-    }
 
-    def clearTrick(): Boolean ={
+    def clearTrick(): Boolean =
         cards.clear()
         highestCard = None
         currentWinner = None
         firstPlayer = None
         true
-    }
 
-    def trickToString(): String = cards.map(card => s" $card ").mkString("|", "|", "|")
+    def trickToString(): String =
+        if(!(cards == ListBuffer()))cards.map(card => s" $card ").mkString("|","|","|")
+        else "|"
+
 }
