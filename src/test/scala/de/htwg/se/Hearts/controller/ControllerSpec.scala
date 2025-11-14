@@ -29,7 +29,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             gameController.processInput("1") should be (true)
             game.firstCard should be (false)
             gameController.processInput("1")
-            
+
         }
 
         "play cards only if input is valid" in{
@@ -273,7 +273,11 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         }
 
         "check if the game is over" in{
-
+            val game = Game()
+            val gameController = Controller(game)
+            gameController.checkGameOver() should be (false)
+            game.gameOver = true
+            gameController.checkGameOver() should be (true)
         }
     }
 }
