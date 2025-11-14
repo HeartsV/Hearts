@@ -8,11 +8,13 @@ lazy val root = project
     name := "HeartsV",
     version := "0.1.0-SNAPSHOT",
 
-    
+
     scalaVersion := scala3Version,
     coverageEnabled := true,
     fork in Test := true,
     Test / javaOptions += "-Djava.awt.headless=true",
+
+    scalacOptions ++= Seq("-deprecation", "-feature"),
 
     libraryDependencies ++= Seq(
       "org.scalactic" %% "scalactic" % "3.2.19",
