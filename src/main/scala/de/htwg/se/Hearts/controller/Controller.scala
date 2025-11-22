@@ -86,7 +86,7 @@ class Controller(game: Game) extends Observable() {
 
     def getGame(): Game = game
 
-    def GetPlayerNumber(): Option[Int] = game.playerNumber
+    def getPlayerNumber(): Option[Int] = game.playerNumber
 
-    def SetPlayerNumber(number: Int): Unit = game.playerNumber = Some(number)
+    def setPlayerNumber(number: Int): Unit = game.playerNumber = Some(number)
 }

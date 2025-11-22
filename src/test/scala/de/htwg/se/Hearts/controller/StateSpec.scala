@@ -28,5 +28,5 @@ class StateSpec extends AnyWordSpec with Matchers{
             game.firstCard should be (false)
             gameController.processInput("1")
         }
-    }
+    } 
 }

@@ -262,5 +262,28 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             game.gameOver = true
             gameController.checkGameOver() should be (true)
         }
+
+        "check if getGame gets a game" in{
+            val game = Game()
+            val gameController = Controller(game)
+            gameController.getGame() should be (game)
+        }
+
+        "check if getPlayerNumber gets a playerNumber" in {
+            val game = Game()
+            val gameController = Controller(game)
+            game.playerNumber = Some(2)
+            gameController.getPlayerNumber() should be (Some(2))
+
+        }
+
+        "check if setPlayerNumber sets the playerNumber" in {
+            val game = Game()
+            val gameController = Controller(game)
+            gameController.setPlayerNumber(3)
+            game.playerNumber should be (Some(3))
+
+        }
+
     }
 }
