@@ -7,16 +7,12 @@ import scala.compiletime.ops.boolean
 
 class Controller(game: Game) extends Observable() {
 
+    var state = GamePlayState(this)
+
+    def getGame(): Game = game
+
     def processInput(input: String): Boolean  = {
-        if(input.toIntOption.exists(index => playCard(index)))
-            if(game.firstCard == true) game.firstCard = false
-            updateCurrentWinner()
-            updateCurrentPlayer()
-            notifyObservers
-            true
-        else
-            notifyObservers
-            false
+        state.processInput(input)
     }
 
 
