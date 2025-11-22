@@ -2,9 +2,11 @@ package de.htwg.se.Hearts.model
 
 import scala.compiletime.ops.boolean
 import scala.collection.mutable.ListBuffer
+import scala.compiletime.ops.int
 
 
 class Game () {
+  var playerNumber: Option[Int] = None
   var startWithHearts: Boolean = false
   var gameOver: Boolean = false
   var firstCard: Boolean = true

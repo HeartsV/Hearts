@@ -9,7 +9,14 @@ class Controller(game: Game) extends Observable() {
 
     var state:State = GamePlayState(this)
 
-    def processInput(input: String): Boolean = state.processInput(input)
+    def processInput(input: String): Boolean =
+        if(state.processInput(input))
+            notifyObservers
+            true
+        else
+            notifyObservers
+            false
+
 
     def changeState(newState:State): Unit = state = newState
 
@@ -78,4 +85,8 @@ class Controller(game: Game) extends Observable() {
     def checkGameOver(): Boolean = game.gameOver
 
     def getGame(): Game = game
+
+    def GetPlayerNumber(): Option[Int] = game.playerNumber
+
+    def SetPlayerNumber(number: Int): Unit = game.playerNumber = Some(number)
 }
