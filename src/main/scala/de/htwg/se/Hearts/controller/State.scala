@@ -6,13 +6,12 @@ trait State(controller: Controller) {
 
 class GetPlayerNumberState(controller:Controller) extends State(controller:Controller) {
     def processInput(input: String): Boolean =
-        if(input.toIntOption.exists(intInput => 3 >= intInput && intInput <= 4))
+        if(input.toIntOption.exists(intInput => intInput >= 3 && intInput <= 4))
             controller.setPlayerNumber(input.toInt)
             controller.changeState(GetPlayerNamesState(controller))
             true
         else
             false
-
 }
 
 class GetPlayerNamesState(controller:Controller) extends State(controller:Controller) {
