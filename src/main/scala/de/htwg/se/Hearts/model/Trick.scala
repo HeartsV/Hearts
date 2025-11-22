@@ -25,7 +25,7 @@ class Trick {
         true
 
     def trickToString(): String =
-        if(!(cards == ListBuffer()))cards.map(card => s" $card ").mkString("|","|","|")
+        if(!(cards == ListBuffer())) cards.map(card => s" $card ").mkString("|","|","|")
         else "|"
 
 }

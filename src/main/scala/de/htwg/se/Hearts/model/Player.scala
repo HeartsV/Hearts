@@ -12,15 +12,6 @@ class Player(val name: String) {
         true
 
     def handToString(): String =
-        var handString = "|"
-
-        for(i <- 1 to hand.size )
-            handString ++= ("  " + i.toString().padTo(2, ' ') +  " ")
-            handString ++= "|"
-        handString += "\n|"
-
-        for(element<-hand)
-            handString ++= (" " + element.toString +  " ")
-            handString ++= "|"
-        handString
+        (1 to hand.size).map(index => s"  $index".padTo(5, ' ')).mkString("|", "|", "|") + "\n" +
+        hand.map(card => s" $card ").mkString("|", "|", "|")
 }

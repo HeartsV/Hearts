@@ -13,7 +13,7 @@ class Controller(game: Game) extends Observable() {
 
     def changeState(newState:State): Unit = state = newState
 
-    def playCard(index : Int) : Boolean =
+    def playCard(index: Int): Boolean =
         if(game.trick.cards.size == game.players.size)
             game.currentPlayer.get.wonCards.addAll(game.trick.cards)
             game.trick.clearTrick()

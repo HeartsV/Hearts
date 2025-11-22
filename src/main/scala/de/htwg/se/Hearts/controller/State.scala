@@ -1,11 +1,8 @@
 package de.htwg.se.Hearts.controller
 
-trait  State(controller: Controller) {
+trait State(controller: Controller) {
     def processInput(input:String):Boolean
-
-
 }
-
 
 class GamePlayState(controller: Controller) extends State(controller:Controller) {
     def processInput(input:String):Boolean =
