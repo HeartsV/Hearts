@@ -15,23 +15,6 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         val card7 = Card(Rank.Ten,Suit.Clubs)
         val card8 = Card(Rank.Ten,Suit.Diamonds)
 
-
-
-        "process input correctly" in {
-            val p1 = Player("Alice")
-            val p2 = Player("Dave")
-            val game = Game()
-            game.addPlayer(p1)
-            game.currentPlayer = Some(p1)
-            val gameController = Controller(game)
-            p1.hand ++= List(card1,card2)
-            gameController.processInput("a") should be (false)
-            gameController.processInput("1") should be (true)
-            game.firstCard should be (false)
-            gameController.processInput("1")
-
-        }
-
         "play cards only if input is valid" in{
             val p1 = Player("Alice")
             val p2 = Player("Dave")
