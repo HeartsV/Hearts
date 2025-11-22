@@ -9,15 +9,11 @@ class Controller(game: Game) extends Observable() {
 
     var state:State = GamePlayState(this)
 
-    def processInput(input: String): Boolean  = {
-        state.processInput(input)
-    }
+    def processInput(input: String): Boolean = state.processInput(input)
 
-    def changeState(newState:State): Unit = {
-        state = newState
-    }
+    def changeState(newState:State): Unit = state = newState
 
-    def playCard(index : Int) : Boolean = {
+    def playCard(index : Int) : Boolean =
         if(game.trick.cards.size == game.players.size)
             game.currentPlayer.get.wonCards.addAll(game.trick.cards)
             game.trick.clearTrick()
@@ -26,9 +22,9 @@ class Controller(game: Game) extends Observable() {
             true
         else
             false
-    }
 
-    def addCard(newCard: Card): Boolean = {
+
+    def addCard(newCard: Card): Boolean =
         if(game.firstCard == true)
             if(newCard  == (Card(Rank.Two,Suit.Clubs)))
                 game.trick.addCard(newCard)
@@ -51,20 +47,17 @@ class Controller(game: Game) extends Observable() {
                 game.trick.initializeTrick(game.currentPlayer.get,newCard)
                 true
 
-    }
-
-    def updateCurrentWinner(): Boolean = {
+    def updateCurrentWinner(): Boolean =
         if(game.trick.highestCard == None || game.trick.highestCard.exists(card => card.suit == game.trick.cards.last.suit && game.trick.cards.last.rank.compare(card.rank) > 0))
             game.trick.highestCard = Some(game.trick.cards.last)
             game.trick.currentWinner = Some(game.currentPlayer.get)
             true
         else
             false
-    }
 
     def completeTrickString(): String = game.trick.trickToString()  + "     |" * (game.players.size - game.trick.cards.size)
 
-    def updateCurrentPlayer(): Boolean = {
+    def updateCurrentPlayer(): Boolean =
     if (game.firstCard == true)
       game.currentPlayer = game.players.find(_.hand.contains(Card(Rank.Two,Suit.Clubs)))
       true
@@ -77,7 +70,6 @@ class Controller(game: Game) extends Observable() {
     else
       game.currentPlayer = Some(game.players((game.players.indexOf(game.currentPlayer.get) + 1)))
       true
-  }
 
     def getCurrentPlayerHand(): String = game.currentPlayer.get.handToString()
 

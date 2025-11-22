@@ -8,7 +8,7 @@ trait  State(controller: Controller) {
 
 
 class GamePlayState(controller: Controller) extends State(controller:Controller) {
-    def processInput(input:String):Boolean = {
+    def processInput(input:String):Boolean =
         if(input.toIntOption.exists(index => controller.playCard(index)))
             if(controller.getGame().firstCard == true) controller.getGame().firstCard = false
             controller.updateCurrentWinner()
@@ -18,6 +18,4 @@ class GamePlayState(controller: Controller) extends State(controller:Controller)
         else
             controller.notifyObservers
             false
-
-    }
 }
