@@ -7,10 +7,9 @@ class Player(val name: String) {
     val hand: ListBuffer[Card] = ListBuffer()
     val wonCards:ListBuffer[Card] = ListBuffer()
 
-    def removeCard(index : Int) : Boolean = {
+    def removeCard(index : Int) : Boolean =
         hand.remove(index-1)
         true
-    }
 
     def handToString(): String =
         var handString = "|"

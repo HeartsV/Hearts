@@ -12,8 +12,7 @@ class Game () {
   var currentPlayer: Option[Player] = None
   val trick = Trick()
 
-  def addPlayer(player: Player): Boolean = {
+  def addPlayer(player: Player): Boolean =
     players.addOne(player)
     true
-  }
 }
