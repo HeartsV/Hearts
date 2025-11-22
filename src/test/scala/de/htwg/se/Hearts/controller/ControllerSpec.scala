@@ -285,5 +285,13 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
         }
 
+        "be able to change states" in {
+            val game = Game()
+            val gameController = Controller(game)
+            val state = GetPlayerNumberState(gameController)
+            gameController.changeState(state)
+            gameController.state should be(state)
+        }
+
     }
 }
