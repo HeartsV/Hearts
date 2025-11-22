@@ -7,14 +7,15 @@ import scala.compiletime.ops.boolean
 
 class Controller(game: Game) extends Observable() {
 
-    var state = GamePlayState(this)
-
-    def getGame(): Game = game
+    var state:State = GamePlayState(this)
 
     def processInput(input: String): Boolean  = {
         state.processInput(input)
     }
 
+    def changeState(newState:State): Unit = {
+        state = newState
+    }
 
     def playCard(index : Int) : Boolean = {
         if(game.trick.cards.size == game.players.size)
@@ -83,4 +84,6 @@ class Controller(game: Game) extends Observable() {
     def getCurrentPlayerName(): String = game.currentPlayer.get.name
 
     def checkGameOver(): Boolean = game.gameOver
+
+    def getGame(): Game = game
 }
