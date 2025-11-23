@@ -16,6 +16,31 @@ class StateSpec extends AnyWordSpec with Matchers{
         val card7 = Card(Rank.Ten,Suit.Clubs)
         val card8 = Card(Rank.Ten,Suit.Diamonds)
 
+        "process input for TitleScreen correctly" in {
+            val game = Game()
+            val gameController = Controller(game)
+            gameController.state = TitleScreen(gameController)
+            gameController.processInput("") should be (true)
+        }
+        "process input for MainScreen correctly" in {
+            val game = Game()
+            val gameController = Controller(game)
+            gameController.state = GetPlayerNumberState(gameController)
+            gameController.processInput("n") should be (true)
+            gameController.processInput("r") should be (true)
+            gameController.processInput("e") should be (true)
+            gameController.processInput("") should be (false)
+        }
+        "process input for TitleScreen correctly" in {
+            val game = Game()
+            val gameController = Controller(game)
+            gameController.state = TitleScreen(gameController)
+            gameController.processInput("") should be (false)
+            gameController.state should be (RulesScreen(gameController))
+            gameController.processInput("b") should be (true)
+            gameController.state should be (MainScreen(gameController))
+        }
+
         "process input for GetPlayerNumberState correctly" in {
             val game = Game()
             val gameController = Controller(game)
@@ -28,11 +53,30 @@ class StateSpec extends AnyWordSpec with Matchers{
         }
 
         "process input for GetPlayerNamesState correctly" in {
-
+            val game = Game()
+            val gameController = Controller(game)
+            gameController.state = GetPlayerNamesState(gameController)
+            game.playerNumber = Some(3)
+            gameController.processInput("Alice") should be (true)
+            game.players should contain (Player("Alice"))
+            gameController.processInput("") should be (true)
+            game.players should contain (Player("P2"))
+            gameController.processInput("     ") should be (true)
+            game.players should contain (Player("P3"))
+            game.players.size should equal (game.playerNumber.get)
         }
 
         "process input for SetMaxScoreState correctly" in {
-
+            val game = Game()
+            val gameController = Controller(game)
+            gameController.state = SetMaxScoreState(gameController)
+            gameController.processInput("0") should be (false)
+            gameController.processInput("") should be (true)
+            game.maxScore should be (Some(100))
+            gameController.processInput("1") should be (true)
+            game.maxScore should be (Some(1))
+            gameController.processInput("100") should be (true)
+            game.maxScore should be (Some(100))
         }
 
         "process input for GamePlayState correctly" in {
@@ -42,6 +86,7 @@ class StateSpec extends AnyWordSpec with Matchers{
             game.addPlayer(p1)
             game.currentPlayer = Some(p1)
             val gameController = Controller(game)
+            gameController.state = GamePlayState(gameController)
             p1.hand ++= List(card1,card2)
             gameController.processInput("a") should be (false)
             gameController.processInput("1") should be (true)
@@ -49,7 +94,24 @@ class StateSpec extends AnyWordSpec with Matchers{
             gameController.processInput("1")
         }
 
-        "process input for GameOverState correctly" in {}
+        "process input for GameOverState correctly" in {
+            val game = Game()
+            val gameController = Controller(game)
+            gameController.state = GameOverState(gameController)
+            gameController.processInput("a") should be (true)
+            gameController.state should be (GamePlayState(gameController))
+            gameController.state = GameOverState(gameController)
+            gameController.processInput("n") should be (true)
+            gameController.state should be (GetPlayerNumberState(gameController))
+            gameController.state = GameOverState(gameController)
+            gameController.processInput("q") should be (true)
+            gameController.state should be (MainScreen(gameController))
+            gameController.state = GameOverState(gameController)
+            gameController.processInput("e") should be (true)
+            gameController.state = GameOverState(gameController)
+            gameController.processInput("") should be (false)
+            gameController.state should be (GameOverState(gameController))
+        }
     }
 
 }
