@@ -7,22 +7,14 @@ trait State(controller: Controller) {
     def getStateString():String
 }
 
-class TitleScreenState(controller: Controller) extends State(controller: Controller){
-    def processInput(input: String): Boolean =
-        
-        true
-
-    def getStateString(): String = "TitleScreenState"
-}
 class MainScreenState(controller: Controller) extends State(controller: Controller){
     def processInput(input: String): Boolean =
         input.toLowerCase().trim match{
         case "newgame"| "n" =>
-            //ein spiel wird gestartet, bzw. man kommt in die settings für ein neues game
             controller.changeState(GetPlayerNumberState(controller))
             true
         case "rules"|"r" =>
-            //Regeln, Punkte vergabe, ...
+            controller.changeState(RulesScreenState(controller))
             true
         case "exit"|"e" =>
             //Programm beenden, eventuell nehmen wir das raus?!
@@ -63,12 +55,12 @@ class GetPlayerNamesState(controller: Controller) extends State(controller: Cont
     def processInput(input: String): Boolean =
         if(!input.equals(""))
             controller.getGame().addPlayer(Player(input))
-            true
-        else if(input.equals(""))
-            controller.getGame().addPlayer(Player(s"P${controller.getGame().players.size + 1}"))
-            true
         else
-            false
+            controller.getGame().addPlayer(Player(s"P${controller.getGame().players.size + 1}"))
+        if(controller.getGame().players.size == controller.getGame().playerNumber.get)
+            controller.changeState(SetMaxScoreState(controller))
+        true
+    
 
     def getStateString(): String = "GetPlayerNamesState"
 }
@@ -77,9 +69,11 @@ class SetMaxScoreState(controller: Controller) extends State(controller: Control
     def processInput(input: String): Boolean =
         if(input.toIntOption.exists(intInput => intInput >= 1 ))
             controller.getGame().maxScore = Some(input.toInt)
+            controller.changeState(GamePlayState(controller))
             true
         else if(input.trim.equals(""))
             controller.getGame().maxScore = Some(100)
+            controller.changeState(GamePlayState(controller))
             true
         else
             false
@@ -93,12 +87,21 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
             if(controller.getGame().firstCard == true) controller.getGame().firstCard = false
             controller.updateCurrentWinner()
             controller.updateCurrentPlayer()
+            if(controller.getGame().currentPlayer.get.hand.size == 0)
+                controller.changeState(ShowScoreState(controller))
             true
         else
             false
     
     def getStateString(): String = "GamePlayState"
 }
+
+class ShowScoreState(controller: Controller) extends State(controller: Controller) {
+    def processInput(input: String): Boolean = ??? //reset cards and go to gameplayState
+
+    def getStateString(): String = "ShowScoreState"
+}
+
 
 class GameOverState(controller: Controller) extends State(controller: Controller) {
     def processInput(input: String): Boolean =
