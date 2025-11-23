@@ -16,13 +16,7 @@ class StateSpec extends AnyWordSpec with Matchers{
         val card7 = Card(Rank.Ten,Suit.Clubs)
         val card8 = Card(Rank.Ten,Suit.Diamonds)
 
-        "process input for TitleScreen correctly" in {
-            val game = Game()
-            val gameController = Controller(game)
-            gameController.state = TitleScreenState(gameController)
-            gameController.processInput("") should be (true)
-        }
-        "process input for MainScreen correctly" in {
+        "process input for MainScreenState correctly" in {
             val game = Game()
             val gameController = Controller(game)
             gameController.state = GetPlayerNumberState(gameController)
@@ -31,10 +25,10 @@ class StateSpec extends AnyWordSpec with Matchers{
             gameController.processInput("e") should be (true)
             gameController.processInput("") should be (false)
         }
-        "process input for TitleScreen correctly" in {
+        "process input for RuleScreenState correctly" in {
             val game = Game()
             val gameController = Controller(game)
-            gameController.state = TitleScreenState(gameController)
+            gameController.state = RulesScreenState(gameController)
             gameController.processInput("") should be (false)
             gameController.state should be (RulesScreenState(gameController))
             gameController.processInput("b") should be (true)
