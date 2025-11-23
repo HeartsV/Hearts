@@ -53,7 +53,7 @@ class GetPlayerNumberState(controller: Controller) extends State(controller: Con
 
 class GetPlayerNamesState(controller: Controller) extends State(controller: Controller) {
     def processInput(input: String): Boolean =
-        if(!input.equals(""))
+        if(!input.trim.equals(""))
             controller.getGame().addPlayer(Player(input))
         else
             controller.getGame().addPlayer(Player(s"P${controller.getGame().players.size + 1}"))
@@ -62,7 +62,6 @@ class GetPlayerNamesState(controller: Controller) extends State(controller: Cont
             controller.updateCurrentPlayer()
             controller.changeState(SetMaxScoreState(controller))
         true
-    
 
     def getStateString(): String = "GetPlayerNamesState"
 }
@@ -94,7 +93,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
             true
         else
             false
-    
+
     def getStateString(): String = "GamePlayState"
 }
 

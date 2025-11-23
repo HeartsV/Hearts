@@ -19,20 +19,23 @@ class StateSpec extends AnyWordSpec with Matchers{
         "process input for MainScreenState correctly" in {
             val game = Game()
             val gameController = Controller(game)
-            gameController.state = GetPlayerNumberState(gameController)
+            gameController.state = MainScreenState(gameController)
             gameController.processInput("n") should be (true)
+            gameController.state = MainScreenState(gameController)
             gameController.processInput("r") should be (true)
+            gameController.state = MainScreenState(gameController)
             gameController.processInput("e") should be (true)
             gameController.processInput("") should be (false)
+            gameController.state.getStateString() should be ("MainScreenState")
         }
         "process input for RuleScreenState correctly" in {
             val game = Game()
             val gameController = Controller(game)
             gameController.state = RulesScreenState(gameController)
             gameController.processInput("") should be (false)
-            gameController.state should be (RulesScreenState(gameController))
+            gameController.state.getStateString() should be ("RulesScreenState")
             gameController.processInput("b") should be (true)
-            gameController.state should be (MainScreenState(gameController))
+            gameController.state.getStateString() should be ("MainScreenState")
         }
 
         "process input for GetPlayerNumberState correctly" in {
@@ -41,9 +44,11 @@ class StateSpec extends AnyWordSpec with Matchers{
             gameController.state = GetPlayerNumberState(gameController)
             gameController.processInput("2") should be (false)
             gameController.processInput("5") should be (false)
+            gameController.state.getStateString() should be ("GetPlayerNumberState")
             game.playerNumber should be (None)
             gameController.processInput("3") should be (true)
             game.playerNumber should be (Some(3))
+            gameController.state.getStateString() should be ("GetPlayerNamesState")
         }
 
         "process input for GetPlayerNamesState correctly" in {
@@ -52,12 +57,15 @@ class StateSpec extends AnyWordSpec with Matchers{
             gameController.state = GetPlayerNamesState(gameController)
             game.playerNumber = Some(3)
             gameController.processInput("Alice") should be (true)
-            game.players should contain (Player("Alice"))
+            game.players(0).name should be ("Alice")
+            gameController.state.getStateString() should be ("GetPlayerNamesState")
             gameController.processInput("") should be (true)
-            game.players should contain (Player("P2"))
+            game.players(1).name should be ("P2")
+            gameController.state.getStateString() should be ("GetPlayerNamesState")
             gameController.processInput("     ") should be (true)
-            game.players should contain (Player("P3"))
+            game.players(2).name should be ("P3")
             game.players.size should equal (game.playerNumber.get)
+            gameController.state.getStateString() should be ("SetMaxScoreState")
         }
 
         "process input for SetMaxScoreState correctly" in {
@@ -65,12 +73,18 @@ class StateSpec extends AnyWordSpec with Matchers{
             val gameController = Controller(game)
             gameController.state = SetMaxScoreState(gameController)
             gameController.processInput("0") should be (false)
+            gameController.state.getStateString() should be ("SetMaxScoreState")
             gameController.processInput("") should be (true)
             game.maxScore should be (Some(100))
+            gameController.state.getStateString() should be ("GamePlayState")
+            gameController.state = SetMaxScoreState(gameController)
             gameController.processInput("1") should be (true)
             game.maxScore should be (Some(1))
+            gameController.state.getStateString() should be ("GamePlayState")
+            gameController.state = SetMaxScoreState(gameController)
             gameController.processInput("100") should be (true)
             game.maxScore should be (Some(100))
+            gameController.state.getStateString() should be ("GamePlayState")
         }
 
         "process input for GamePlayState correctly" in {
@@ -87,24 +101,27 @@ class StateSpec extends AnyWordSpec with Matchers{
             game.firstCard should be (false)
             gameController.processInput("1")
         }
+        "process input for ShowScoreState correctly" in {
+
+        }
 
         "process input for GameOverState correctly" in {
             val game = Game()
             val gameController = Controller(game)
             gameController.state = GameOverState(gameController)
             gameController.processInput("a") should be (true)
-            gameController.state should be (GamePlayState(gameController))
+            gameController.state.getStateString() should be ("GamePlayState")
             gameController.state = GameOverState(gameController)
             gameController.processInput("n") should be (true)
-            gameController.state should be (GetPlayerNumberState(gameController))
+            gameController.state.getStateString() should be ("GetPlayerNumberState")
             gameController.state = GameOverState(gameController)
             gameController.processInput("q") should be (true)
-            gameController.state should be (MainScreenState(gameController))
+            gameController.state.getStateString() should be ("MainScreenState")
             gameController.state = GameOverState(gameController)
             gameController.processInput("e") should be (true)
             gameController.state = GameOverState(gameController)
             gameController.processInput("") should be (false)
-            gameController.state should be (GameOverState(gameController))
+            gameController.state.getStateString() should be ("GameOverState")
         }
     }
 
