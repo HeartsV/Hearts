@@ -30,7 +30,6 @@ class Controller(game: Game) extends Observable() {
         else
             false
 
-
     def addCard(newCard: Card): Boolean =
         if(game.firstCard == true)
             if(newCard  == (Card(Rank.Two,Suit.Clubs)))
@@ -66,17 +65,36 @@ class Controller(game: Game) extends Observable() {
 
     def updateCurrentPlayer(): Boolean =
     if (game.firstCard == true)
-      game.currentPlayer = game.players.find(_.hand.contains(Card(Rank.Two,Suit.Clubs)))
-      true
+        game.currentPlayer = game.players.find(_.hand.contains(Card(Rank.Two,Suit.Clubs)))
+        true
     else if(game.players.size == game.trick.cards.size)
-      game.currentPlayer = game.trick.currentWinner
-      true
+        game.currentPlayer = game.trick.currentWinner
+        true
     else if(game.players.indexOf(game.currentPlayer.get) + 1 == game.players.size)
-      game.currentPlayer = Some(game.players(0))
-      true
+        game.currentPlayer = Some(game.players(0))
+        true
     else
-      game.currentPlayer = Some(game.players((game.players.indexOf(game.currentPlayer.get) + 1)))
-      true
+        game.currentPlayer = Some(game.players((game.players.indexOf(game.currentPlayer.get) + 1)))
+        true
+
+    def createDeck(): List[Card] =
+        for
+            suit <- Suit.values.toList
+            rank <- Rank.values.toList
+        yield Card(rank, suit)
+
+    def dealCards(): Boolean =
+        var deck: List[Card] = createDeck()
+        deck = util.Random().shuffle(deck)
+        if(game.playerNumber.get == 3)
+            if(deck(1) == Card(Rank.Two,Suit.Clubs))
+                deck = deck.filterNot(_ == deck(2))
+            else
+                deck = deck.filterNot(_ == deck(1))
+        val handlist = deck.grouped(deck.size/game.playerNumber.get).toList
+        for (i <- 0 to game.playerNumber.get - 1) game.players(i).addAllCards(handlist(i))
+        true
+
 
     def getCurrentPlayerHand(): String = game.currentPlayer.get.handToString()
 
