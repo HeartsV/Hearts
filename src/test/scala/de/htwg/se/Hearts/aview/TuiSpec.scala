@@ -25,11 +25,11 @@ class TuiSpec extends AnyWordSpec with Matchers {
         p4.hand +=(Card(Rank.Ten,Suit.Clubs))
 
         "get the correct getPlayerNumberStateString" in {
-            tui.getPlayerNumberStateString() should be ("")
+            tui.getPlayerNumberStateString() should be ("please input a Number of Players between 3 and 4\n")
         }
 
         "get the correct getPlayerNamesStateString" in {
-            tui.getPlayerNamesStateString() should be ("")
+            tui.getPlayerNamesStateString() should be ("please input the names of the 5. player\n")
         }
 
         "get the correct GameplayStateString" in {
@@ -45,7 +45,12 @@ class TuiSpec extends AnyWordSpec with Matchers {
 
 
         "get the correct getGameOverStateString" in {
-            tui.getGameOverStateString() should be ("")
+            val string = tui.getGameOverStateString()
+            string should include ("GameOver:\n")
+            string should include("Alice: 0\n")
+            string should include("Dave: 0\n")
+            string should include("Charlie: 0\n")
+            string should include("David: 0\n")
         }
     }
 
