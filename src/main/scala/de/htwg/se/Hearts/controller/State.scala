@@ -4,13 +4,16 @@ import de.htwg.se.Hearts.model.*
 
 trait State(controller: Controller) {
     def processInput(input: String):Boolean
+    def getStateString():String
 }
 
-class TitleScreen(controller: Controller) extends State(controller: Controller){
+class TitleScreenState(controller: Controller) extends State(controller: Controller){
     def processInput(input: String): Boolean =
         true
+
+    def getStateString(): String = "TitleScreenState"
 }
-class MainScreen(controller: Controller) extends State(controller: Controller){
+class MainScreenState(controller: Controller) extends State(controller: Controller){
     def processInput(input: String): Boolean =
         input.toLowerCase().trim match{
         case "newgame"| "n" =>
@@ -26,17 +29,21 @@ class MainScreen(controller: Controller) extends State(controller: Controller){
         case _ =>
             false
         }
+
+    def getStateString(): String ="TitleScreenState"
 }
 
-class RulesScreen(controller: Controller) extends State(controller: Controller){
+class RulesScreenState(controller: Controller) extends State(controller: Controller){
     def processInput(input: String): Boolean =
         input.trim match {
             case "back" | "b" =>
-                controller.changeState(MainScreen(controller))
+                controller.changeState(MainScreenState(controller))
                 true
             case _ =>
                 false
         }
+
+    def getStateString(): String = "RulesScreenState"
 }
 
 class GetPlayerNumberState(controller: Controller) extends State(controller: Controller) {
@@ -47,6 +54,8 @@ class GetPlayerNumberState(controller: Controller) extends State(controller: Con
             true
         else
             false
+
+    def getStateString(): String = "GetPlayerNumberState"
 }
 
 class GetPlayerNamesState(controller: Controller) extends State(controller: Controller) {
@@ -59,6 +68,8 @@ class GetPlayerNamesState(controller: Controller) extends State(controller: Cont
             true
         else
             false
+
+    def getStateString(): String = "GetPlayerNamesState"
 }
 
 class SetMaxScoreState(controller: Controller) extends State(controller: Controller) {
@@ -71,6 +82,8 @@ class SetMaxScoreState(controller: Controller) extends State(controller: Control
             true
         else
             false
+
+    def getStateString(): String ="SetMaxScoreState"
 }
 
 class GamePlayState(controller: Controller) extends State(controller: Controller) {
@@ -82,6 +95,8 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
             true
         else
             false
+    
+    def getStateString(): String = "GamePlayState"
 }
 
 class GameOverState(controller: Controller) extends State(controller: Controller) {
@@ -100,9 +115,11 @@ class GameOverState(controller: Controller) extends State(controller: Controller
                 true
             case "quit"|"q" =>
                 //Wir gehen zurück zum MainScreen
-                controller.changeState(MainScreen(controller))
+                controller.changeState(MainScreenState(controller))
                 true
             case _ =>
                 false
         }
+
+    def getStateString(): String = "GameOverState"
 }
