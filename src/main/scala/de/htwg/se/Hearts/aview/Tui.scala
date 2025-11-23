@@ -25,11 +25,11 @@ class Tui(gameController: Controller)  extends Observer{
 		gameController.getCurrentPlayerName() +" please select card to play:" + nl +
 		gameController.getCurrentPlayerHand() + nl
 
-	def getShowScoreState(): String = "to be implemented"
+	def getShowScoreState(): String = "to be implemented" // wrong
 
 	def getGameOverStateString(): String =
 		"GameOver:" + nl +
-		gameController.getGame().players.map(p => s"${p.name}: ${p.wonCards.count(_.suit == Suit.Hearts)}").mkString("",nl,"") + nl
+		gameController.getGame().players.map(p => s"${p.name}: ${p.wonCards.count(_.suit == Suit.Hearts)}").mkString("",nl,"") + nl ///wrong
 
 	def update(): Unit =
 		gameController.state.getStateString() match
