@@ -1,5 +1,7 @@
 package de.htwg.se.Hearts.controller
 
+import de.htwg.se.Hearts.model.*
+
 trait State(controller: Controller) {
     def processInput(input: String):Boolean
 }
@@ -50,10 +52,10 @@ class GetPlayerNumberState(controller: Controller) extends State(controller: Con
 class GetPlayerNamesState(controller: Controller) extends State(controller: Controller) {
     def processInput(input: String): Boolean =
         if(!input.equals(""))
-            controller.getGame().addPlayer(input)
+            controller.getGame().addPlayer(Player(input))
             true
         else if(input.equals(""))
-            controller.getGame().addPlayer(s"P${controller.getGame().players.size + 1}")
+            controller.getGame().addPlayer(Player(s"P${controller.getGame().players.size + 1}"))
             true
         else
             false

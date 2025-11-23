@@ -12,12 +12,7 @@ class Game () {
     var currentPlayer: Option[Player] = None
     val trick = Trick()
 
-    def addPlayer(player: Player): Boolean =
-        players.addOne(player)
+    def addPlayer(newPlayerName: Player): Boolean =
+        players.addOne(newPlayerName)
         true
-
-    /*def addPlayer(newPlayerName: String): Boolean =
-        players.addOne(Player(newPlayerName))
-        true
-    Das wäre meine neue/geänderte Funktion*/
 }
