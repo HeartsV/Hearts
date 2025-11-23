@@ -9,6 +9,7 @@ trait State(controller: Controller) {
 
 class TitleScreenState(controller: Controller) extends State(controller: Controller){
     def processInput(input: String): Boolean =
+        
         true
 
     def getStateString(): String = "TitleScreenState"

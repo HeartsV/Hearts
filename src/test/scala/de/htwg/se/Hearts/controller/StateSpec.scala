@@ -19,7 +19,7 @@ class StateSpec extends AnyWordSpec with Matchers{
         "process input for TitleScreen correctly" in {
             val game = Game()
             val gameController = Controller(game)
-            gameController.state = TitleScreen(gameController)
+            gameController.state = TitleScreenState(gameController)
             gameController.processInput("") should be (true)
         }
         "process input for MainScreen correctly" in {
@@ -34,11 +34,11 @@ class StateSpec extends AnyWordSpec with Matchers{
         "process input for TitleScreen correctly" in {
             val game = Game()
             val gameController = Controller(game)
-            gameController.state = TitleScreen(gameController)
+            gameController.state = TitleScreenState(gameController)
             gameController.processInput("") should be (false)
-            gameController.state should be (RulesScreen(gameController))
+            gameController.state should be (RulesScreenState(gameController))
             gameController.processInput("b") should be (true)
-            gameController.state should be (MainScreen(gameController))
+            gameController.state should be (MainScreenState(gameController))
         }
 
         "process input for GetPlayerNumberState correctly" in {
@@ -105,7 +105,7 @@ class StateSpec extends AnyWordSpec with Matchers{
             gameController.state should be (GetPlayerNumberState(gameController))
             gameController.state = GameOverState(gameController)
             gameController.processInput("q") should be (true)
-            gameController.state should be (MainScreen(gameController))
+            gameController.state should be (MainScreenState(gameController))
             gameController.state = GameOverState(gameController)
             gameController.processInput("e") should be (true)
             gameController.state = GameOverState(gameController)
