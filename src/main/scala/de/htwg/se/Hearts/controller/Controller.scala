@@ -7,7 +7,7 @@ import scala.compiletime.ops.boolean
 
 class Controller(game: Game) extends Observable() {
 
-    var state:State = GamePlayState(this)
+    var state:State = MainScreenState(this)
 
     def processInput(input: String): Boolean =
         if(state.processInput(input))

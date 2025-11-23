@@ -23,7 +23,7 @@ class MainScreenState(controller: Controller) extends State(controller: Controll
             false
         }
 
-    def getStateString(): String ="TitleScreenState"
+    def getStateString(): String ="MainScreenState"
 }
 
 class RulesScreenState(controller: Controller) extends State(controller: Controller){
