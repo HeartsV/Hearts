@@ -89,8 +89,10 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
             controller.updateCurrentWinner()
             controller.updateCurrentPlayer()
             if(controller.getGame().currentPlayer.get.hand.size == 0 && !controller.checkGameOver())
+                controller.addPointsToPlayers(controller.rawPointsPerPlayer())
                 controller.changeState(ShowScoreState(controller))
             else if (controller.getGame().currentPlayer.get.hand.size == 0 && controller.checkGameOver())
+                controller.addPointsToPlayers(controller.rawPointsPerPlayer())
                 controller.changeState(GameOverState(controller))
             true
         else
