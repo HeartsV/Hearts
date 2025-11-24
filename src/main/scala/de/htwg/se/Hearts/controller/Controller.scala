@@ -130,7 +130,12 @@ class Controller(game: Game) extends Observable() {
 
     def getCurrentPlayerName(): String = game.currentPlayer.get.name
 
-    def checkGameOver(): Boolean = game.gameOver
+    def checkGameOver(): Boolean =
+        val maxScorePoints = game.players.map(p => p -> p.points).toMap
+        if(maxScorePoints.exists {case (_, point) => point >= game.maxScore.get})
+            true
+        else
+            false
 
     def getGame(): Game = game
 

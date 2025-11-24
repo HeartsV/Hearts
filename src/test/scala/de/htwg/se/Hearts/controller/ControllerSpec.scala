@@ -410,9 +410,12 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
         "check if the game is over" in{
             val game = Game()
+            val p1 = Player("Alice")
             val gameController = Controller(game)
+            game.addPlayer(p1)
+            game.maxScore = Some(1)
             gameController.checkGameOver() should be (false)
-            game.gameOver = true
+            p1.points = 1
             gameController.checkGameOver() should be (true)
         }
 

@@ -12,7 +12,7 @@ class Tui(gameController: Controller)  extends Observer{
 	def getMainScreenStateString(): String = "Hearts" + nl + "new Game" + nl + "rules" + nl + "exit"
 
 	def getRulesScreenStateString(): String = "1 point per won hearts card" + nl + "13 points for won Q of Spades" + nl + "lowest points wins"
-		
+
 	def getPlayerNumberStateString(): String = "please input a Number of Players between 3 and 4" + nl
 
 	def getPlayerNamesStateString(): String = f"please input the names of the ${gameController.getGame().players.size +1}. player" +nl
@@ -26,10 +26,13 @@ class Tui(gameController: Controller)  extends Observer{
 		gameController.getCurrentPlayerHand() + nl
 
 	def getShowScoreState(): String = "to be implemented" // wrong
+	//Idee 1: Ohne sortierung einfach in der reihenfolge in der wir die Player eingetragen haben ausgeben
+	//Idee/Möglichkeit 2: Wir sortieren die ausgabe aufsteigend sodass die Plazierung die du gerade hast auch schon mit angegeben werden kann.
 
 	def getGameOverStateString(): String =
 		"GameOver:" + nl +
 		gameController.getGame().players.map(p => s"${p.name}: ${p.wonCards.count(_.suit == Suit.Hearts)}").mkString("",nl,"") + nl ///wrong
+		// Idee: Game Over ausgeben, darunter dann Das Scoreboard und darunter dann die information was man eingeben kann/muss um neuzustarten zu beenden, etc.
 
 	def update(): Unit =
 		gameController.state.getStateString() match
