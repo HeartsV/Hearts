@@ -90,17 +90,50 @@ class StateSpec extends AnyWordSpec with Matchers{
 
         "process input for GamePlayState correctly" in {
             val p1 = Player("Alice")
-            val p2 = Player("Dave")
+            val p2 = Player("Bob")
+            val p3 = Player("Charlie")
             val game = Game()
+            game.maxScore = Some(100)
             game.addPlayer(p1)
+            game.addPlayer(p2)
+            game.addPlayer(p3)
+            game.playerNumber = Some(3)
             game.currentPlayer = Some(p1)
             val gameController = Controller(game)
             gameController.state = GamePlayState(gameController)
-            p1.hand ++= List(card1,card2)
+            p1.hand ++= List(card1)
+            p2.hand ++= List(card1)
+            p3.hand ++= List(card1)
             gameController.processInput("a") should be (false)
             gameController.processInput("1") should be (true)
             game.firstCard should be (false)
+            gameController.processInput("1") should be (true)
+            gameController.processInput("1") should be (true)
         }
+
+        "process input for GamePlayState correctly when someone reaches max score" in {
+            val p1 = Player("Alice")
+            val p2 = Player("Bob")
+            val p3 = Player("Charlie")
+            val game = Game()
+            game.maxScore = Some(0)
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            game.addPlayer(p3)
+            game.playerNumber = Some(3)
+            game.currentPlayer = Some(p1)
+            val gameController = Controller(game)
+            gameController.state = GamePlayState(gameController)
+            p1.hand ++= List(card1)
+            p2.hand ++= List(card1)
+            p3.hand ++= List(card1)
+            gameController.processInput("a") should be (false)
+            gameController.processInput("1") should be (true)
+            game.firstCard should be (false)
+            gameController.processInput("1") should be (true)
+            gameController.processInput("1") should be (true)
+        }
+
         "process input for ShowScoreState correctly" in {
 
         }
