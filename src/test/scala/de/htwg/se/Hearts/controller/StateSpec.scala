@@ -100,7 +100,6 @@ class StateSpec extends AnyWordSpec with Matchers{
             gameController.processInput("a") should be (false)
             gameController.processInput("1") should be (true)
             game.firstCard should be (false)
-            gameController.processInput("1")
         }
         "process input for ShowScoreState correctly" in {
 

@@ -17,7 +17,7 @@ class MainScreenState(controller: Controller) extends State(controller: Controll
             controller.changeState(RulesScreenState(controller))
             true
         case "exit"|"e" =>
-            //Programm beenden, eventuell nehmen wir das raus?!
+            controller.setkeepProcessRunning(false)
             true
         case _ =>
             false
@@ -118,7 +118,7 @@ class GameOverState(controller: Controller) extends State(controller: Controller
                 controller.changeState(GamePlayState(controller))
                 true
             case "exit"|"e" =>
-                //Wir beenden das programm, eventuell nehmen wir das raus?!
+                controller.setkeepProcessRunning(false)
                 true
             case "quit"|"q" =>
                 //Wir gehen zurück zum MainScreen

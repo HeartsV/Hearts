@@ -5,7 +5,7 @@ import scala.collection.mutable.ListBuffer
 class Game () {
     var playerNumber: Option[Int] = None
     var startWithHearts: Boolean = false
-    var gameOver: Boolean = false
+    var keepProcessRunning: Boolean = true
     var firstCard: Boolean = true
     val players: ListBuffer[Player] = ListBuffer.empty[Player]
     var maxScore: Option[Int] = None

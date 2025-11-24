@@ -9,7 +9,7 @@ import de.htwg.se.Hearts.model.Suit
 class Tui(gameController: Controller)  extends Observer{
 	val nl = "\n"
 
-	def getMainScreenStateString(): String = "Hearts" + nl + "new Game" + nl + "rules" + nl + "exit"
+	def getMainScreenStateString(): String = "Hearts" + nl + "new Game" + nl + "rules" + nl + "exit" + nl
 
 	def getRulesScreenStateString(): String = "1 point per won hearts card" + nl + "13 points for won Q of Spades" + nl + "lowest points wins"
 
@@ -47,6 +47,6 @@ class Tui(gameController: Controller)  extends Observer{
 
 	def runGame(): Unit =
 		update()
-		while (!gameController.checkGameOver())
+		while (gameController.getkeepProcessRunning())
 			gameController.processInput(readLine())
 }

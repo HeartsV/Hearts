@@ -142,4 +142,8 @@ class Controller(game: Game) extends Observable() {
     def getPlayerNumber(): Option[Int] = game.playerNumber
 
     def setPlayerNumber(number: Int): Unit = game.playerNumber = Some(number)
+
+    def getkeepProcessRunning(): Boolean = game.keepProcessRunning
+
+    def setkeepProcessRunning(a:Boolean): Unit = game.keepProcessRunning = a
 }
