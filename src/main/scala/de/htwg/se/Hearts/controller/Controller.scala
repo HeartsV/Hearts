@@ -85,11 +85,11 @@ class Controller(game: Game) extends Observable() {
     def shuffledeck(deck: List[Card]): List[Card] = util.Random().shuffle(deck)
 
     def filterOneCardOut(deck: List[Card]): List[Card] =
-        if(deck(1) == Card(Rank.Two,Suit.Clubs) && game.playerNumber.get == 3)
-            val newdeck = deck.filterNot(_ == deck(2))
+        if(deck.head == Card(Rank.Two,Suit.Clubs) && game.playerNumber.get == 3)
+            val newdeck = deck.filterNot(_ == deck(1))
             newdeck
         else if(game.playerNumber.get == 3)
-            val newdeck = deck.filterNot(_ == deck(1))
+            val newdeck = deck.filterNot(_ == deck.head)
             newdeck
         else
             deck
