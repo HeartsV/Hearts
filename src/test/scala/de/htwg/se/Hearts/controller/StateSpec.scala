@@ -135,6 +135,26 @@ class StateSpec extends AnyWordSpec with Matchers{
         }
 
         "process input for ShowScoreState correctly" in {
+            val p1 = Player("Alice")
+            val p2 = Player("Bob")
+            val p3 = Player("Charlie")
+            val game = Game()
+            game.firstCard = false
+            game.startWithHearts = true
+            game.maxScore = Some(100)
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            game.addPlayer(p3)
+            game.playerNumber = Some(3)
+            game.currentPlayer = Some(p1)
+            val gameController = Controller(game)
+            gameController.state = ShowScoreState(gameController)
+            gameController.state.getStateString() should be ("ShowScoreState")
+            gameController.processInput("a")
+            gameController.state.getStateString() should be ("GamePlayState")
+            game.firstCard should be (true)
+            game.startWithHearts should be (false)
+            game.players(0).hand.size should be (17)
 
         }
 

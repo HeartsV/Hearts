@@ -102,7 +102,13 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
 }
 
 class ShowScoreState(controller: Controller) extends State(controller: Controller) {
-    def processInput(input: String): Boolean = ??? //reset cards and go to gameplayState
+    def processInput(input: String): Boolean = 
+        controller.dealCards(controller.shuffledeck(controller.createDeck()))
+        controller.getGame().firstCard = true
+        controller.getGame().startWithHearts = false
+        controller.updateCurrentPlayer()
+        controller.changeState(GamePlayState(controller))
+        true
 
     def getStateString(): String = "ShowScoreState"
 }
