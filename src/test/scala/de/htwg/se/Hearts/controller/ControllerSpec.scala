@@ -180,7 +180,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         "get the handstring of current player" in{
             val game = Game()
             val gameController = Controller(game)
-            val p1 = Player(name = "Alice")
+            val p1 = Player("Alice")
             game.currentPlayer = Some(p1)
             p1.hand ++= List(card1,card2)
             gameController.getCurrentPlayerHand() should be ("|  1  |  2  |\n| 2 \u2663 | 2 \u2666 |")
@@ -188,7 +188,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         "get the name of current player" in{
             val game = Game()
             val gameController = Controller(game)
-            val p1 = Player(name = "Alice")
+            val p1 = Player("Alice")
             game.currentPlayer = Some(p1)
             gameController.getCurrentPlayerName() should be ("Alice")
         }
@@ -255,19 +255,68 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             game.currentPlayer should be (Some(p1))
         }
 
-        "deal the correct cards" in {
-            val game = Game()
-            val gameController = Controller(game)
-            val deck = List(card3, card1, card5, card7)
-            game.playerNumber = Some(3)
-            gameController.dealCards(deck) should not be (card1)
-        }
-
         "check if deck is shuffled" in {
             val game = Game()
             val gameController = Controller(game)
             val deck = gameController.createDeck()
-            //gameController.shuffledeck(deck) should not equal (deck)
+            gameController.shuffledeck(deck) should not equal (deck)
+        }
+
+        "check if playerNumber is 3 or (playerNumber is 3 and 2 \u2663 is the first Card in the deck) one Card gets filtered out, but not the 2 \u2663" in {
+            val game = Game()
+            val gameController = Controller(game)
+            val deck = List[Card](card1, card2, card3, card4, card5, card6, card7, card8)
+            val deck2 = List[Card](card4, card7, card5, card1, card3, card2, card8, card6)
+            val newdeck = gameController.filterOneCardOut(deck)
+            newdeck should contain (Card(Rank.Two,Suit.Clubs))
+            newdeck.size should be (7)
+            val newdeck2 = gameController.filterOneCardOut(deck2)
+            newdeck2 should contain (Card(Rank.Two,Suit.Clubs))
+            newdeck2.size should be (7)
+        }
+
+        "check if playerNumber is 4 no Card gets filtered out" in {
+            val game = Game()
+            val gameController = Controller(game)
+            game.playerNumber = Some(4)
+            val deck = gameController.createDeck()
+            val newdeck = gameController.filterOneCardOut(deck)
+            newdeck should equal (deck)
+        }
+
+        "deal the correct amount of cards for 3 Players" in {
+            val game = Game()
+            val gameController = Controller(game)
+            game.playerNumber = Some(3)
+            val p1 = Player("Alice")
+            val p2 = Player("Dave")
+            val p3 = Player("Charlie")
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            game.addPlayer(p3)
+            gameController.dealCards(gameController.createDeck()) should be (true)
+            p1.hand.size should be (17)
+            p2.hand.size should be (17)
+            p3.hand.size should be (17)
+        }
+
+        "deal the correct cards for 4 Players" in {
+            val game = Game()
+            val gameController = Controller(game)
+            game.playerNumber = Some(4)
+            val p1 = Player("Alice")
+            val p2 = Player("Dave")
+            val p3 = Player("Charlie")
+            val p4 = Player("David")
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            game.addPlayer(p3)
+            game.addPlayer(p4)
+            gameController.dealCards(gameController.filterOneCardOut(gameController.createDeck())) should be (true)
+            p1.hand.size should be (13)
+            p2.hand.size should be (13)
+            p3.hand.size should be (13)
+            p4.hand.size should be (13)
         }
 
         "check if pointsForPlayer are calculated correctly" in {
@@ -283,14 +332,80 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val game = Game()
             val gameController = Controller(game)
             val p1 = Player("Alice")
-            val p2 = Player("Al")
+            val p2 = Player("Dave")
             val l1: ListBuffer[Card] = ListBuffer(Card(Rank.Ace, Suit.Hearts), Card(Rank.Four,Suit.Clubs), Card(Rank.Queen, Suit.Spades))
-            val l2: ListBuffer[Card] = ListBuffer(Card(Rank.Ace, Suit.Hearts), Card(Rank.Four,Suit.Clubs), Card(Rank.Queen, Suit.Spades))
+            val l2: ListBuffer[Card] = ListBuffer(Card(Rank.Ace, Suit.Hearts), Card(Rank.Four,Suit.Clubs), Card(Rank.Queen, Suit.Diamonds))
             p1.wonCards.addAll(l1)
             p2.wonCards.addAll(l2)
-            val m1 = gameController.rawPointsPerPlayer()
-            m1 should contain ((p1,14))
-            m1 should contain ((p2,14))
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            val m1: Map[Player, Int] = Map((p1, 14), (p2, 1))
+            gameController.rawPointsPerPlayer() should equal (m1)
+        }
+
+        "check if applyShootingTheMoon gets applied if only one Player has Points" in {
+            val game = Game()
+            val gameController = Controller(game)
+            val p1 = Player("Alice")
+            val p2 = Player("Dave")
+            val p3 = Player("Charlie")
+            val p4 = Player("David")
+            p1.wonCards.addAll(ListBuffer(Card(Rank.Two, Suit.Hearts), Card(Rank.Five, Suit.Hearts), Card(Rank.Queen, Suit.Spades)))
+            p2.wonCards.addAll(ListBuffer(Card(Rank.Four, Suit.Clubs), Card(Rank.Seven, Suit.Spades), Card(Rank.Ten, Suit.Diamonds)))
+            p3.wonCards.addAll(ListBuffer(Card(Rank.Eight, Suit.Diamonds), Card(Rank.Jack, Suit.Clubs), Card(Rank.Three, Suit.Spades)))
+            p4.wonCards.addAll(ListBuffer(Card(Rank.Six, Suit.Clubs), Card(Rank.King, Suit.Diamonds), Card(Rank.Nine, Suit.Spades)))
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            game.addPlayer(p3)
+            game.addPlayer(p4)
+            val m1: Map[Player, Int] = Map((p1, 0), (p2, 15), (p3, 15), (p4, 15))
+            gameController.applyShootingTheMoon(gameController.rawPointsPerPlayer()) should equal (m1)
+        }
+
+        "check if applyShootingTheMoon is not applied when two Player get Points" in {
+            val game = Game()
+            val gameController = Controller(game)
+            val p1 = Player("Alice")
+            val p2 = Player("Dave")
+            val p3 = Player("Charlie")
+            val p4 = Player("David")
+            p1.wonCards.addAll(ListBuffer(Card(Rank.Two, Suit.Hearts), Card(Rank.Five, Suit.Hearts), Card(Rank.Queen, Suit.Spades)))
+            p2.wonCards.addAll(ListBuffer(Card(Rank.Four, Suit.Hearts), Card(Rank.Seven, Suit.Spades), Card(Rank.Ten, Suit.Diamonds)))
+            p3.wonCards.addAll(ListBuffer(Card(Rank.Eight, Suit.Diamonds), Card(Rank.Jack, Suit.Clubs), Card(Rank.Three, Suit.Spades)))
+            p4.wonCards.addAll(ListBuffer(Card(Rank.Six, Suit.Clubs), Card(Rank.King, Suit.Diamonds), Card(Rank.Nine, Suit.Spades)))
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            game.addPlayer(p3)
+            game.addPlayer(p4)
+            val m1: Map[Player, Int] = Map((p1, 15), (p2, 1), (p3, 0), (p4, 0))
+            gameController.applyShootingTheMoon(gameController.rawPointsPerPlayer()) should equal (m1)
+        }
+
+        "check if addPointsToPlayers adds the correct amount of Points to the correct Player and clears their wonCards List" in {
+            val game = Game()
+            val gameController = Controller(game)
+            game.playerNumber = Some(4)
+            val p1 = Player("Alice")
+            val p2 = Player("Dave")
+            val p3 = Player("Charlie")
+            val p4 = Player("David")
+            p1.wonCards.addAll(ListBuffer(Card(Rank.Two, Suit.Hearts), Card(Rank.Five, Suit.Hearts), Card(Rank.Queen, Suit.Spades)))
+            p2.wonCards.addAll(ListBuffer(Card(Rank.Four, Suit.Hearts), Card(Rank.Seven, Suit.Spades), Card(Rank.Ten, Suit.Diamonds)))
+            p3.wonCards.addAll(ListBuffer(Card(Rank.Eight, Suit.Diamonds), Card(Rank.Jack, Suit.Clubs), Card(Rank.Three, Suit.Spades)))
+            p4.wonCards.addAll(ListBuffer(Card(Rank.Six, Suit.Clubs), Card(Rank.King, Suit.Diamonds), Card(Rank.Nine, Suit.Spades)))
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            game.addPlayer(p3)
+            game.addPlayer(p4)
+            gameController.addPointsToPlayers(gameController.rawPointsPerPlayer())
+            p1.points should be (15)
+            p1.wonCards should be (empty)
+            p2.points should be (1)
+            p2.wonCards should be (empty)
+            p3.points should be (0)
+            p3.wonCards should be (empty)
+            p4.points should be (0)
+            p4.wonCards should be (empty)
         }
 
         "check if the game is over" in{

@@ -82,14 +82,21 @@ class Controller(game: Game) extends Observable() {
             rank <- Rank.values.toList
         yield Card(rank, suit)
 
+    def shuffledeck(deck: List[Card]): List[Card] = util.Random().shuffle(deck)
+
+    def filterOneCardOut(deck: List[Card]): List[Card] =
+        if(deck(1) == Card(Rank.Two,Suit.Clubs) && game.playerNumber.get == 3)
+            val newdeck = deck.filterNot(_ == deck(2))
+            newdeck
+        else if(game.playerNumber.get == 3)
+            val newdeck = deck.filterNot(_ == deck(1))
+            newdeck
+        else
+            deck
+
     def dealCards(deck: List[Card]): Boolean =
-        var shuffleddeck = util.Random().shuffle(deck)
-        if(game.playerNumber.get == 3)
-            if(deck(1) == Card(Rank.Two,Suit.Clubs))
-            shuffleddeck = shuffleddeck.filterNot(_ == shuffleddeck(2))
-            else
-                shuffleddeck = shuffleddeck.filterNot(_ == deck(1))
-        val handlist = deck.grouped(shuffleddeck.size/game.playerNumber.get).toList
+        val newdeck = filterOneCardOut(deck)
+        val handlist = deck.grouped(newdeck.size/game.playerNumber.get).toList
         for (i <- 0 to game.playerNumber.get - 1) game.players(i).addAllCards(handlist(i))
         true
 
@@ -114,11 +121,10 @@ class Controller(game: Game) extends Observable() {
         else
             points
 
-    def scoreRound(): Unit =
-        val raw = rawPointsPerPlayer()
-        val finalPoints = applyShootingTheMoon(raw)
+    def addPointsToPlayers(raw: Map[Player, Int]): Unit =
         for (p <- game.players)
-            p.points += finalPoints.getOrElse(p, 0)
+            p.points += applyShootingTheMoon(raw).getOrElse(p, 0)
+            p.wonCards.clear()
 
     def getCurrentPlayerHand(): String = game.currentPlayer.get.handToString()
 
