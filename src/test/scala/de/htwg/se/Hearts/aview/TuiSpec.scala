@@ -24,12 +24,24 @@ class TuiSpec extends AnyWordSpec with Matchers {
         p3.hand +=(Card(Rank.Jack,Suit.Clubs))
         p4.hand +=(Card(Rank.Ten,Suit.Clubs))
 
+        "get the correct getMainScreenStateString" in {
+            tui.getMainScreenStateString() should be ("Hearts\nnew Game\nrules\nexit\n")
+        }
+
+        "get the correct getRulesScreenStateString" in {
+            tui.getRulesScreenStateString() should be ("1 point per won hearts card\n13 points for won Q of Spades\nlowest points wins")
+        }
+
         "get the correct getPlayerNumberStateString" in {
             tui.getPlayerNumberStateString() should be ("please input a Number of Players between 3 and 4\n")
         }
 
         "get the correct getPlayerNamesStateString" in {
             tui.getPlayerNamesStateString() should be ("please input the names of the 5. player\n")
+        }
+
+        "get the correct setMaxScoreStateString" in {
+            tui.setMaxScoreStateString() should be ("please enter the score required to win (between 1 and 400)\n")
         }
 
         "get the correct GameplayStateString" in {
@@ -43,14 +55,12 @@ class TuiSpec extends AnyWordSpec with Matchers {
             tui.getGameplayStateString() should be ("Trick:\n| 2 ♣ |     |     |     |\nDave please select card to play:\n|  1  |\n| A ♣ |\n")
         }
 
+        "get the correct getShowScoreStateString" in {
+
+        }
 
         "get the correct getGameOverStateString" in {
-            val string = tui.getGameOverStateString()
-            string should include ("GameOver:\n")
-            string should include("Alice: 0\n")
-            string should include("Dave: 0\n")
-            string should include("Charlie: 0\n")
-            string should include("David: 0\n")
+           
         }
     }
 

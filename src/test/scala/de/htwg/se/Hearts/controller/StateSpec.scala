@@ -3,6 +3,7 @@ package de.htwg.se.Hearts.controller
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import de.htwg.se.Hearts.model.*
+import scala.collection.mutable.ListBuffer
 
 class StateSpec extends AnyWordSpec with Matchers{
 
@@ -162,20 +163,85 @@ class StateSpec extends AnyWordSpec with Matchers{
             val game = Game()
             val gameController = Controller(game)
             gameController.state = GameOverState(gameController)
-            gameController.processInput("a") should be (true)
-            gameController.state.getStateString() should be ("GamePlayState")
-            gameController.state = GameOverState(gameController)
-            gameController.processInput("n") should be (true)
-            gameController.state.getStateString() should be ("GetPlayerNumberState")
-            gameController.state = GameOverState(gameController)
-            gameController.processInput("q") should be (true)
-            gameController.state.getStateString() should be ("MainScreenState")
-            gameController.state = GameOverState(gameController)
-            gameController.processInput("e") should be (true)
-            gameController.state = GameOverState(gameController)
             gameController.processInput("") should be (false)
             gameController.state.getStateString() should be ("GameOverState")
+            gameController.processInput("e") should be (true)        
+            game.keepProcessRunning should be (false)
+            
+        }
+
+        "process again input for GameOverState" in {
+            val p1 = Player("Alice")
+            val p2 = Player("Bob")
+            val p3 = Player("Charlie")
+            p1.points = 20
+            val game = Game()
+            game.firstCard = false
+            game.startWithHearts = true
+            game.maxScore = Some(100)
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            game.addPlayer(p3)
+            game.playerNumber = Some(3)
+            game.currentPlayer = Some(p1)
+            val gameController = Controller(game)
+            gameController.state = GameOverState(gameController)
+            gameController.processInput("a")
+            gameController.state.getStateString() should be ("GamePlayState")
+            game.firstCard should be (true)
+            game.startWithHearts should be (false)
+            game.players(0).hand.size should be (17)
+            p1.points should be (0)
+        }
+        "procss new input for GameOverState" in {
+            val p1 = Player("Alice")
+            val p2 = Player("Bob")
+            val p3 = Player("Charlie")
+            p1.points = 20
+            val game = Game()
+            game.firstCard = false
+            game.startWithHearts = true
+            game.maxScore = Some(100)
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            game.addPlayer(p3)
+            game.playerNumber = Some(3)
+            game.currentPlayer = Some(p1)
+            val gameController = Controller(game)
+            gameController.state = GameOverState(gameController)
+            gameController.processInput("n")       
+            game.firstCard should be (true)
+            game.startWithHearts should be (false)
+            game.players should be (ListBuffer[Player]())
+            game.playerNumber should be (None)
+            game.maxScore should be (None)
+            game.currentPlayer should be (None)
+            gameController.state.getStateString() should be ("GetPlayerNumberState")
+        }
+        "process quit input for GameOverState" in {
+            val p1 = Player("Alice")
+            val p2 = Player("Bob")
+            val p3 = Player("Charlie")
+            p1.points = 20
+            val game = Game()
+            game.firstCard = false
+            game.startWithHearts = true
+            game.maxScore = Some(100)
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            game.addPlayer(p3)
+            game.playerNumber = Some(3)
+            game.currentPlayer = Some(p1)
+            val gameController = Controller(game)
+            gameController.state = GameOverState(gameController)
+            gameController.processInput("q")       
+            game.firstCard should be (true)
+            game.startWithHearts should be (false)
+            game.players should be (ListBuffer[Player]())
+            game.playerNumber should be (None)
+            game.maxScore should be (None)
+            game.currentPlayer should be (None)
+            gameController.state.getStateString() should be ("MainScreenState")
         }
     }
-
 }

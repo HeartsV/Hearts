@@ -117,20 +117,30 @@ class ShowScoreState(controller: Controller) extends State(controller: Controlle
 class GameOverState(controller: Controller) extends State(controller: Controller) {
     def processInput(input: String): Boolean =
         input.toLowerCase().trim match {
-            case "new"|"n" =>
-                //Zu den Einstellungen, also wird ein spiel neu gestartet, aber die settings müssen neu angegeben werden
-                controller.changeState(GetPlayerNumberState(controller))
+            case "new"|"n"|"quit"|"q" =>
+                controller.getGame().firstCard = true
+                controller.getGame().startWithHearts = false
+                controller.getGame().playerNumber = None
+                controller.getGame().players.clear()
+                controller.getGame().currentPlayer = None
+                controller.getGame().maxScore = None
+                input.toLowerCase().trim match {
+                    case "new"|"n" => 
+                        controller.changeState(GetPlayerNumberState(controller))
+                    case "quit"|"q" =>
+                        controller.changeState(MainScreenState(controller))
+                }
                 true
             case "again"|"a" =>
-                //neues Spiel wird gestartet aber die Settings und Playernamen bleiben gleich
+                controller.dealCards(controller.shuffledeck(controller.createDeck()))
+                controller.getGame().firstCard = true
+                controller.getGame().startWithHearts = false
+                controller.updateCurrentPlayer()
+                for(p <- controller.getGame().players) p.points = 0
                 controller.changeState(GamePlayState(controller))
                 true
             case "exit"|"e" =>
                 controller.setkeepProcessRunning(false)
-                true
-            case "quit"|"q" =>
-                //Wir gehen zurück zum MainScreen
-                controller.changeState(MainScreenState(controller))
                 true
             case _ =>
                 false
