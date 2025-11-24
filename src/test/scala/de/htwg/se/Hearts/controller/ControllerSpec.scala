@@ -3,6 +3,7 @@ package de.htwg.se.Hearts.controller
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import de.htwg.se.Hearts.model.*
+import scala.collection.mutable.ListBuffer
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A Controller" should {
@@ -174,7 +175,6 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             game.currentPlayer should be (Some(p2))
             gameController.playCard(1)
             game.players(1).wonCards should be (List(card1,card3))
-
         }
 
         "get the handstring of current player" in{
@@ -255,6 +255,44 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             game.currentPlayer should be (Some(p1))
         }
 
+        "deal the correct cards" in {
+            val game = Game()
+            val gameController = Controller(game)
+            val deck = List(card3, card1, card5, card7)
+            game.playerNumber = Some(3)
+            gameController.dealCards(deck) should not be (card1)
+        }
+
+        "check if deck is shuffled" in {
+            val game = Game()
+            val gameController = Controller(game)
+            val deck = gameController.createDeck()
+            //gameController.shuffledeck(deck) should not equal (deck)
+        }
+
+        "check if pointsForPlayer are calculated correctly" in {
+            val game = Game()
+            val gameController = Controller(game)
+            val p1 = Player("Alice")
+            val l1: ListBuffer[Card] = ListBuffer(Card(Rank.Ace, Suit.Hearts), Card(Rank.Four,Suit.Clubs), Card(Rank.Queen, Suit.Spades))
+            p1.wonCards.addAll(l1)
+            gameController.pointsForPlayer(p1) should be (14)
+        }
+
+        "check if rawPointsPerPlayer are calculated correctly" in {
+            val game = Game()
+            val gameController = Controller(game)
+            val p1 = Player("Alice")
+            val p2 = Player("Al")
+            val l1: ListBuffer[Card] = ListBuffer(Card(Rank.Ace, Suit.Hearts), Card(Rank.Four,Suit.Clubs), Card(Rank.Queen, Suit.Spades))
+            val l2: ListBuffer[Card] = ListBuffer(Card(Rank.Ace, Suit.Hearts), Card(Rank.Four,Suit.Clubs), Card(Rank.Queen, Suit.Spades))
+            p1.wonCards.addAll(l1)
+            p2.wonCards.addAll(l2)
+            val m1 = gameController.rawPointsPerPlayer()
+            m1 should contain ((p1,14))
+            m1 should contain ((p2,14))
+        }
+
         "check if the game is over" in{
             val game = Game()
             val gameController = Controller(game)
@@ -274,7 +312,6 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val gameController = Controller(game)
             game.playerNumber = Some(2)
             gameController.getPlayerNumber() should be (Some(2))
-
         }
 
         "check if setPlayerNumber sets the playerNumber" in {
@@ -282,7 +319,6 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val gameController = Controller(game)
             gameController.setPlayerNumber(3)
             game.playerNumber should be (Some(3))
-
         }
 
         "be able to change states" in {

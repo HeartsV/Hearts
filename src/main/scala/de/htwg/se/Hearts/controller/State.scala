@@ -58,7 +58,7 @@ class GetPlayerNamesState(controller: Controller) extends State(controller: Cont
         else
             controller.getGame().addPlayer(Player(s"P${controller.getGame().players.size + 1}"))
         if(controller.getGame().players.size == controller.getGame().playerNumber.get)
-            controller.dealCards()
+            controller.dealCards(controller.createDeck())
             controller.updateCurrentPlayer()
             controller.changeState(SetMaxScoreState(controller))
         true

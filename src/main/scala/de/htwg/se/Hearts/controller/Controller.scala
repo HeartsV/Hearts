@@ -17,7 +17,6 @@ class Controller(game: Game) extends Observable() {
             notifyObservers
             false
 
-
     def changeState(newState:State): Unit = state = newState
 
     def playCard(index: Int): Boolean =
@@ -83,18 +82,43 @@ class Controller(game: Game) extends Observable() {
             rank <- Rank.values.toList
         yield Card(rank, suit)
 
-    def dealCards(): Boolean =
-        var deck: List[Card] = createDeck()
-        deck = util.Random().shuffle(deck)
+    def dealCards(deck: List[Card]): Boolean =
+        var shuffleddeck = util.Random().shuffle(deck)
         if(game.playerNumber.get == 3)
             if(deck(1) == Card(Rank.Two,Suit.Clubs))
-                deck = deck.filterNot(_ == deck(2))
+            shuffleddeck = shuffleddeck.filterNot(_ == shuffleddeck(2))
             else
-                deck = deck.filterNot(_ == deck(1))
-        val handlist = deck.grouped(deck.size/game.playerNumber.get).toList
+                shuffleddeck = shuffleddeck.filterNot(_ == deck(1))
+        val handlist = deck.grouped(shuffleddeck.size/game.playerNumber.get).toList
         for (i <- 0 to game.playerNumber.get - 1) game.players(i).addAllCards(handlist(i))
         true
 
+    def cardPoints(card: Card): Int =
+        card match
+            case Card(_, Suit.Hearts) => 1
+            case Card(Rank.Queen, Suit.Spades) => 13
+            case _ => 0
+
+    def pointsForPlayer(player: Player): Int = player.wonCards.map(cardPoints).sum
+
+    def rawPointsPerPlayer(): Map[Player, Int] = game.players.map(p => p -> pointsForPlayer(p)).toMap
+
+    def applyShootingTheMoon(points: Map[Player, Int]): Map[Player, Int] =
+        val nonZero = points.filter { case (_, p) => p > 0 }
+        if (nonZero.size == 1 && points.exists { case (_, p) => p == 0 })
+            val (moonPlayer, moonPoints) = nonZero.head
+            points.map {
+                case (p, _) if p == moonPlayer  => p -> 0
+                case (p, _)                     => p -> moonPoints
+            }
+        else
+            points
+
+    def scoreRound(): Unit =
+        val raw = rawPointsPerPlayer()
+        val finalPoints = applyShootingTheMoon(raw)
+        for (p <- game.players)
+            p.points += finalPoints.getOrElse(p, 0)
 
     def getCurrentPlayerHand(): String = game.currentPlayer.get.handToString()
 

@@ -66,6 +66,7 @@ class StateSpec extends AnyWordSpec with Matchers{
             game.players(2).name should be ("P3")
             game.players.size should equal (game.playerNumber.get)
             gameController.state.getStateString() should be ("SetMaxScoreState")
+
         }
 
         "process input for SetMaxScoreState correctly" in {
