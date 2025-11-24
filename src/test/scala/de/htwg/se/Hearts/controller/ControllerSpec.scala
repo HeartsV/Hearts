@@ -448,5 +448,12 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             gameController.state should be(state)
         }
 
+        "be able to get and set keepProcessRunning" in {
+            val game = Game()
+            val gameController = Controller(game)
+            gameController.getkeepProcessRunning() should be (true)
+            gameController.setkeepProcessRunning(false)
+            gameController.getkeepProcessRunning() should be (false)
+        }
     }
 }
