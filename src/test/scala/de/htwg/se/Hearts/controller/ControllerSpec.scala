@@ -265,6 +265,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         "check if playerNumber is 3 or (playerNumber is 3 and 2 \u2663 is the first Card in the deck) one Card gets filtered out, but not the 2 \u2663" in {
             val game = Game()
             val gameController = Controller(game)
+            game.playerNumber = Some(3)
             val deck = List[Card](card1, card2, card3, card4, card5, card6, card7, card8)
             val deck2 = List[Card](card4, card7, card5, card1, card3, card2, card8, card6)
             val newdeck = gameController.filterOneCardOut(deck)
