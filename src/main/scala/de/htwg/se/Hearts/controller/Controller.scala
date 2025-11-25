@@ -126,6 +126,24 @@ class Controller(game: Game) extends Observable() {
             p.points += applyShootingTheMoon(raw).getOrElse(p, 0)
             p.wonCards.clear()
 
+    def getPlayersWithPoints(): List[(String, Int)] =
+        for {
+            n <- game.players.toList
+        } yield (n.name, n.points)
+
+    def rankPlayers(players: List[(String, Int)]): List[(Int, String, Int)] =
+        val sorted = players.sortBy(_._2)
+        var lastPoints = -1
+        var lastRank = 0
+        var index = 0
+        sorted.map { case (name, points) =>
+            index += 1
+            if (points != lastPoints)
+                lastRank = index
+                lastPoints = points
+            (lastRank, name, points)
+        }
+
     def getCurrentPlayerHand(): String = game.currentPlayer.get.handToString()
 
     def getCurrentPlayerName(): String = game.currentPlayer.get.name

@@ -15,10 +15,10 @@ class TuiSpec extends AnyWordSpec with Matchers {
         val p2 = Player("Dave")
         val p3 = Player("Charlie")
         val p4 = Player("David")
-        p1.points = 10
+        p1.points = 30
         p2.points = 20
         p3.points = 20
-        p4.points = 30
+        p4.points = 10
         game.addPlayer(p1)
         game.addPlayer(p2)
         game.addPlayer(p3)
@@ -111,13 +111,18 @@ class TuiSpec extends AnyWordSpec with Matchers {
         }
 
         "get the correct getShowScoreStateString" in {
-            tui.getShowScoreStateString() should be ("Scoreboard:\n1. Alice: 10\n2.Dave: 20\n2.Charlie: 20\n4. David: 30\nPress any button to continue\n")
+            tui.getShowScoreStateString() should be ("Scoreboard:\n1. David: 10\n2. Dave: 20\n2. Charlie: 20\n4. Alice: 30\nPress any button to continue\n")
 
         }
 
         "get the correct getGameOverStateString" in {
-            tui.getGameOverStateString() should be ("GameOver\nScoreboard:\n1. Alice: 10\n2.Dave: 20\n2.Charlie: 20\n3. David: 30\nnew\nagain\nquit\nexit\n")
-
+            tui.getGameOverStateString() should be (
+                "GAMEOVER\n\nScoreboard:\n1. David: 10\n2. Dave: 20\n2. Charlie: 20\n4. Alice: 30\n" +
+                "Please enter:" + "\n" +
+                "- n or new for a new Game" + "\n" +
+                "- a or again for playing again" + "\n" +
+                "- q or quit to go back to Mainmenu" + "\n" +
+                "- e or exit to end the program" + "\n")
         }
     }
 

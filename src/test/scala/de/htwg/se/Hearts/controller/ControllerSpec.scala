@@ -409,6 +409,45 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             p4.wonCards should be (empty)
         }
 
+        "check if playerAndPointsToList gets the player names and their points and puts them into tuples" in {
+            val game = Game()
+            val gameController= Controller(game)
+            game.playerNumber = Some(4)
+            val p1 = Player("Alice")
+            val p2 = Player("Dave")
+            val p3 = Player("Charlie")
+            val p4 = Player("David")
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            game.addPlayer(p3)
+            game.addPlayer(p4)
+            p1.points = 30
+            p2.points = 20
+            p3.points = 20
+            p4.points = 10
+            val a = List((p1.name,p1.points),(p2.name,p2.points),(p3.name,p3.points),(p4.name,p4.points))
+            gameController.getPlayersWithPoints() should be (a)
+        }
+        " sort and rank Players by Points" in {
+            val game = Game()
+            val gameController= Controller(game)
+            game.playerNumber = Some(4)
+            val p1 = Player("Alice")
+            val p2 = Player("Dave")
+            val p3 = Player("Charlie")
+            val p4 = Player("David")
+            game.addPlayer(p1)
+            game.addPlayer(p2)
+            game.addPlayer(p3)
+            game.addPlayer(p4)
+            p1.points = 30
+            p2.points = 20
+            p3.points = 20
+            p4.points = 10
+            val b = List((1,p4.name,p4.points),(2,p2.name,p2.points),(2,p3.name,p3.points),(4,p1.name,p1.points))
+            gameController.rankPlayers(gameController.getPlayersWithPoints()) should be (b)
+        }
+
         "check if the game is over" in{
             val game = Game()
             val p1 = Player("Alice")
