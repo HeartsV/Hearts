@@ -10,7 +10,7 @@ trait State(controller: Controller) {
 class MainScreenState(controller: Controller) extends State(controller: Controller){
     def processInput(input: String): Boolean =
         input.toLowerCase().trim match{
-        case "newgame"| "n" =>
+        case "new"| "n" =>
             controller.changeState(GetPlayerNumberState(controller))
             true
         case "rules"|"r" =>
@@ -102,7 +102,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
 }
 
 class ShowScoreState(controller: Controller) extends State(controller: Controller) {
-    def processInput(input: String): Boolean = 
+    def processInput(input: String): Boolean =
         controller.dealCards(controller.shuffledeck(controller.createDeck()))
         controller.getGame().firstCard = true
         controller.getGame().startWithHearts = false
@@ -125,7 +125,7 @@ class GameOverState(controller: Controller) extends State(controller: Controller
                 controller.getGame().currentPlayer = None
                 controller.getGame().maxScore = None
                 input.toLowerCase().trim match {
-                    case "new"|"n" => 
+                    case "new"|"n" =>
                         controller.changeState(GetPlayerNumberState(controller))
                     case "quit"|"q" =>
                         controller.changeState(MainScreenState(controller))
