@@ -11,14 +11,14 @@ class Tui(gameController: Controller)  extends Observer{
 	def getMainScreenStateString(): String =
 		"Hearts" + "\n\n" +
 		"Please enter:" + "\n" +
-		"- n or new Game for a new Game" + "\n" +
+		"- n or new for a new Game" + "\n" +
 		"- r or rules for the rules" + "\n" +
 		"- e or exit to end the program" + "\n"
 
 
 	def getRulesScreenStateString(): String =
 		"\n\n" +"Rules:" + "\n\n" +
-		"Hearts is a trick-taking card game played with 3–4 players, each playing individually." + "\n" +
+		"Hearts is a trick-taking card game played with 3-4 players, each playing individually." + "\n" +
 		"With 4 players, the game uses all 52 cards of a standard deck." + "\n" +
 		"With 3 players, one card is removed and the remaining 51 cards are used." + "\n" +
 		"Each suit contains cards from Two (lowest) to Ace (highest), giving 13 cards per suit." + "\n" +

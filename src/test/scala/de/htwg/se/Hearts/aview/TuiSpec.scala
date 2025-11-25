@@ -40,7 +40,7 @@ class TuiSpec extends AnyWordSpec with Matchers {
         "get the correct getRulesScreenStateString" in {
             val expected =
                 "\n\n" +"Rules:" + "\n\n" +
-                "Hearts is a trick-taking card game played with 3–4 players, each playing individually." + "\n" +
+                "Hearts is a trick-taking card game played with 3-4 players, each playing individually." + "\n" +
                 "With 4 players, the game uses all 52 cards of a standard deck." + "\n" +
                 "With 3 players, one card is removed and the remaining 51 cards are used." + "\n" +
                 "Each suit contains cards from Two (lowest) to Ace (highest), giving 13 cards per suit." + "\n" +
