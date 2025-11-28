@@ -37,6 +37,9 @@ case class Game(
 
   def setStartWithHearts(a: Boolean): Game = copy(startWithHearts = a)
 
+
+  def setFirstCard(a: Boolean): Game = copy(firstCard = a)
+
   def updatePlayer(index: Int, updatedPlayer: Player): Game = copy(players = players.updated(index, updatedPlayer))
 
   def resetForNewGame: Game =

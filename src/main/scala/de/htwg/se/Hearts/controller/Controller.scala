@@ -24,16 +24,19 @@ class Controller(var game: Game) extends Observable():
 
     def changeState(newState:State): Unit = state = newState
 
+    def cardAllowed(index: Int): Boolean =
+        val h = sortingStrategy.execute(game.getCurrentPlayer.get)
+        if(h.size > index - 1 && index - 1 >= 0 && addCard(h(index - 1)))
+            true
+        else
+            false
+
     def playCard(index: Int): Player =
         val h = sortingStrategy.execute(game.getCurrentPlayer.get)
         if(game.trickCards.size == game.players.size)
             game.getCurrentPlayer.get.addWonCards(game.trickCards)
             game.clearTrick
-        if(h.size > index - 1 && index - 1 >= 0 && addCard(h(index - 1)))
-            game.getCurrentPlayer.get.removeCard(h(index-1))
-            true
-        else
-            false
+
 
     def addCard(newCard: Card): Game =
         if(game.firstCard == true)
@@ -64,7 +67,7 @@ class Controller(var game: Game) extends Observable():
             game
 
     def trickToString: String =
-        if (getGame.trickCards.nonEmpty) getGame.trickCards.map(card => s" $card ").mkString("|", "|", "|")
+        if (game.trickCards.nonEmpty) game.trickCards.map(card => s" $card ").mkString("|", "|", "|")
         else "|"
 
     def completeTrickString(): String = trickToString + "     |" * (game.players.size - game.trickCards.size)
@@ -97,11 +100,11 @@ class Controller(var game: Game) extends Observable():
         else
             deck
 
-    def dealCards(deck: List[Card]): Boolean =
+    def dealCards(deck: List[Card]): Game =
         val newdeck = filterOneCardOut(deck)
         val handlist = deck.grouped(newdeck.size/game.playerNumber.get).toList
-        for (i <- 0 to game.playerNumber.get - 1) game.players(i).addAllCards(handlist(i))
-        true
+        //for (i <- 0 to game.playerNumber.get - 1) game.players(i).addAllCards(handlist(i))
+        game.copy(players = (game.players.zip(handlist).map { case (player, newCards) => player.copy(hand = newCards)}).toVector)
 
     def cardPoints(card: Card): Int =
         card match
@@ -125,9 +128,7 @@ class Controller(var game: Game) extends Observable():
             points
 
     def addPointsToPlayers(raw: Map[Player, Int]): Game =
-        raw.foldLeft(this) { case (currentGame, (player, points)) => currentGame.updatePlayer(game.players.indexOf(player), player.addPoints(points)) }
-
-
+        game.copy(players = (raw.map{ case (player, newPoints) => player.copy(points = player.points + newPoints)}).toVector)
 
     def getPlayersWithPoints(): List[(String, Int)] =
         for {
@@ -162,8 +163,6 @@ class Controller(var game: Game) extends Observable():
             true
         else
             false
-
-    def getGame: Game = game
 
     def getPlayerNumber: Option[Int] = game.playerNumber
 

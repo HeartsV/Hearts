@@ -53,54 +53,53 @@ class GetPlayerNumberState(controller: Controller) extends State(controller: Con
 class GetPlayerNamesState(controller: Controller) extends State(controller: Controller) {
     def processInput(input: String): Game =
         if(!input.trim.equals(""))
-            controller.getGame.addPlayer(Player(input))
+            controller.game.addPlayer(Player(input))
         else
-            controller.getGame.addPlayer(Player(s"P${controller.getGame.players.size + 1}"))
-        if(controller.getGame.players.size == controller.getGame.playerNumber.get)
-            controller.dealCards(controller.shuffledeck(controller.createDeck()))
+            controller.game.addPlayer(Player(s"P${controller.game.players.size + 1}"))
+        if(controller.game.players.size == controller.game.playerNumber.get)
+            controller.game = controller.dealCards(controller.shuffledeck(controller.createDeck()))
             controller.changeState(SetMaxScoreState(controller))
             controller.updateCurrentPlayer()
-        true
-
+        else
+            controller.game
     def getStateString(): String = "GetPlayerNamesState"
 }
 
 class SetMaxScoreState(controller: Controller) extends State(controller: Controller) {
     def processInput(input: String): Game =
         if(input.toIntOption.exists(intInput => intInput >= 1 ))
-            controller.getGame.maxScore = Some(input.toInt)
             controller.changeState(GamePlayState(controller))
-            true
+            controller.game.setMaxScore(input.toInt)
         else if(input.trim.equals(""))
-            controller.getGame.maxScore = Some(100)
             controller.changeState(GamePlayState(controller))
-            true
+            controller.game.setMaxScore(100)
         else
-            false
+            controller.game
 
     def getStateString(): String ="SetMaxScoreState"
 }
 
 class GamePlayState(controller: Controller) extends State(controller: Controller) {
-    def processInput(input: String):Boolean =
+    def processInput(input: String): Game =
         controller.executeStrategy()
         input.trim.toLowerCase() match {
-            case "suit" | "s" => controller.setStrategy(SortBySuitStrategy()); true
-            case "rank" | "r" => controller.setStrategy(SortByRankStrategy()); true
+            case "suit" | "s" => controller.setStrategy(SortBySuitStrategy()); controller.game
+            case "rank" | "r" => controller.setStrategy(SortByRankStrategy()); controller.game
             case _ =>
-                if(input.toIntOption.exists(index => controller.playCard(index)))
-                    if(controller.getGame.firstCard == true) controller.getGame.firstCard = false
-                    controller.updateCurrentWinner()
+                if(input.toIntOption.exists(index => controller.cardAllowed(index)))
+                    if(controller.game.firstCard == true) controller.game = controller.game.setFirstCard(false)
+                    controller.game = controller.updateCurrentWinner(controller.game.getCurrentPlayer.get, controller.game.getCurrentPlayer.get.hand(input.toInt-1))
+                    controller.playCard(input.toInt-1)
                     controller.updateCurrentPlayer()
-                    if(controller.getGame.currentPlayer.get.hand.size == 0 && !controller.checkGameOver())
+                    if(controller.game.getCurrentPlayer.get.hand.size == 0 && !controller.checkGameOver())
                         controller.addPointsToPlayers(controller.rawPointsPerPlayer())
                         controller.changeState(ShowScoreState(controller))
-                    else if (controller.getGame.currentPlayer.get.hand.size == 0 && controller.checkGameOver())
+                    else if (controller.game.getCurrentPlayer.get.hand.size == 0 && controller.checkGameOver())
                         controller.addPointsToPlayers(controller.rawPointsPerPlayer())
                         controller.changeState(GameOverState(controller))
                     true
                 else
-                    false
+                    controller.game
         }
 
 
@@ -110,8 +109,8 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
 class ShowScoreState(controller: Controller) extends State(controller: Controller) {
     def processInput(input: String): Game =
         controller.dealCards(controller.shuffledeck(controller.createDeck()))
-        controller.getGame.firstCard = true
-        controller.getGame.startWithHearts = false
+        controller.game.firstCard = true
+        controller.game.startWithHearts = false
         controller.updateCurrentPlayer()
         controller.changeState(GamePlayState(controller))
         true
@@ -124,12 +123,12 @@ class GameOverState(controller: Controller) extends State(controller: Controller
     def processInput(input: String): Game =
         input.toLowerCase().trim match {
             case "new"|"n"|"quit"|"q" =>
-                controller.getGame.firstCard = true
-                controller.getGame.startWithHearts = false
-                controller.getGame.playerNumber = None
-                controller.getGame.players.clear()
-                controller.getGame.currentPlayer = None
-                controller.getGame.maxScore = None
+                controller.game.firstCard = true
+                controller.game.startWithHearts = false
+                controller.game.playerNumber = None
+                controller.game.players.clear()
+                controller.game.currentPlayer = None
+                controller.game.maxScore = None
                 input.toLowerCase().trim match {
                     case "new"|"n" =>
                         controller.changeState(GetPlayerNumberState(controller))
@@ -139,10 +138,10 @@ class GameOverState(controller: Controller) extends State(controller: Controller
                 true
             case "again"|"a" =>
                 controller.dealCards(controller.shuffledeck(controller.createDeck()))
-                controller.getGame.firstCard = true
-                controller.getGame.startWithHearts = false
+                controller.game.firstCard = true
+                controller.game.startWithHearts = false
                 controller.updateCurrentPlayer()
-                for(p <- controller.getGame.players) p.points = 0
+                for(p <- controller.game.players) p.points = 0
                 controller.changeState(GamePlayState(controller))
                 true
             case "exit"|"e" =>
