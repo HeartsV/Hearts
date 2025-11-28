@@ -12,7 +12,5 @@ class Player(val name: String) {
         hand.remove(hand.indexOf(card))
         true
 
-
-
     def addAllCards(cards: List[Card]): Unit = hand.addAll(cards)
 }

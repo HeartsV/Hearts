@@ -183,7 +183,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val p1 = Player("Alice")
             game.currentPlayer = Some(p1)
             p1.hand ++= List(card1,card2)
-            gameController.getCurrentPlayerHand() should be ("|  1  |  2  |\n| 2 \u2663 | 2 \u2666 |")
+            gameController.handToString() should be ("|  1  |  2  |\n| 2 \u2663 | 2 \u2666 |")
         }
         "get the name of current player" in{
             val game = Game()
@@ -446,6 +446,16 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             p4.points = 10
             val b = List((1,p4.name,p4.points),(2,p2.name,p2.points),(2,p3.name,p3.points),(4,p1.name,p1.points))
             gameController.rankPlayers(gameController.getPlayersWithPoints()) should be (b)
+        }
+
+        "output handstring" in {
+            val p1 = Player("Alice")
+            val game = Game()
+            val gameController= Controller(game)
+            p1.hand ++= List(card1,card2)
+            game.addPlayer(p1)
+            game.currentPlayer = Some(p1)
+            gameController.handToString() should be ("|  1  |  2  |\n| A \u2660 | 10\u2665 |")
         }
 
         "check if the game is over" in{
