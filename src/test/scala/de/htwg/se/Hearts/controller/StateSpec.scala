@@ -13,7 +13,7 @@ class StateSpec extends AnyWordSpec with Matchers{
         val card3 = Card(Rank.Ace,Suit.Clubs)
         val card4 = Card(Rank.Ace,Suit.Diamonds)
         val card5 = Card(Rank.Jack,Suit.Hearts)
-        val card6 = Card(Rank.Jack,Suit.Hearts)
+        val card6 = Card(Rank.Jack,Suit.Clubs)
         val card7 = Card(Rank.Ten,Suit.Clubs)
         val card8 = Card(Rank.Ten,Suit.Diamonds)
 
@@ -112,6 +112,19 @@ class StateSpec extends AnyWordSpec with Matchers{
             gameController.processInput("1") should be (true)
         }
 
+        "be able to change sortingStrategies" in {
+            val game = Game()
+            val gameController = Controller(game)
+            val p1 = Player("Alice")
+            p1.hand ++= List(card1, card2, card3, card4, card5, card6, card7, card8)
+            gameController.state = GamePlayState(gameController)
+            game.currentPlayer = Some(p1)
+            gameController.processInput("suit")
+            val sortedHand = List(card5, card2, card8, card4, card1, card7, card6, card3)
+            gameController.sortingStrategy.execute(game.currentPlayer.get) should equal (sortedHand)
+
+        }
+
         "process input for GamePlayState correctly when someone reaches max score" in {
             val p1 = Player("Alice")
             val p2 = Player("Bob")
@@ -165,9 +178,8 @@ class StateSpec extends AnyWordSpec with Matchers{
             gameController.state = GameOverState(gameController)
             gameController.processInput("") should be (false)
             gameController.state.getStateString() should be ("GameOverState")
-            gameController.processInput("e") should be (true)        
+            gameController.processInput("e") should be (true)
             game.keepProcessRunning should be (false)
-            
         }
 
         "process again input for GameOverState" in {
@@ -209,7 +221,7 @@ class StateSpec extends AnyWordSpec with Matchers{
             game.currentPlayer = Some(p1)
             val gameController = Controller(game)
             gameController.state = GameOverState(gameController)
-            gameController.processInput("n")       
+            gameController.processInput("n")
             game.firstCard should be (true)
             game.startWithHearts should be (false)
             game.players should be (ListBuffer[Player]())
@@ -234,7 +246,7 @@ class StateSpec extends AnyWordSpec with Matchers{
             game.currentPlayer = Some(p1)
             val gameController = Controller(game)
             gameController.state = GameOverState(gameController)
-            gameController.processInput("q")       
+            gameController.processInput("q")
             game.firstCard should be (true)
             game.startWithHearts should be (false)
             game.players should be (ListBuffer[Player]())
