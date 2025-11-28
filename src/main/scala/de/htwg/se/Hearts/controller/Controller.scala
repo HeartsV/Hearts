@@ -11,72 +11,73 @@ class Controller(var game: Game) extends Observable():
     var sortingStrategy:Strategy = SortByRankStrategy()
 
     def processInput(input: String): Boolean =
-        if(state.processInput(input))
+        /*if(state.processInput(input))
             notifyObservers
             true
         else
             notifyObservers
-            false
+            false*/
+        game = state.processInput(input)
+        notifyObservers
+        true
+
 
     def changeState(newState:State): Unit = state = newState
 
-    def playCard(index: Int): Boolean =
-        val h = sortingStrategy.execute(g)
-        if(game.trick.cards.size == game.players.size)
-            game.currentPlayer.get.wonCards.addAll(game.trick.cards)
-            game.trick.clearTrick()
+    def playCard(index: Int): Player =
+        val h = sortingStrategy.execute(game.getCurrentPlayer.get)
+        if(game.trickCards.size == game.players.size)
+            game.getCurrentPlayer.get.addWonCards(game.trickCards)
+            game.clearTrick
         if(h.size > index - 1 && index - 1 >= 0 && addCard(h(index - 1)))
-            game.currentPlayer.get.removeCard(h(index-1))
+            game.getCurrentPlayer.get.removeCard(h(index-1))
             true
         else
             false
 
-    def addCard(newCard: Card): Boolean =
+    def addCard(newCard: Card): Game =
         if(game.firstCard == true)
             if(newCard  == (Card(Rank.Two,Suit.Clubs)))
-                game.trick.addCard(newCard)
-                true
+                game.addCard(newCard)
             else
-                false
-        else if(!(game.trick.cards == ListBuffer()))
-            if(game.trick.highestCard.exists(card => card.suit == newCard.suit) || !game.trick.highestCard.exists(card => game.currentPlayer.get.hand.exists(_.suit == card.suit)))
-                game.trick.addCard(newCard)
+                game
+        else if(!(game.trickCards == ListBuffer()))
+            if(game.highestCard.exists(card => card.suit == newCard.suit) || !game.highestCard.exists(card => game.getCurrentPlayer.get.hand.exists(_.suit == card.suit)))
                 if(newCard.suit == Suit.Hearts)
-                    game.startWithHearts = true
-                true
+                    game.setStartWithHearts(true).addCard(newCard)
+                else
+                    game.addCard(newCard)
             else
-                false
+                game
         else
             if (newCard.suit == Suit.Hearts && game.startWithHearts == false)
-                false
+                game
             else
-                game.trick.addCard(newCard)
-                game.trick.initializeTrick(game.currentPlayer.get,newCard)
-                true
+                game.addCard(newCard).setTrick(game.getCurrentPlayer.get,newCard).setFirstPlayer(game.getCurrentPlayer.get)
 
-    def updateCurrentWinner(): Boolean =
-        if(game.trick.highestCard == None || game.trick.highestCard.exists(card => card.suit == game.trick.cards.last.suit && game.trick.cards.last.rank.compare(card.rank) > 0))
-            game.trick.highestCard = Some(game.trick.cards.last)
-            game.trick.currentWinner = Some(game.currentPlayer.get)
-            true
+
+
+    def updateCurrentWinner(currentPlayer: Player, newCard: Card): Game =
+        if(game.highestCard == None || game.highestCard.exists(card => card.suit == game.trickCards.last.suit && game.trickCards.last.rank.compare(card.rank) > 0))
+            game.setTrick(currentPlayer, newCard)
         else
-            false
+            game
 
-    def completeTrickString(): String = game.trick.trickToString()  + "     |" * (game.players.size - game.trick.cards.size)
+    def trickToString: String =
+        if (getGame.trickCards.nonEmpty) getGame.trickCards.map(card => s" $card ").mkString("|", "|", "|")
+        else "|"
 
-    def updateCurrentPlayer(): Boolean =
+    def completeTrickString(): String = trickToString + "     |" * (game.players.size - game.trickCards.size)
+
+    def updateCurrentPlayer(): Game =
     if (game.firstCard == true)
-        game.currentPlayer = game.players.find(_.hand.contains(Card(Rank.Two,Suit.Clubs)))
-        true
-    else if(game.players.size == game.trick.cards.size)
-        game.currentPlayer = game.trick.currentWinner
-        true
-    else if(game.players.indexOf(game.currentPlayer.get) + 1 == game.players.size)
-        game.currentPlayer = Some(game.players(0))
-        true
+        game.setCurrentPlayerIndex(game.players.indexWhere(_.hand.contains(Card(Rank.Two,Suit.Clubs))))
+    else if(game.players.size == game.trickCards.size)
+        game.setCurrentPlayerIndex(game.players.indexOf(game.getCurrentWinner))
+    else if(game.getCurrentPlayerIndex + 1 == game.players.size)
+        game.setCurrentPlayerIndex(0)
     else
-        game.currentPlayer = Some(game.players((game.players.indexOf(game.currentPlayer.get) + 1)))
-        true
+        game.setCurrentPlayerIndex(game.getCurrentPlayerIndex + 1)
 
     def createDeck(): List[Card] =
         for
@@ -124,7 +125,7 @@ class Controller(var game: Game) extends Observable():
             points
 
     def addPointsToPlayers(raw: Map[Player, Int]): Game =
-        raw.map((player, points) => game.updatePlayer(game.players.indexOf(player), player.addPoints(points))).toList.last
+        raw.foldLeft(this) { case (currentGame, (player, points)) => currentGame.updatePlayer(game.players.indexOf(player), player.addPoints(points)) }
 
 
 
@@ -146,6 +147,8 @@ class Controller(var game: Game) extends Observable():
             (lastRank, name, points)
         }
 
+
+
     def handToString(): String =
         val h = sortingStrategy.execute(game.getCurrentPlayer.get)
         (1 to h.size).map(index => s"  $index".padTo(5, ' ')).mkString("|", "|", "|") + "\n" +
@@ -162,11 +165,9 @@ class Controller(var game: Game) extends Observable():
 
     def getGame: Game = game
 
-    def getTrick: Trick = getGame.trick
-
     def getPlayerNumber: Option[Int] = game.playerNumber
 
-    def setPlayerNumber(number: Int): Unit = game = game.copy(playerNumber = Some(number))
+    def setPlayerNumber(number: Int): Game = game.copy(playerNumber = Some(number))
 
     def getkeepProcessRunning: Boolean = game.keepProcessRunning
 
