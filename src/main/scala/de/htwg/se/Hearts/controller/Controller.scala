@@ -25,7 +25,8 @@ class Controller(game: Game) extends Observable() {
             game.currentPlayer.get.wonCards.addAll(game.trick.cards)
             game.trick.clearTrick()
         if(game.currentPlayer.get.hand.size > index - 1 && index - 1 >= 0 && addCard(game.currentPlayer.get.hand(index - 1)))
-            game.currentPlayer.get.removeCard(index)
+            val h = sortingStrategy.execute(game.currentPlayer.get)
+            game.currentPlayer.get.removeCard(h(index-1))
             true
         else
             false
