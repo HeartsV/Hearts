@@ -5,7 +5,7 @@ import scala.collection.mutable.ListBuffer
 import scala.compiletime.ops.boolean
 
 
-class Controller(game: Game) extends Observable() {
+class Controller(var game: Game) extends Observable() {
 
     var state:State = MainScreenState(this)
     var sortingStrategy:Strategy = SortByRankStrategy()
