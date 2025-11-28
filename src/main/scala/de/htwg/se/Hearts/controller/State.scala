@@ -58,7 +58,7 @@ class GetPlayerNamesState(controller: Controller) extends State(controller: Cont
         else
             controller.getGame().addPlayer(Player(s"P${controller.getGame().players.size + 1}"))
         if(controller.getGame().players.size == controller.getGame().playerNumber.get)
-            controller.dealCards(controller.createDeck())
+            controller.dealCards(controller.shuffledeck(controller.createDeck()))
             controller.updateCurrentPlayer()
             controller.changeState(SetMaxScoreState(controller))
         true
@@ -84,19 +84,26 @@ class SetMaxScoreState(controller: Controller) extends State(controller: Control
 
 class GamePlayState(controller: Controller) extends State(controller: Controller) {
     def processInput(input: String):Boolean =
-        if(input.toIntOption.exists(index => controller.playCard(index)))
-            if(controller.getGame().firstCard == true) controller.getGame().firstCard = false
-            controller.updateCurrentWinner()
-            controller.updateCurrentPlayer()
-            if(controller.getGame().currentPlayer.get.hand.size == 0 && !controller.checkGameOver())
-                controller.addPointsToPlayers(controller.rawPointsPerPlayer())
-                controller.changeState(ShowScoreState(controller))
-            else if (controller.getGame().currentPlayer.get.hand.size == 0 && controller.checkGameOver())
-                controller.addPointsToPlayers(controller.rawPointsPerPlayer())
-                controller.changeState(GameOverState(controller))
-            true
-        else
-            false
+        controller.executeStrategy()
+        input.trim.toLowerCase() match {
+            case "suit" | "s" => controller.setStrategy(SortBySuitStrategy()); true
+            case "rank" | "r" => controller.setStrategy(SortByRankStrategy()); true
+            case _ =>
+                if(input.toIntOption.exists(index => controller.playCard(index)))
+                    if(controller.getGame().firstCard == true) controller.getGame().firstCard = false
+                    controller.updateCurrentWinner()
+                    controller.updateCurrentPlayer()
+                    if(controller.getGame().currentPlayer.get.hand.size == 0 && !controller.checkGameOver())
+                        controller.addPointsToPlayers(controller.rawPointsPerPlayer())
+                        controller.changeState(ShowScoreState(controller))
+                    else if (controller.getGame().currentPlayer.get.hand.size == 0 && controller.checkGameOver())
+                        controller.addPointsToPlayers(controller.rawPointsPerPlayer())
+                        controller.changeState(GameOverState(controller))
+                    true
+                else
+                    false
+        }
+
 
     def getStateString(): String = "GamePlayState"
 }

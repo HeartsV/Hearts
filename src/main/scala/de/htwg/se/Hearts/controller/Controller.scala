@@ -8,6 +8,7 @@ import scala.compiletime.ops.boolean
 class Controller(game: Game) extends Observable() {
 
     var state:State = MainScreenState(this)
+    var sortingStrategy:Strategy = SortByRankStrategy()
 
     def processInput(input: String): Boolean =
         if(state.processInput(input))
@@ -144,7 +145,10 @@ class Controller(game: Game) extends Observable() {
             (lastRank, name, points)
         }
 
-    def getCurrentPlayerHand(): String = game.currentPlayer.get.handToString()
+    def handToString(): String =
+        val h = sortingStrategy.execute(game.currentPlayer.get)
+        (1 to h.size).map(index => s"  $index".padTo(5, ' ')).mkString("|", "|", "|") + "\n" +
+        h.map(card => s" $card ").mkString("|", "|", "|")
 
     def getCurrentPlayerName(): String = game.currentPlayer.get.name
 
@@ -164,4 +168,8 @@ class Controller(game: Game) extends Observable() {
     def getkeepProcessRunning(): Boolean = game.keepProcessRunning
 
     def setkeepProcessRunning(a:Boolean): Unit = game.keepProcessRunning = a
+
+    def setStrategy(strategy:Strategy): Unit = this.sortingStrategy = strategy
+
+    def executeStrategy(): Unit = sortingStrategy.execute(game.currentPlayer.get)
 }

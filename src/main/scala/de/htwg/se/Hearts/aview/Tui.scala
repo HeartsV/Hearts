@@ -73,7 +73,7 @@ class Tui(gameController: Controller)  extends Observer{
 		"Trick:" + "\n" +
 		gameController.completeTrickString() + "\n" +
 		gameController.getCurrentPlayerName() +" please select card to play:" + "\n" +
-		gameController.getCurrentPlayerHand() + "\n"
+		gameController.handToString() + "\n"
 
 	def getShowScoreStateString(): String =
 		"Scoreboard:\n" +
