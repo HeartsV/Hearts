@@ -120,9 +120,11 @@ class StateSpec extends AnyWordSpec with Matchers{
             gameController.state = GamePlayState(gameController)
             game.currentPlayer = Some(p1)
             gameController.processInput("suit")
-            val sortedHand = List(card5, card2, card8, card4, card1, card7, card6, card3)
-            gameController.sortingStrategy.execute(game.currentPlayer.get) should equal (sortedHand)
-
+            val sortedSuit = List(card5, card2, card8, card4, card1, card7, card6, card3)
+            gameController.sortingStrategy.execute(game.currentPlayer.get) should equal (sortedSuit)
+            gameController.processInput("rank")
+            val sortedRank = List(card2, card1, card8, card7, card5, card6, card4, card3)
+            gameController.sortingStrategy.execute(game.currentPlayer.get) should equal (sortedRank)
         }
 
         "process input for GamePlayState correctly when someone reaches max score" in {
