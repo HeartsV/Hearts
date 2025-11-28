@@ -2,30 +2,22 @@ package de.htwg.se.Hearts.model
 
 import scala.collection.mutable.ListBuffer
 
-class Trick {
-    val cards: ListBuffer[Card] = ListBuffer()
-    var highestCard: Option[Card] = None
-    var currentWinner: Option[Player] = None
-    var firstPlayer: Option[Player] = None
+case class Trick(
+    cards: List[Card] = Nil,
+    highestCard: Option[Card] = None,
+    currentWinner: Option[Player] = None,
+    firstPlayer: Option[Player] = None):
 
-    def addCard(newCard: Card): Boolean =
-        cards.addOne(newCard)
-        true
+    def addCard(player: Player, newCard: Card): Trick =
+        copy(cards :+ newCard)
 
-    def initializeTrick(player: Player, card: Card) =
-        highestCard = Some(card)
-        firstPlayer = Some(player)
-        currentWinner = Some(player)
+    def clearTrick: Trick =
+        Trick()
 
-    def clearTrick(): Boolean =
-        cards.clear()
-        highestCard = None
-        currentWinner = None
-        firstPlayer = None
-        true
+    def setTrick(player: Player, newCard: Card): Trick = copy(highestCard = Some(newCard), currentWinner = Some(player))
 
-    def trickToString(): String =
-        if(!(cards == ListBuffer())) cards.map(card => s" $card ").mkString("|","|","|")
+    def setFirstPlayer(player: Player): Trick = copy(firstPlayer = Some(player))
+
+    def trickToString: String =
+        if cards.nonEmpty then cards.map(card => s" $card ").mkString("|", "|", "|")
         else "|"
-
-}

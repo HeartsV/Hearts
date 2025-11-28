@@ -5,7 +5,7 @@ import scala.collection.mutable.ListBuffer
 import scala.compiletime.ops.boolean
 
 
-class Controller(var game: Game) extends Observable() {
+class Controller(var game: Game) extends Observable():
 
     var state:State = MainScreenState(this)
     var sortingStrategy:Strategy = SortByRankStrategy()
@@ -21,7 +21,7 @@ class Controller(var game: Game) extends Observable() {
     def changeState(newState:State): Unit = state = newState
 
     def playCard(index: Int): Boolean =
-        val h = sortingStrategy.execute(game.currentPlayer.get)
+        val h = sortingStrategy.execute(g)
         if(game.trick.cards.size == game.players.size)
             game.currentPlayer.get.wonCards.addAll(game.trick.cards)
             game.trick.clearTrick()
@@ -123,10 +123,10 @@ class Controller(var game: Game) extends Observable() {
         else
             points
 
-    def addPointsToPlayers(raw: Map[Player, Int]): Unit =
-        for (p <- game.players)
-            p.points += applyShootingTheMoon(raw).getOrElse(p, 0)
-            p.wonCards.clear()
+    def addPointsToPlayers(raw: Map[Player, Int]): Game =
+        raw.map((player, points) => game.updatePlayer(game.players.indexOf(player), player.addPoints(points))).toList.last
+
+
 
     def getPlayersWithPoints(): List[(String, Int)] =
         for {
@@ -147,11 +147,11 @@ class Controller(var game: Game) extends Observable() {
         }
 
     def handToString(): String =
-        val h = sortingStrategy.execute(game.currentPlayer.get)
+        val h = sortingStrategy.execute(game.getCurrentPlayer.get)
         (1 to h.size).map(index => s"  $index".padTo(5, ' ')).mkString("|", "|", "|") + "\n" +
         h.map(card => s" $card ").mkString("|", "|", "|")
 
-    def getCurrentPlayerName(): String = game.currentPlayer.get.name
+    def getCurrentPlayerName(): String = game.getCurrentPlayer.get.name
 
     def checkGameOver(): Boolean =
         val maxScorePoints = game.players.map(p => p -> p.points).toMap
@@ -160,17 +160,18 @@ class Controller(var game: Game) extends Observable() {
         else
             false
 
-    def getGame(): Game = game
+    def getGame: Game = game
 
-    def getPlayerNumber(): Option[Int] = game.playerNumber
+    def getTrick: Trick = getGame.trick
 
-    def setPlayerNumber(number: Int): Unit = game.playerNumber = Some(number)
+    def getPlayerNumber: Option[Int] = game.playerNumber
 
-    def getkeepProcessRunning(): Boolean = game.keepProcessRunning
+    def setPlayerNumber(number: Int): Unit = game = game.copy(playerNumber = Some(number))
 
-    def setkeepProcessRunning(a:Boolean): Unit = game.keepProcessRunning = a
+    def getkeepProcessRunning: Boolean = game.keepProcessRunning
+
+    def setkeepProcessRunning(a: Boolean): Unit = game = game.copy(keepProcessRunning = a)
 
     def setStrategy(strategy:Strategy): Unit = this.sortingStrategy = strategy
 
-    def executeStrategy(): Unit = sortingStrategy.execute(game.currentPlayer.get)
-}
+    def executeStrategy(): Unit = sortingStrategy.execute(game.getCurrentPlayer.get)
