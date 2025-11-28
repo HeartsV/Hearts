@@ -1,6 +1,6 @@
 package de.htwg.se.Hearts.model
 
-enum Suit:
+enum Suit extends Ordered[Suit]:
   case Hearts, Spades, Diamonds, Clubs
 
   def fileName: String = this match

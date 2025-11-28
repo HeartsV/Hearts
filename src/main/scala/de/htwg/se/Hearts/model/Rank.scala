@@ -1,7 +1,7 @@
 // src/main/scala/de/htwg/se/Hearts/model/card/Rank.scala
 package de.htwg.se.Hearts.model
 
-enum Rank(val value: Int):
+enum Rank(val value: Int) extends Ordered[Rank]:
   case Two   extends Rank(1)
   case Three extends Rank(2)
   case Four  extends Rank(3)
