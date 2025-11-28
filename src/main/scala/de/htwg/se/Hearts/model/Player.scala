@@ -9,7 +9,7 @@ class Player(val name: String) {
     var points: Int = 0
 
     def removeCard(card : Card) : Boolean =
-        hand.remove(hand.indexOf(card)-1)
+        hand.remove(hand.indexOf(card))
         true
 
 

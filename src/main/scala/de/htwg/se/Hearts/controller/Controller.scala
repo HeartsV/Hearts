@@ -21,11 +21,11 @@ class Controller(game: Game) extends Observable() {
     def changeState(newState:State): Unit = state = newState
 
     def playCard(index: Int): Boolean =
+        val h = sortingStrategy.execute(game.currentPlayer.get)
         if(game.trick.cards.size == game.players.size)
             game.currentPlayer.get.wonCards.addAll(game.trick.cards)
             game.trick.clearTrick()
-        if(game.currentPlayer.get.hand.size > index - 1 && index - 1 >= 0 && addCard(game.currentPlayer.get.hand(index - 1)))
-            val h = sortingStrategy.execute(game.currentPlayer.get)
+        if(h.size > index - 1 && index - 1 >= 0 && addCard(h(index - 1)))
             game.currentPlayer.get.removeCard(h(index-1))
             true
         else
