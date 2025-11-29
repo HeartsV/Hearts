@@ -92,12 +92,10 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
                     controller.playCard(input.toInt-1)
                     controller.updateCurrentPlayer()
                     if(controller.game.getCurrentPlayer.get.hand.size == 0 && !controller.checkGameOver())
-                        controller.addPointsToPlayers(controller.rawPointsPerPlayer())
                         controller.changeState(ShowScoreState(controller))
                     else if (controller.game.getCurrentPlayer.get.hand.size == 0 && controller.checkGameOver())
-                        controller.addPointsToPlayers(controller.rawPointsPerPlayer())
                         controller.changeState(GameOverState(controller))
-                    true
+                    controller.addPointsToPlayers(controller.rawPointsPerPlayer())
                 else
                     controller.game
         }
@@ -109,11 +107,10 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
 class ShowScoreState(controller: Controller) extends State(controller: Controller) {
     def processInput(input: String): Game =
         controller.dealCards(controller.shuffledeck(controller.createDeck()))
-        controller.game.firstCard = true
-        controller.game.startWithHearts = false
-        controller.updateCurrentPlayer()
+        controller.game.setFirstCard(true)
+        controller.game.setStartWithHearts(false)
         controller.changeState(GamePlayState(controller))
-        true
+        controller.updateCurrentPlayer()
 
     def getStateString(): String = "ShowScoreState"
 }
@@ -123,32 +120,24 @@ class GameOverState(controller: Controller) extends State(controller: Controller
     def processInput(input: String): Game =
         input.toLowerCase().trim match {
             case "new"|"n"|"quit"|"q" =>
-                controller.game.firstCard = true
-                controller.game.startWithHearts = false
-                controller.game.playerNumber = None
-                controller.game.players.clear()
-                controller.game.currentPlayer = None
-                controller.game.maxScore = None
+                controller.game.resetForNewGame
+                controller.game = controller.game.copy(players = Vector.empty)
                 input.toLowerCase().trim match {
                     case "new"|"n" =>
                         controller.changeState(GetPlayerNumberState(controller))
                     case "quit"|"q" =>
                         controller.changeState(MainScreenState(controller))
                 }
-                true
+                controller.game
             case "again"|"a" =>
                 controller.dealCards(controller.shuffledeck(controller.createDeck()))
-                controller.game.firstCard = true
-                controller.game.startWithHearts = false
-                controller.updateCurrentPlayer()
-                for(p <- controller.game.players) p.points = 0
                 controller.changeState(GamePlayState(controller))
-                true
+                controller.game.resetForNewGame
             case "exit"|"e" =>
                 controller.setkeepProcessRunning(false)
-                true
+                controller.game
             case _ =>
-                false
+                controller.game
         }
 
     def getStateString(): String = "GameOverState"

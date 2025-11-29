@@ -36,7 +36,7 @@ class Controller(var game: Game) extends Observable():
         if(game.trickCards.size == game.players.size)
             game.getCurrentPlayer.get.addWonCards(game.trickCards)
             game.clearTrick
-
+            
 
     def addCard(newCard: Card): Game =
         if(game.firstCard == true)
