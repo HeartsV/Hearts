@@ -1,30 +1,25 @@
 package de.htwg.se.Hearts.controller
 
-import de.htwg.se.Hearts.model.*
-import scala.collection.mutable.ListBuffer
-import scala.compiletime.ops.boolean
-
+import de.htwg.se.Hearts.model._
 
 class Controller(var game: Game) extends Observable():
 
     var state:State = MainScreenState(this)
     var sortingStrategy:Strategy = SortByRankStrategy()
 
-    def processInput(input: String): Boolean =
+    def processInput(input: String): Game =
         /*if(state.processInput(input))
             notifyObservers
             true
         else
             notifyObservers
             false*/
-        game = state.processInput(input)
         notifyObservers
-        true
-
+        state.processInput(input)
 
     def changeState(newState:State): Unit = state = newState
 
-    def cardAllowed(index: Int): Boolean =
+    /*def cardAllowed(index: Int): Boolean =
         val h = sortingStrategy.execute(game.getCurrentPlayer.get)
         if(h.size > index - 1 && index - 1 >= 0 && addCard(h(index - 1)))
             true
@@ -36,7 +31,7 @@ class Controller(var game: Game) extends Observable():
         if(game.trickCards.size == game.players.size)
             game.getCurrentPlayer.get.addWonCards(game.trickCards)
             game.clearTrick
-            
+
 
     def addCard(newCard: Card): Game =
         if(game.firstCard == true)
@@ -57,8 +52,67 @@ class Controller(var game: Game) extends Observable():
                 game
             else
                 game.addCard(newCard).setTrick(game.getCurrentPlayer.get,newCard).setFirstPlayer(game.getCurrentPlayer.get)
+        */
 
+    def cardAllowed(index: Int): Boolean =
+        game.getCurrentPlayer.exists { player =>
+            val sortedHand = sortingStrategy.execute(player)
+            val realIndex  = index - 1
 
+            if realIndex < 0 || realIndex >= sortedHand.size then
+                false
+            else
+                val card = sortedHand(realIndex)
+                ChainOfResponsibility.validateMove(game, player, card)
+        }
+
+    def playCard(index: Int): Game =
+        if !cardAllowed(index) then game
+        else
+            val currentPlayerIndex = game.getCurrentPlayerIndex
+            val currentPlayer = game.getCurrentPlayer.get
+            val sortedHand = sortingStrategy.execute(currentPlayer)
+            val realIndex = index - 1
+
+            if realIndex < 0 || realIndex >= sortedHand.size then game
+            else
+                val card = sortedHand(realIndex)
+                val updatedPlayer = currentPlayer.removeCard(card)
+                var g: Game = game.updatePlayer(currentPlayerIndex, updatedPlayer)
+
+                // 4. Karte in den Stich legen
+                g = g.addCard(card)
+
+                // 5. Gewinner / höchste Karte im aktuellen Stich aktualisieren
+                g = updateCurrentWinner(updatedPlayer, card)
+
+                // 6. firstCard-Flag ausschalten (nach der ersten jemals gespielten Karte)
+                if g.firstCard then g = g.setFirstCard(false)
+
+                // 7. Hearts "brechen", falls gerade zum ersten Mal Herz ausgespielt wurde
+                if card.suit == Suit.Hearts && !g.startWithHearts then g = g.setStartWithHearts(true)
+
+                // 8. Wenn Stich voll ist (jeder Spieler hat genau eine Karte gelegt)
+                if g.trickCards.size == g.players.size then
+                    val winner = g.getCurrentWinner.get // sollte gesetzt sein
+                    val winnerIndex = g.players.indexOf(winner)
+
+                    val winnerWithCards = winner.addWonCards(g.trickCards)
+
+                    // Gewinner updaten und Stich leeren
+                    g = g.updatePlayer(winnerIndex, winnerWithCards).clearTrick
+
+                    // Nach einem vollen Stich: aktueller Spieler ist der Gewinner
+                    // (falls du das so modelliert hast)
+                    // Wenn du dafür eine Game-Methode hast, kannst du die nutzen:
+                    // g = g.setCurrentPlayerIndex(winnerIndex)
+
+                // 9. Nächsten Spieler drannehmen
+                g = updateCurrentPlayer()
+
+                // 10. neuen Game-State im Controller speichern
+                game = g
+                game
 
     def updateCurrentWinner(currentPlayer: Player, newCard: Card): Game =
         if(game.highestCard == None || game.highestCard.exists(card => card.suit == game.trickCards.last.suit && game.trickCards.last.rank.compare(card.rank) > 0))
@@ -128,7 +182,7 @@ class Controller(var game: Game) extends Observable():
             points
 
     def addPointsToPlayers(raw: Map[Player, Int]): Game =
-        game.copy(players = (raw.map{ case (player, newPoints) => player.copy(points = player.points + newPoints)}).toVector)
+        game.copy(players = (raw.map{ case (player, newPoints) => player.addPoints(newPoints)}).toVector)
 
     def getPlayersWithPoints(): List[(String, Int)] =
         for {
@@ -140,15 +194,14 @@ class Controller(var game: Game) extends Observable():
         var lastPoints = -1
         var lastRank = 0
         var index = 0
-        sorted.map { case (name, points) =>
-            index += 1
-            if (points != lastPoints)
-                lastRank = index
-                lastPoints = points
-            (lastRank, name, points)
+        sorted.map {
+            case (name, points) =>
+                index += 1
+                if (points != lastPoints)
+                    lastRank = index
+                    lastPoints = points
+                (lastRank, name, points)
         }
-
-
 
     def handToString(): String =
         val h = sortingStrategy.execute(game.getCurrentPlayer.get)
@@ -168,10 +221,17 @@ class Controller(var game: Game) extends Observable():
 
     def setPlayerNumber(number: Int): Game = game.copy(playerNumber = Some(number))
 
-    def getkeepProcessRunning: Boolean = game.keepProcessRunning
+    def getKeepProcessRunning: Boolean = game.keepProcessRunning
 
-    def setkeepProcessRunning(a: Boolean): Unit = game = game.copy(keepProcessRunning = a)
+    def setKeepProcessRunning(a: Boolean): Unit = game = game.copy(keepProcessRunning = a)
 
     def setStrategy(strategy:Strategy): Unit = this.sortingStrategy = strategy
 
-    def executeStrategy(): Unit = sortingStrategy.execute(game.getCurrentPlayer.get)
+    def executeStrategy: Game = game.copy(players = game.players.map(player => player.copy(hand = sortingStrategy.execute(player))))
+    //falls ich das nur für einen spieler machen will
+    /*def executeStrategy: Game =
+        val i = game.getCurrentPlayerIndex
+        val p = game.players(i)
+        val sorted = sortingStrategy.execute(p)
+        game.updatePlayer(i, p.copy(hand = sorted))*/
+

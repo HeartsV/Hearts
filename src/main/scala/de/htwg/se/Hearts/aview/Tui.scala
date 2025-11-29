@@ -6,7 +6,7 @@ import scala.io.StdIn.readLine
 
 import de.htwg.se.Hearts.model.Suit
 
-class Tui(gameController: Controller)  extends Observer{
+class Tui(gameController: Controller)  extends Observer:
 
 	def getMainScreenStateString(): String =
 		"Hearts" + "\n\n" +
@@ -14,7 +14,6 @@ class Tui(gameController: Controller)  extends Observer{
 		"- n or new for a new Game" + "\n" +
 		"- r or rules for the rules" + "\n" +
 		"- e or exit to end the program" + "\n"
-
 
 	def getRulesScreenStateString(): String =
 		"\n\n" +"Rules:" + "\n\n" +
@@ -65,7 +64,7 @@ class Tui(gameController: Controller)  extends Observer{
 
 	def getPlayerNumberStateString(): String = "please input a Number of Players between 3 and 4" + "\n"
 
-	def getPlayerNamesStateString(): String = f"please input the names of the ${gameController.getGame().players.size +1}. player" + "\n"
+	def getPlayerNamesStateString(): String = f"please input the names of the ${gameController.game.players.size +1}. player" + "\n"
 
 	def setMaxScoreStateString(): String = "please enter the score required to win (between 1 and 400)" + "\n"
 
@@ -103,6 +102,4 @@ class Tui(gameController: Controller)  extends Observer{
 
 	def runGame(): Unit =
 		update()
-		while (gameController.getkeepProcessRunning())
-			gameController.processInput(readLine())
-}
+		while (gameController.getKeepProcessRunning) gameController.processInput(readLine())

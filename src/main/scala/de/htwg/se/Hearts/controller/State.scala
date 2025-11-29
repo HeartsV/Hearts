@@ -2,12 +2,11 @@ package de.htwg.se.Hearts.controller
 
 import de.htwg.se.Hearts.model.*
 
-trait State(controller: Controller) {
+trait State(controller: Controller):
     def processInput(input: String): Game
     def getStateString(): String
-}
 
-class MainScreenState(controller: Controller) extends State(controller: Controller){
+class MainScreenState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
         input.toLowerCase().trim match{
         case "new"| "n" =>
@@ -17,16 +16,15 @@ class MainScreenState(controller: Controller) extends State(controller: Controll
             controller.changeState(RulesScreenState(controller))
             controller.game
         case "exit"|"e" =>
-            controller.setkeepProcessRunning(false)
+            controller.setKeepProcessRunning(false)
             controller.game
         case _ =>
             controller.game
         }
 
     def getStateString(): String ="MainScreenState"
-}
 
-class RulesScreenState(controller: Controller) extends State(controller: Controller){
+class RulesScreenState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
         input.trim match {
             case "back" | "b" =>
@@ -37,9 +35,8 @@ class RulesScreenState(controller: Controller) extends State(controller: Control
         }
 
     def getStateString(): String = "RulesScreenState"
-}
 
-class GetPlayerNumberState(controller: Controller) extends State(controller: Controller) {
+class GetPlayerNumberState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
         if(input.toIntOption.exists(intInput => intInput >= 3 && intInput <= 4))
             controller.changeState(GetPlayerNamesState(controller))
@@ -48,24 +45,24 @@ class GetPlayerNumberState(controller: Controller) extends State(controller: Con
             controller.game
 
     def getStateString(): String = "GetPlayerNumberState"
-}
 
-class GetPlayerNamesState(controller: Controller) extends State(controller: Controller) {
+class GetPlayerNamesState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
+        if(controller.game.players.size == controller.game.playerNumber.get)
+            controller.game = controller.dealCards(controller.shuffledeck(controller.createDeck()))
+            controller.changeState(SetMaxScoreState(controller))
+            controller.game = controller.updateCurrentPlayer()
+            controller.game
         if(!input.trim.equals(""))
             controller.game.addPlayer(Player(input))
         else
             controller.game.addPlayer(Player(s"P${controller.game.players.size + 1}"))
-        if(controller.game.players.size == controller.game.playerNumber.get)
-            controller.game = controller.dealCards(controller.shuffledeck(controller.createDeck()))
-            controller.changeState(SetMaxScoreState(controller))
-            controller.updateCurrentPlayer()
-        else
-            controller.game
-    def getStateString(): String = "GetPlayerNamesState"
-}
 
-class SetMaxScoreState(controller: Controller) extends State(controller: Controller) {
+
+
+    def getStateString(): String = "GetPlayerNamesState"
+
+class SetMaxScoreState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
         if(input.toIntOption.exists(intInput => intInput >= 1 ))
             controller.changeState(GamePlayState(controller))
@@ -77,12 +74,11 @@ class SetMaxScoreState(controller: Controller) extends State(controller: Control
             controller.game
 
     def getStateString(): String ="SetMaxScoreState"
-}
 
-class GamePlayState(controller: Controller) extends State(controller: Controller) {
+class GamePlayState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
-        controller.executeStrategy()
-        input.trim.toLowerCase() match {
+        controller.game = controller.executeStrategy
+        input.trim.toLowerCase() match
             case "suit" | "s" => controller.setStrategy(SortBySuitStrategy()); controller.game
             case "rank" | "r" => controller.setStrategy(SortByRankStrategy()); controller.game
             case _ =>
@@ -98,13 +94,10 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
                     controller.addPointsToPlayers(controller.rawPointsPerPlayer())
                 else
                     controller.game
-        }
-
 
     def getStateString(): String = "GamePlayState"
-}
 
-class ShowScoreState(controller: Controller) extends State(controller: Controller) {
+class ShowScoreState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
         controller.dealCards(controller.shuffledeck(controller.createDeck()))
         controller.game.setFirstCard(true)
@@ -113,32 +106,27 @@ class ShowScoreState(controller: Controller) extends State(controller: Controlle
         controller.updateCurrentPlayer()
 
     def getStateString(): String = "ShowScoreState"
-}
 
-
-class GameOverState(controller: Controller) extends State(controller: Controller) {
+class GameOverState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
-        input.toLowerCase().trim match {
+        input.toLowerCase().trim match
             case "new"|"n"|"quit"|"q" =>
                 controller.game.resetForNewGame
                 controller.game = controller.game.copy(players = Vector.empty)
-                input.toLowerCase().trim match {
+                input.toLowerCase().trim match
                     case "new"|"n" =>
                         controller.changeState(GetPlayerNumberState(controller))
                     case "quit"|"q" =>
                         controller.changeState(MainScreenState(controller))
-                }
                 controller.game
             case "again"|"a" =>
                 controller.dealCards(controller.shuffledeck(controller.createDeck()))
                 controller.changeState(GamePlayState(controller))
                 controller.game.resetForNewGame
             case "exit"|"e" =>
-                controller.setkeepProcessRunning(false)
+                controller.setKeepProcessRunning(false)
                 controller.game
             case _ =>
                 controller.game
-        }
 
     def getStateString(): String = "GameOverState"
-}
