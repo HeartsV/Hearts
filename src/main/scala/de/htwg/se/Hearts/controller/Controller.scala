@@ -156,7 +156,7 @@ class Controller(var game: Game) extends Observable:
 
     def getPlayerNumber: Option[Int] = game.playerNumber
 
-    def setPlayerNumber(number: Int): Game = game.copy(playerNumber = Some(number))
+    def setPlayerNumber(number: Option[Int]): Game = game.copy(playerNumber = number)
 
     def getKeepProcessRunning: Boolean = game.keepProcessRunning
 

@@ -39,6 +39,6 @@ class ObservalbleObject extends Observable() {
 
 class ObserverObject extends Observer(){
     var localCheck = 0
-    def update(): Unit =  localCheck += 1
+    def update: Unit =  localCheck += 1
 }
 

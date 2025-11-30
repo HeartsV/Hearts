@@ -41,7 +41,7 @@ class GetPlayerNumberState(controller: Controller) extends State(controller: Con
     def processInput(input: String): Game =
         if(input.toIntOption.exists(intInput => intInput >= 3 && intInput <= 4))
             controller.changeState(GetPlayerNamesState(controller))
-            controller.setPlayerNumber(input.toInt)
+            controller.setPlayerNumber(Some(input.toInt))
         else
             controller.game
 
@@ -65,10 +65,10 @@ class SetMaxScoreState(controller: Controller) extends State(controller: Control
     def processInput(input: String): Game =
         if(input.toIntOption.exists(intInput => intInput >= 1 && intInput <= 400))
             controller.changeState(GamePlayState(controller))
-            controller.game.setMaxScore(input.toInt)
+            controller.game.setMaxScore(Some(input.toInt))
         else if(input.trim.equals(""))
             controller.changeState(GamePlayState(controller))
-            controller.game.setMaxScore(100)
+            controller.game.setMaxScore(Some(100))
         else
             controller.game
 

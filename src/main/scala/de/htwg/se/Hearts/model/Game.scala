@@ -23,7 +23,7 @@ case class Game(
 
   def setFirstPlayer(player: Player): Game = copy(firstPlayer = Some(player))
 
-  def setMaxScore(score: Int): Game = copy(maxScore = Some(score))
+  def setMaxScore(score: Option[Int]): Game = copy(maxScore = score)
 
   def setCurrentPlayerIndex(index: Option[Int]): Game = copy(currentPlayerIndex = index)
 
@@ -36,7 +36,6 @@ case class Game(
   def getStartWithHearts: Boolean = startWithHearts
 
   def setStartWithHearts(a: Boolean): Game = copy(startWithHearts = a)
-
 
   def setFirstCard(a: Boolean): Game = copy(firstCard = a)
 

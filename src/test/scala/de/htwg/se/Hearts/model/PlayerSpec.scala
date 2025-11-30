@@ -15,18 +15,15 @@ class PlayerSpec extends AnyWordSpec with Matchers {
         }
 
         "have a hand" in {
-            val p1 = Player("Alice")
-            p1.hand ++= List(card1,card2)
-            p1.hand should be (ListBuffer[Card](card1,card2))
-        }
-        
-        "be able to remove cards" in {
-            val p1 = Player("Alice")
-            p1.hand ++= List(card1,card2)
-            p1.removeCard(card1) should be (true)
-            p1.hand should be (ListBuffer[Card](card2))
+            val p1 = Player("Alice").addAllCards(List(card1,card2))
+            p1.hand should be (List[Card](card1,card2))
         }
 
+        "be able to remove cards" in {
+            val p1 = Player("Alice").addAllCards(List(card1,card2))
+            p1.removeCard(card1)
+            p1.hand should be (List[Card](card2))
+        }
     }
 
 }
