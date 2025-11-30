@@ -25,7 +25,7 @@ case class Game(
 
   def setMaxScore(score: Int): Game = copy(maxScore = Some(score))
 
-  def setCurrentPlayerIndex(index: Int): Game = copy(currentPlayerIndex = Some(index))
+  def setCurrentPlayerIndex(index: Option[Int]): Game = copy(currentPlayerIndex = index)
 
   def getCurrentPlayerIndex: Int = currentPlayerIndex.get
 

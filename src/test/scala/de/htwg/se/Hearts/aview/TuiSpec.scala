@@ -15,18 +15,18 @@ class TuiSpec extends AnyWordSpec with Matchers {
         val p2 = Player("Dave")
         val p3 = Player("Charlie")
         val p4 = Player("David")
-        p1.points = 30
-        p2.points = 20
-        p3.points = 20
-        p4.points = 10
+        p1.addPoints(30)
+        p2.addPoints(20)
+        p3.addPoints(20)
+        p4.addPoints(10)
         game.addPlayer(p1)
         game.addPlayer(p2)
         game.addPlayer(p3)
         game.addPlayer(p4)
-        p1.hand +=(Card(Rank.Two,Suit.Clubs))
-        p2.hand +=(Card(Rank.Ace,Suit.Clubs))
-        p3.hand +=(Card(Rank.Jack,Suit.Clubs))
-        p4.hand +=(Card(Rank.Ten,Suit.Clubs))
+        p1.addAllCards(List(Card(Rank.Two,Suit.Clubs)))
+        p2.addAllCards(List(Card(Rank.Ace,Suit.Clubs)))
+        p3.addAllCards(List(Card(Rank.Jack,Suit.Clubs)))
+        p4.addAllCards(List(Card(Rank.Ten,Suit.Clubs)))
 
         "get the correct getMainScreenStateString" in {
             val expected ="Hearts" + "\n\n" +
@@ -34,7 +34,7 @@ class TuiSpec extends AnyWordSpec with Matchers {
                 "- n or new for a new Game" + "\n" +
                 "- r or rules for the rules" + "\n" +
                 "- e or exit to end the program" + "\n"
-                tui.getMainScreenStateString() should be (expected)
+                tui.getMainScreenStateString should be (expected)
         }
 
         "get the correct getRulesScreenStateString" in {
@@ -84,39 +84,39 @@ class TuiSpec extends AnyWordSpec with Matchers {
                 "The game ends when a player reaches 100 points (or another agreed limit)." + "\n" +
                 "The player with the lowest score wins." + "\n\n" +
                 "Enter 'back' or 'b' to return to the main menu." + "\n"
-            tui.getRulesScreenStateString() should be (expected)
+            tui.getRulesScreenStateString should be (expected)
         }
 
         "get the correct getPlayerNumberStateString" in {
-            tui.getPlayerNumberStateString() should be ("please input a Number of Players between 3 and 4\n")
+            tui.getPlayerNumberStateString should be ("please input a Number of Players between 3 and 4\n")
         }
 
         "get the correct getPlayerNamesStateString" in {
-            tui.getPlayerNamesStateString() should be ("please input the names of the 5. player\n")
+            tui.getPlayerNamesStateString should be ("please input the names of the 5. player\n")
         }
 
         "get the correct setMaxScoreStateString" in {
-            tui.setMaxScoreStateString() should be ("please enter the score required to win (between 1 and 400)\n")
+            tui.setMaxScoreStateString should be ("please enter the score required to win (between 1 and 400)\n")
         }
 
         "get the correct GameplayStateString" in {
-            gameController.updateCurrentPlayer()
-            tui.getGameplayStateString() should be ("Trick:\n|     |     |     |     |\nAlice please select card to play:\n|  1  |\n| 2 ♣ |\n")
+            gameController.updateCurrentPlayer
+            tui.getGameplayStateString should be ("Trick:\n|     |     |     |     |\nAlice please select card to play:\n|  1  |\n| 2 ♣ |\n")
             gameController.playCard(1)
-            game.firstCard = false
-            gameController.updateCurrentPlayer()
-            tui.getGameplayStateString() should be ("Trick:\n| 2 ♣ |     |     |     |\nDave please select card to play:\n|  1  |\n| A ♣ |\n")
+            game.setFirstCard(false)
+            gameController.updateCurrentPlayer
+            tui.getGameplayStateString should be ("Trick:\n| 2 ♣ |     |     |     |\nDave please select card to play:\n|  1  |\n| A ♣ |\n")
             gameController.playCard(2)
-            tui.getGameplayStateString() should be ("Trick:\n| 2 ♣ |     |     |     |\nDave please select card to play:\n|  1  |\n| A ♣ |\n")
+            tui.getGameplayStateString should be ("Trick:\n| 2 ♣ |     |     |     |\nDave please select card to play:\n|  1  |\n| A ♣ |\n")
         }
 
         "get the correct getShowScoreStateString" in {
-            tui.getShowScoreStateString() should be ("Scoreboard:\n1. David: 10\n2. Dave: 20\n2. Charlie: 20\n4. Alice: 30\nPress any button to continue\n")
+            tui.getShowScoreStateString should be ("Scoreboard:\n1. David: 10\n2. Dave: 20\n2. Charlie: 20\n4. Alice: 30\nPress any button to continue\n")
 
         }
 
         "get the correct getGameOverStateString" in {
-            tui.getGameOverStateString() should be (
+            tui.getGameOverStateString should be (
                 "GAMEOVER\n\nScoreboard:\n1. David: 10\n2. Dave: 20\n2. Charlie: 20\n4. Alice: 30\n" +
                 "Please enter:" + "\n" +
                 "- n or new for a new Game" + "\n" +

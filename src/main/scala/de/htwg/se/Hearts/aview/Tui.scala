@@ -8,14 +8,14 @@ import de.htwg.se.Hearts.model.Suit
 
 class Tui(gameController: Controller)  extends Observer:
 
-	def getMainScreenStateString(): String =
+	def getMainScreenStateString: String =
 		"Hearts" + "\n\n" +
 		"Please enter:" + "\n" +
 		"- n or new for a new Game" + "\n" +
 		"- r or rules for the rules" + "\n" +
 		"- e or exit to end the program" + "\n"
 
-	def getRulesScreenStateString(): String =
+	def getRulesScreenStateString: String =
 		"\n\n" +"Rules:" + "\n\n" +
 		"Hearts is a trick-taking card game played with 3-4 players, each playing individually." + "\n" +
 		"With 4 players, the game uses all 52 cards of a standard deck." + "\n" +
@@ -62,44 +62,45 @@ class Tui(gameController: Controller)  extends Observer:
 		"The player with the lowest score wins." + "\n\n" +
 		"Enter 'back' or 'b' to return to the main menu." + "\n"
 
-	def getPlayerNumberStateString(): String = "please input a Number of Players between 3 and 4" + "\n"
+	def getPlayerNumberStateString: String = "please input a Number of Players between 3 and 4" + "\n"
 
-	def getPlayerNamesStateString(): String = f"please input the names of the ${gameController.game.players.size +1}. player" + "\n"
+	def getPlayerNamesStateString: String = f"please input the names of the ${gameController.game.players.size +1}. player" + "\n"
 
-	def setMaxScoreStateString(): String = "please enter the score required to win (between 1 and 400)" + "\n"
+	def setMaxScoreStateString: String = "please enter the score required to win (between 1 and 400)" + "\n"
 
-	def getGameplayStateString(): String =
+	def getGameplayStateString: String =
 		"Trick:" + "\n" +
-		gameController.completeTrickString() + "\n" +
-		gameController.getCurrentPlayerName() +" please select card to play:" + "\n" +
-		gameController.handToString() + "\n"
+		gameController.completeTrickString + "\n" +
+		gameController.getCurrentPlayerName +" please select card to play:" + "\n" +
+		gameController.handToString + "\n"
 
-	def getShowScoreStateString(): String =
+	def getShowScoreStateString: String =
 		"Scoreboard:\n" +
-		(for((r, n, p) <- gameController.rankPlayers(gameController.getPlayersWithPoints())) yield (""+ r + ". " + n + 	": " + p)+ "\n").mkString +
+		(for((r, n, p) <- gameController.rankPlayers(gameController.getPlayersWithPoints)) yield (""+ r + ". " + n + 	": " + p)+ "\n").mkString +
 		"Press any button to continue\n"
 
-	def getGameOverStateString(): String =
+	def getGameOverStateString: String =
 		"GAMEOVER\n\n" +
 		"Scoreboard:\n" +
-		(for((r, n, p) <- gameController.rankPlayers(gameController.getPlayersWithPoints())) yield (""+ r + ". " + n + 	": " + p)+ "\n").mkString +
+		(for((r, n, p) <- gameController.rankPlayers(gameController.getPlayersWithPoints)) yield (""+ r + ". " + n + 	": " + p)+ "\n").mkString +
 		"Please enter:" + "\n" +
 		"- n or new for a new Game" + "\n" +
 		"- a or again for playing again" + "\n" +
 		"- q or quit to go back to Mainmenu" + "\n" +
 		"- e or exit to end the program" + "\n"
 
-	def update(): Unit =
-		gameController.state.getStateString() match
-			case "MainScreenState" => print(getMainScreenStateString())
-			case "RulesScreenState" => print(getRulesScreenStateString())
-			case "GetPlayerNumberState" => print(getPlayerNumberStateString())
-			case "GetPlayerNamesState" => print(getPlayerNamesStateString())
-			case "SetMaxScoreState" => print(setMaxScoreStateString())
-			case "GamePlayState" => print(getGameplayStateString())
-			case "ShowScoreState" => print(getShowScoreStateString())
-			case "GameOverState" => print(getGameOverStateString())
+	def update: Unit =
+		gameController.state.getStateString match
+			case "MainScreenState" => print(getMainScreenStateString)
+			case "RulesScreenState" => print(getRulesScreenStateString)
+			case "GetPlayerNumberState" => print(getPlayerNumberStateString)
+			case "GetPlayerNamesState" => print(getPlayerNamesStateString)
+			case "SetMaxScoreState" => print(setMaxScoreStateString)
+			case "GamePlayState" => print(getGameplayStateString)
+			case "ShowScoreState" => print(getShowScoreStateString)
+			case "GameOverState" => print(getGameOverStateString)
 
-	def runGame(): Unit =
-		update()
-		while (gameController.getKeepProcessRunning) gameController.processInput(readLine())
+	def runGame: Unit =
+		update
+		while (gameController.getKeepProcessRunning)
+			gameController.processInput(readLine)

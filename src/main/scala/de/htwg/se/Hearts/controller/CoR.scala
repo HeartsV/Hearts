@@ -3,7 +3,7 @@ package de.htwg.se.Hearts.controller
 
 import de.htwg.se.Hearts.model._
 
-object ChainOfResponsibility {
+object ChainOfResponsibility:
 
     final case class MoveContext(
         game: Game,
@@ -43,6 +43,5 @@ object ChainOfResponsibility {
     def validateMove(game: Game, player: Player, card: Card): Boolean =
         val ctx = MoveContext(game, player, card)
         validationChain.forall(rule => rule(ctx))
-}
 
 

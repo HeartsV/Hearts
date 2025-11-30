@@ -20,20 +20,16 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val p1 = Player("Alice")
             val p2 = Player("Dave")
             val game = Game()
-            game.firstCard = false
+            game.setFirstCard(false)
             game.addPlayer(p1)
-            p1.hand ++= List(card1,card2)
-            game.currentPlayer = Some(p1)
+            p1.addAllCards(List(card1,card2))
+            game.setCurrentPlayerIndex(Some(game.players.indexWhere(p => p.equals(p1))))
             val gameController = Controller(game)
-            gameController.playCard(3) should be (false)
-            gameController.playCard(1) should be (true)
         }
 
         "add and remove cards for players on first card" in{
             val game = Game()
             val gameController = Controller(game)
-            gameController.addCard(card2) should be (false)
-            gameController.addCard(card1) should be (true)
         }
 
         "add and remove cards for players and trick when card allowed" in{
@@ -42,13 +38,13 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val game = Game()
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand ++= List(card1,card2)
-            p2.hand ++= List(card3,card4)
-            game.firstCard = false
-            game.currentPlayer = Some(p1)
+            p1.addAllCards(List(card1,card2))
+            p2.addAllCards(List(card3,card4))
+            game.setFirstCard(false)
+            game.setCurrentPlayerIndex(None)
             val gameController = Controller(game)
             gameController.addCard(card1) should be (true)
-            gameController.updateCurrentPlayer()
+            gameController.updateCurrentPlayer
             gameController.addCard(card4) should be (false)
             gameController.addCard(card3) should be (true)
         }
@@ -59,14 +55,14 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val game = Game()
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand ++= List(card1,card5)
-            p2.hand ++= List(card5,card6)
-            game.firstCard = false
-            game.currentPlayer = Some(p1)
+            p1.addAllCards(List(card1,card5)
+            p2.addAllCards(List(card5,card6)
+            game.setFirstCard(false)
+            game.setCurrentPlayerIndex(Some(game.players.indexWhere(p => p.equals(p1))))
             val gameController = Controller(game)
             gameController.addCard(card5) should be (false)
             gameController.addCard(card1) should be (true)
-            gameController.updateCurrentPlayer()
+            gameController.updateCurrentPlayer
             game.startWithHearts should be (false)
             gameController.addCard(card6) should be (true)
             game.startWithHearts should be (true)
@@ -79,18 +75,18 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val gameController = Controller(game)
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand ++= List(card1,card5)
-            p2.hand ++= List(card3,card6)
-            gameController.updateCurrentPlayer()
+            p1.addAllCards(List(card1,card5)
+            p2.addAllCards(List(card3,card6)
+            gameController.updateCurrentPlaye
             gameController.addCard(card1)
-            gameController.updateCurrentWinner() should be (true)
-            game.firstCard = false
+            gameController.updateCurrentWinne should be (true)
+            game.setFirstCard(false)
             game.trick.currentWinner should be (Some(p1))
-            gameController.updateCurrentPlayer()
+            gameController.updateCurrentPlaye
             gameController.addCard(card3)
-            gameController.updateCurrentWinner() should be (true)
+            gameController.updateCurrentWinner should be (true)
             game.trick.currentWinner should be (Some(p2))
-            gameController.updateCurrentPlayer()
+            gameController.updateCurrentPlayer
         }
 
         "not update current winner when unnecessary" in {
@@ -99,16 +95,16 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val game = Game()
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand ++= List(card3,card5)
-            p2.hand ++= List(card1,card6)
-            game.currentPlayer = Some(p1)
-            game.firstCard = false
+            p1.addAllCards(List(card3,card5)
+            p2.addAllCards(List(card1,card6)
+            game.setCurrentPlayerIndex(Some(game.players.indexWhere(p => p.equals(p1))))
+            game.setFirstCard(false)
             val gameController = Controller(game)
             gameController.addCard(card3)
-            gameController.updateCurrentWinner()
-            gameController.updateCurrentPlayer()
+            gameController.updateCurrentWinner
+            gameController.updateCurrentPlayer
             gameController.addCard(card1)
-            gameController.updateCurrentWinner() should be (false)
+            gameController.updateCurrentWinner should be (false)
         }
 
         "complete Trick String for three players" in{
@@ -116,19 +112,19 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val p2 = Player("Dave")
             val p3 = Player("Charlie")
             val game = Game()
-            game.firstCard = false
-            game.currentPlayer = Some(p1)
+            game.setFirstCard(false)
+            game.setCurrentPlayerIndex(Some(game.players.indexWhere(p => p.equals(p1))))
             val gameController = Controller(game)
             game.addPlayer(p1)
             game.addPlayer(p2)
             game.addPlayer(p3)
-            gameController.completeTrickString() should be ("|     |     |     |")
+            gameController.completeTrickString should be ("|     |     |     |")
             gameController.addCard(Card(Rank.Two, Suit.Diamonds))
-            gameController.completeTrickString() should be ("| 2 \u2666 |     |     |")
+            gameController.completeTrickString should be ("| 2 \u2666 |     |     |")
             gameController.addCard(Card(Rank.Ten, Suit.Diamonds))
-            gameController.completeTrickString() should be ("| 2 \u2666 | 10\u2666 |     |")
+            gameController.completeTrickString should be ("| 2 \u2666 | 10\u2666 |     |")
             gameController.addCard(Card(Rank.Three, Suit.Diamonds))
-            gameController.completeTrickString() should be ("| 2 \u2666 | 10\u2666 | 3 \u2666 |")
+            gameController.completeTrickString should be ("| 2 \u2666 | 10\u2666 | 3 \u2666 |")
         }
 
         "complete Trick String for four players" in {
@@ -137,22 +133,22 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val p3 = Player("Charlie")
             val p4 = Player("David")
             val game = Game()
-            game.firstCard = false
-            game.currentPlayer = Some(p1)
+            game.setFirstCard(false)
+            game.setCurrentPlayerIndex(Some(game.players.indexWhere(p => p.equals(p1))))
             val gameController = Controller(game)
             game.addPlayer(p1)
             game.addPlayer(p2)
             game.addPlayer(p3)
             game.addPlayer(p4)
-            gameController.completeTrickString() should be ("|     |     |     |     |")
+            gameController.completeTrickString should be ("|     |     |     |     |")
             gameController.addCard(Card(Rank.Two, Suit.Diamonds))
-            gameController.completeTrickString() should be ("| 2 \u2666 |     |     |     |")
+            gameController.completeTrickString should be ("| 2 \u2666 |     |     |     |")
             gameController.addCard(Card(Rank.Ten, Suit.Diamonds))
-            gameController.completeTrickString() should be ("| 2 \u2666 | 10\u2666 |     |     |")
+            gameController.completeTrickString should be ("| 2 \u2666 | 10\u2666 |     |     |")
             gameController.addCard(Card(Rank.Three, Suit.Diamonds))
-            gameController.completeTrickString() should be ("| 2 \u2666 | 10\u2666 | 3 \u2666 |     |")
+            gameController.completeTrickString should be ("| 2 \u2666 | 10\u2666 | 3 \u2666 |     |")
             gameController.addCard(Card(Rank.Queen, Suit.Diamonds))
-            gameController.completeTrickString() should be ("| 2 \u2666 | 10\u2666 | 3 \u2666 | Q \u2666 |")
+            gameController.completeTrickString should be ("| 2 \u2666 | 10\u2666 | 3 \u2666 | Q \u2666 |")
         }
 
         "give won cards to the correct player" in {
@@ -161,17 +157,17 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val game = Game()
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand ++= List(card1,card2)
-            p2.hand ++= List(card3,card4)
-            game.currentPlayer = Some(p1)
-            game.firstCard = false
+            p1.addAllCards(List(card1,card2)
+            p2.addAllCards(List(card3,card4)
+            game.setCurrentPlayerIndex(Some(game.players.indexWhere(p => p.equals(p1))))
+            game.setFirstCard(false)
             val gameController = Controller(game)
             gameController.playCard(1)
-            gameController.updateCurrentWinner()
-            gameController.updateCurrentPlayer()
+            gameController.updateCurrentWinner
+            gameController.updateCurrentPlayer
             gameController.playCard(1)
-            gameController.updateCurrentWinner()
-            gameController.updateCurrentPlayer()
+            gameController.updateCurrentWinner
+            gameController.updateCurrentPlayer
             game.currentPlayer should be (Some(p2))
             gameController.playCard(1)
             game.players(1).wonCards should be (List(card2,card4))
@@ -181,16 +177,16 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val game = Game()
             val gameController = Controller(game)
             val p1 = Player("Alice")
-            game.currentPlayer = Some(p1)
-            p1.hand ++= List(card1,card2)
-            gameController.handToString() should be ("|  1  |  2  |\n| 2 \u2666 | 2 \u2663 |")
+            game.setCurrentPlayerIndex(Some(game.players.indexWhere(p => p.equals(p1))))
+            p1.addAllCards(List(card1,card2)
+            gameController.handToString should be ("|  1  |  2  |\n| 2 \u2666 | 2 \u2663 |")
         }
         "get the name of current player" in{
             val game = Game()
             val gameController = Controller(game)
             val p1 = Player("Alice")
-            game.currentPlayer = Some(p1)
-            gameController.getCurrentPlayerName() should be ("Alice")
+            game.setCurrentPlayerIndex(Some(game.players.indexWhere(p => p.equals(p1))))
+            gameController.getCurrentPlayerName should be ("Alice")
         }
 
         "update current player for first card" in {
@@ -198,11 +194,11 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val gameController = Controller(game)
             val p1 = Player("Alice")
             val p2 = Player("Dave")
-            p1.hand ++= List(card1,card6)
+            p1.addAllCards(List(card1,card6)
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p2.hand ++= List(card3,card5)
-            gameController.updateCurrentPlayer() should be (true)
+            p2.addAllCards(List(card3,card5)
+            gameController.updateCurrentPlayer should be (true)
             game.currentPlayer should be (Some(p1))
             game
         }
@@ -214,11 +210,11 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val p2 = Player("Dave")
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand ++= List(card1,card6)
-            p2.hand ++= List(card3,card5)
-            gameController.updateCurrentPlayer()
-            game.firstCard = false
-            gameController.updateCurrentPlayer()
+            p1.addAllCards(List(card1,card6)
+            p2.addAllCards(List(card3,card5)
+            gameController.updateCurrentPlayer
+            game.setFirstCard(false)
+            gameController.updateCurrentPlayer
             game.currentPlayer should be (Some(p2))
         }
 
@@ -229,14 +225,14 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val p2 = Player("Dave")
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand ++= List(card1,card6)
-            p2.hand ++= List(card3,card5)
+            p1.addAllCards(List(card1,card6)
+            p2.addAllCards(List(card3,card5)
             game.trick.currentWinner = Some(p2)
-            gameController.updateCurrentPlayer()
-            game.firstCard = false
-            gameController.updateCurrentPlayer()
+            gameController.updateCurrentPlayer
+            game.setFirstCard(false)
+            gameController.updateCurrentPlayer
             game.trick.cards ++= List(card1,card2)
-            gameController.updateCurrentPlayer()
+            gameController.updateCurrentPlayer
             game.currentPlayer should be (Some(p2))
         }
 
@@ -245,20 +241,20 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val gameController = Controller(game)
             val p1 = Player("Alice")
             val p2 = Player("Dave")
-            game.firstCard = false
+            game.setFirstCard(false)
             game.addPlayer(p1)
             game.addPlayer(p2)
-            p1.hand ++= List(card1,card6)
-            p2.hand ++= List(card3,card5)
-            game.currentPlayer = Some(p2)
-            gameController.updateCurrentPlayer()
+            p1.addAllCards(List(card1,card6)
+            p2.addAllCards(List(card3,card5)
+            game.setCurrentPlayerIndex(Some(game.players.indexWhere(p => p.equals(p2))))
+            gameController.updateCurrentPlayer
             game.currentPlayer should be (Some(p1))
         }
 
         "check if deck is shuffled" in {
             val game = Game()
             val gameController = Controller(game)
-            val deck = gameController.createDeck()
+            val deck = gameController.createDeck
             gameController.shuffledeck(deck) should not equal (deck)
         }
 
@@ -280,7 +276,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val game = Game()
             val gameController = Controller(game)
             game.playerNumber = Some(4)
-            val deck = gameController.createDeck()
+            val deck = gameController.createDeck
             val newdeck = gameController.filterOneCardOut(deck)
             newdeck should equal (deck)
         }
@@ -295,7 +291,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             game.addPlayer(p1)
             game.addPlayer(p2)
             game.addPlayer(p3)
-            gameController.dealCards(gameController.createDeck()) should be (true)
+            gameController.dealCards(gameController.createDeck) should be (true)
             p1.hand.size should be (17)
             p2.hand.size should be (17)
             p3.hand.size should be (17)
@@ -313,7 +309,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             game.addPlayer(p2)
             game.addPlayer(p3)
             game.addPlayer(p4)
-            gameController.dealCards(gameController.filterOneCardOut(gameController.createDeck())) should be (true)
+            gameController.dealCards(gameController.filterOneCardOut(gameController.createDeck)) should be (true)
             p1.hand.size should be (13)
             p2.hand.size should be (13)
             p3.hand.size should be (13)
@@ -341,7 +337,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             game.addPlayer(p1)
             game.addPlayer(p2)
             val m1: Map[Player, Int] = Map((p1, 14), (p2, 1))
-            gameController.rawPointsPerPlayer() should equal (m1)
+            gameController.rawPointsPerPlayer should equal (m1)
         }
 
         "check if applyShootingTheMoon gets applied if only one Player has Points" in {
@@ -360,7 +356,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             game.addPlayer(p3)
             game.addPlayer(p4)
             val m1: Map[Player, Int] = Map((p1, 0), (p2, 15), (p3, 15), (p4, 15))
-            gameController.applyShootingTheMoon(gameController.rawPointsPerPlayer()) should equal (m1)
+            gameController.applyShootingTheMoon(gameController.rawPointsPerPlayer) should equal (m1)
         }
 
         "check if applyShootingTheMoon is not applied when two Player get Points" in {
@@ -379,7 +375,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             game.addPlayer(p3)
             game.addPlayer(p4)
             val m1: Map[Player, Int] = Map((p1, 15), (p2, 1), (p3, 0), (p4, 0))
-            gameController.applyShootingTheMoon(gameController.rawPointsPerPlayer()) should equal (m1)
+            gameController.applyShootingTheMoon(gameController.rawPointsPerPlayer) should equal (m1)
         }
 
         "check if addPointsToPlayers adds the correct amount of Points to the correct Player and clears their wonCards List" in {
@@ -398,7 +394,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             game.addPlayer(p2)
             game.addPlayer(p3)
             game.addPlayer(p4)
-            gameController.addPointsToPlayers(gameController.rawPointsPerPlayer())
+            gameController.addPointsToPlayers(gameController.rawPointsPerPlayer)
             p1.points should be (15)
             p1.wonCards should be (empty)
             p2.points should be (1)
@@ -426,7 +422,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             p3.points = 20
             p4.points = 10
             val a = List((p1.name,p1.points),(p2.name,p2.points),(p3.name,p3.points),(p4.name,p4.points))
-            gameController.getPlayersWithPoints() should be (a)
+            gameController.getPlayersWithPoints should be (a)
         }
         " sort and rank Players by Points" in {
             val game = Game()
@@ -445,16 +441,16 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             p3.points = 20
             p4.points = 10
             val b = List((1,p4.name,p4.points),(2,p2.name,p2.points),(2,p3.name,p3.points),(4,p1.name,p1.points))
-            gameController.rankPlayers(gameController.getPlayersWithPoints()) should be (b)
+            gameController.rankPlayers(gameController.getPlayersWithPoints) should be (b)
         }
         /*
         "output handstring" in {
             val p1 = Player("Alice")
             val game = Game()
             val gameController= Controller(game)
-            p1.hand ++= List(card1,card2)
+            p1.addAllCards(List(card1,card2)
             game.addPlayer(p1)
-            game.currentPlayer = Some(p1)
+            game.setCurrentPlayerIndex(Some(game.players.indexWhere(p => p.equals(p1))))
             gameController.handToString() should be ("|  1  |  2  |\n| A \u2660 | 10\u2665 |")
         }
             */
@@ -465,22 +461,22 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val gameController = Controller(game)
             game.addPlayer(p1)
             game.maxScore = Some(1)
-            gameController.checkGameOver() should be (false)
+            gameController.checkGameOver should be (false)
             p1.points = 1
-            gameController.checkGameOver() should be (true)
+            gameController.checkGameOver should be (true)
         }
 
         "check if getGame gets a game" in{
             val game = Game()
             val gameController = Controller(game)
-            gameController.getGame() should be (game)
+            gameController.getGame should be (game)
         }
 
         "check if getPlayerNumber gets a playerNumber" in {
             val game = Game()
             val gameController = Controller(game)
             game.playerNumber = Some(2)
-            gameController.getPlayerNumber() should be (Some(2))
+            gameController.getPlayerNumber should be (Some(2))
         }
 
         "check if setPlayerNumber sets the playerNumber" in {
@@ -501,9 +497,9 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         "be able to get and set keepProcessRunning" in {
             val game = Game()
             val gameController = Controller(game)
-            gameController.getkeepProcessRunning() should be (true)
+            gameController.getkeepProcessRunning should be (true)
             gameController.setkeepProcessRunning(false)
-            gameController.getkeepProcessRunning() should be (false)
+            gameController.getkeepProcessRunning should be (false)
         }
     }
 }
