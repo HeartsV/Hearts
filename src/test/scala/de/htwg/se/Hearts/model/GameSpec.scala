@@ -15,15 +15,15 @@ class GameSpec extends AnyWordSpec with Matchers {
 
         "add player" in{
             var game = Game()
-            game.addPlayer(p1)
-            game.players should be (List[Player](p1))
-            game.addPlayer(p2)
-            game.players should be (List[Player](p1,p2))
+            game = game.addPlayer(p1)
+            game.players should be (Vector[Player](p1))
+            game = game.addPlayer(p2)
+            game.players should be (Vector[Player](p1,p2))
         }
 
         "Add played card to cards" in {
             var game = Game()
-            game.addCard(card)
+            game = game.addCard(card)
             game.trickCards should be (List(card))
         }
 
@@ -37,16 +37,24 @@ class GameSpec extends AnyWordSpec with Matchers {
         }
 
         "output the correct strings for played Cards" in {
+            val card3 = Card(Rank.Two, Suit.Diamonds)
+            val card4 = Card(Rank.Ten, Suit.Diamonds)
+            val card5 = Card(Rank.Three, Suit.Diamonds)
+            val card6 = Card(Rank.Queen, Suit.Diamonds)
             var game= Game()
             val gameController = Controller(game)
+            gameController.game = gameController.setPlayerNumber(Some(4))
             gameController.trickToString should be ("|")
-            game.addCard(Card(Rank.Two, Suit.Diamonds))
+            gameController.game = gameController.game.addCard(card3)
             gameController.trickToString should be ("| 2 \u2666 |")
-            game.addCard(Card(Rank.Ten, Suit.Diamonds))
+            gameController.game = gameController.game.addCard(card4)
+            gameController.game.trickCards should equal (List(card3, card4))
             gameController.trickToString should be ("| 2 \u2666 | 10\u2666 |")
-            game.addCard(Card(Rank.Three, Suit.Diamonds))
+            gameController.game = gameController.game.addCard(card5)
+            gameController.game.trickCards should equal (List(card3, card4, card5))
             gameController.trickToString should be ("| 2 \u2666 | 10\u2666 | 3 \u2666 |")
-            game.addCard(Card(Rank.Queen, Suit.Diamonds))
+            gameController.game = gameController.game.addCard(card6)
+            gameController.game.trickCards should equal (List(card3, card4, card5, card6))
             gameController.trickToString should be ("| 2 \u2666 | 10\u2666 | 3 \u2666 | Q \u2666 |")
         }
     }

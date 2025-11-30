@@ -45,7 +45,7 @@ class Controller(var game: Game) extends Observable:
                     newGame = newGame.setFirstCard(false)
                 if ((card.suit == Suit.Hearts || card.equals(Card(Rank.Queen, Suit.Spades))) && !newGame.startWithHearts)
                     newGame = newGame.setStartWithHearts(true)
-                if (newGame.trickCards.size == newGame.players.size)
+                if (newGame.trickCards.size == newGame.playerNumber.get)
                     val winner = newGame.getCurrentWinner.get
                     val winnerIndex = newGame.players.indexOf(winner)
                     val winnerWithHand = winner.addWonCards(newGame.trickCards)
