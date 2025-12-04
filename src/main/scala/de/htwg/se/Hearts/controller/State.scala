@@ -65,10 +65,10 @@ class SetMaxScoreState(controller: Controller) extends State(controller: Control
     def processInput(input: String): Game =
         if(input.toIntOption.exists(intInput => intInput >= 1 && intInput <= 400))
             controller.changeState(GamePlayState(controller))
-            controller.game.setMaxScore(Some(input.toInt))
+            controller.game.setMaxScore(input.toInt)
         else if(input.trim.equals(""))
             controller.changeState(GamePlayState(controller))
-            controller.game.setMaxScore(Some(100))
+            controller.game.setMaxScore(100)
         else
             controller.game
 
@@ -92,7 +92,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
                 controller.game
             case _ =>
                 if(!input.toIntOption.equals(None))
-                    controller.playCard(input.toInt-1)
+                    controller.game = controller.playCard(input.toInt-1)
                     if(controller.game.getCurrentPlayer.get.hand.size == 0 && !controller.checkGameOver)
                         controller.changeState(ShowScoreState(controller))
                     if (controller.game.getCurrentPlayer.get.hand.size == 0 && controller.checkGameOver)

@@ -17,23 +17,17 @@ case class Game(
 
   def addCard(newCard: Card): Game = copy(trickCards = trickCards :+ newCard)
 
-  def clearTrick: Game = copy(trickCards = List())
+  def clearTrick: Game = copy(trickCards = List()) // fehlt hier nicht noch higest card und so oder machen wir das über set TRick?
 
   def setTrick(player: Player, newCard: Card): Game = copy(highestCard = Some(newCard), currentWinner = Some(player))
 
   def setFirstPlayer(player: Player): Game = copy(firstPlayer = Some(player))
 
-  def setMaxScore(score: Option[Int]): Game = copy(maxScore = score)
+  def setMaxScore(score: Int): Game = copy(maxScore = Some(score))
 
-  def setCurrentPlayerIndex(index: Option[Int]): Game = copy(currentPlayerIndex = index)
-
-  def getCurrentPlayerIndex: Int = currentPlayerIndex.get
+  def setCurrentPlayerIndex(index: Int): Game = copy(currentPlayerIndex = Some(index))
 
   def getCurrentPlayer: Option[Player] = currentPlayerIndex.flatMap(players.lift)
-
-  def getCurrentWinner: Option[Player] = currentWinner
-
-  def getStartWithHearts: Boolean = startWithHearts
 
   def setStartWithHearts(a: Boolean): Game = copy(startWithHearts = a)
 

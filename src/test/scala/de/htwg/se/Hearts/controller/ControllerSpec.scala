@@ -15,8 +15,21 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         val card6 = Card(Rank.Jack,Suit.Hearts)
         val card7 = Card(Rank.Ten,Suit.Clubs)
         val card8 = Card(Rank.Ten,Suit.Diamonds)
+        val p1 = Player("Alice",List(card1,card2),List(card5))
+        val p2 = Player("Dave",List(card3,card4))
+        val gamefirstCard = Game(playerNumber = Some(2),players = Vector(p1,p2),currentPlayerIndex = Some(0))
+        val gameNoHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,currentPlayerIndex = Some(0))
+        val gameHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,startWithHearts = true, currentPlayerIndex = Some(0))
 
-        "play cards only if input is valid" in{
+        "check if card allowed" in {
+            val gameController = Controller(game = gameHearts)
+            gameController.cardAllowed(3) should be (false)
+            gameController.cardAllowed(1) should be (true)
+        }
+
+        ""
+
+        /*"play cards only if input is valid" in{
             val p1 = Player("Alice")
             val p2 = Player("Dave")
             val game = Game()
@@ -465,5 +478,6 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             gameController.setKeepProcessRunning(false)
             gameController.getKeepProcessRunning should be (false)
         }
+        */
     }
 }

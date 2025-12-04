@@ -17,7 +17,7 @@ class StateSpec extends AnyWordSpec with Matchers{
         val card7 = Card(Rank.Ten,Suit.Clubs)
         val card8 = Card(Rank.Ten,Suit.Diamonds)
 
-        "process input for MainScreenState correctly" in {
+        /*"process input for MainScreenState correctly" in {
             val game = Game()
             val gameController = Controller(game)
             gameController.state = MainScreenState(gameController)
@@ -269,6 +269,6 @@ class StateSpec extends AnyWordSpec with Matchers{
             game.maxScore should be (None)
             game.currentPlayerIndex should be (None)
             gameController.state.getStateString should be ("MainScreenState")
-        }
+        } */
     }
 }

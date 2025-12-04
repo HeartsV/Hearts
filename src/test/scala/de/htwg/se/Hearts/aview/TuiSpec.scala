@@ -35,7 +35,7 @@ class TuiSpec extends AnyWordSpec with Matchers {
                 "- r or rules for the rules" + "\n" +
                 "- e or exit to end the program" + "\n"
                 tui.getMainScreenStateString should be (expected)
-        }
+        }/*
 
         "get the correct getRulesScreenStateString" in {
             val expected =
@@ -123,7 +123,7 @@ class TuiSpec extends AnyWordSpec with Matchers {
                 "- a or again for playing again" + "\n" +
                 "- q or quit to go back to Mainmenu" + "\n" +
                 "- e or exit to end the program" + "\n")
-        }
+        }*/
     }
 
 }

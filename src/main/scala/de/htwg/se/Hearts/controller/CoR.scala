@@ -1,4 +1,3 @@
-//CoR steht für ChainOfResponsibility
 package de.htwg.se.Hearts.controller
 
 import de.htwg.se.Hearts.model._

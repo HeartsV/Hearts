@@ -17,11 +17,10 @@ class Controller(var game: Game) extends Observable:
     def cardAllowed(index: Int): Boolean =
         game.getCurrentPlayer.exists { player =>
             val sortedHand = sortingStrategy.execute(player)
-            val realIndex = index - 1
-            if (realIndex < 0 || realIndex >= sortedHand.size)
+            if (index < 0 || index >= sortedHand.size)
                 false
             else
-                val card = sortedHand(realIndex)
+                val card = sortedHand(index)
                 ChainOfResponsibility.validateMove(game, player, card)
         }
 
@@ -29,29 +28,25 @@ class Controller(var game: Game) extends Observable:
         if (!cardAllowed(index))
             game
         else
-            val currentPlayerIndex = game.getCurrentPlayerIndex
+            val currentPlayerIndex = game.currentPlayerIndex
             val currentPlayer = game.getCurrentPlayer.get
             val sortedHand = sortingStrategy.execute(currentPlayer)
-            val realIndex = index - 1
-            if (realIndex < 0 || realIndex >= sortedHand.size)
-                game
-            else
-                val card = sortedHand(realIndex)
-                val updatedPlayer = currentPlayer.removeCard(card)
-                var newGame = game.updatePlayer(currentPlayerIndex, updatedPlayer)
-                newGame = newGame.addCard(card)
-                newGame = updateCurrentWinner(updatedPlayer, card)
-                if (newGame.firstCard)
-                    newGame = newGame.setFirstCard(false)
-                if ((card.suit == Suit.Hearts || card.equals(Card(Rank.Queen, Suit.Spades))) && !newGame.startWithHearts)
-                    newGame = newGame.setStartWithHearts(true)
-                if (newGame.trickCards.size == newGame.playerNumber.get)
-                    val winner = newGame.getCurrentWinner.get
-                    val winnerIndex = newGame.players.indexOf(winner)
-                    val winnerWithHand = winner.addWonCards(newGame.trickCards)
-                    newGame = newGame.updatePlayer(winnerIndex, winnerWithHand).clearTrick
-                newGame = updateCurrentPlayer
-                newGame
+            val card = sortedHand(index)
+            val updatedPlayer = currentPlayer.removeCard(card)
+            var newGame = game.updatePlayer(currentPlayerIndex.get, updatedPlayer)
+            newGame = newGame.addCard(card)
+            newGame = updateCurrentWinner(updatedPlayer, card)
+            if (newGame.firstCard)
+                newGame = newGame.setFirstCard(false)
+            if ((card.suit == Suit.Hearts || card.equals(Card(Rank.Queen, Suit.Spades))) && !newGame.startWithHearts)
+                newGame = newGame.setStartWithHearts(true)
+            if (newGame.trickCards.size == newGame.playerNumber.get)
+                val winner = newGame.currentWinner.get
+                val winnerIndex = newGame.players.indexOf(winner)
+                val winnerWithHand = winner.addWonCards(newGame.trickCards)
+                newGame = newGame.updatePlayer(winnerIndex, winnerWithHand).clearTrick
+            newGame = updateCurrentPlayer
+            newGame
 
     def updateCurrentWinner(currentPlayer: Player, newCard: Card): Game =
         if (game.highestCard == None || game.highestCard.exists(card => card.suit == game.trickCards.last.suit && game.trickCards.last.rank.compare(card.rank) > 0))
@@ -67,13 +62,13 @@ class Controller(var game: Game) extends Observable:
 
     def updateCurrentPlayer: Game =
     if (game.firstCard == true)
-        game.setCurrentPlayerIndex(Some(game.players.indexWhere(_.hand.contains(Card(Rank.Two,Suit.Clubs)))))
+        game.setCurrentPlayerIndex(game.players.indexWhere(_.hand.contains(Card(Rank.Two,Suit.Clubs))))
     else if (game.players.size == game.trickCards.size)
-        game.setCurrentPlayerIndex(Some(game.players.indexOf(game.getCurrentWinner)))
-    else if (game.getCurrentPlayerIndex + 1 == game.players.size)
-        game.setCurrentPlayerIndex(Some(0))
+        game.setCurrentPlayerIndex(game.players.indexOf(game.currentWinner))
+    else if (game.currentPlayerIndex.get + 1 == game.players.size)
+        game.setCurrentPlayerIndex(0)
     else
-        game.setCurrentPlayerIndex(Some(game.getCurrentPlayerIndex + 1))
+        game.setCurrentPlayerIndex(game.currentPlayerIndex.get + 1)
 
     def createDeck: List[Card] =
         for
