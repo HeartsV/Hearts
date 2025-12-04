@@ -27,8 +27,6 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             gameController.cardAllowed(1) should be (true)
         }
 
-        ""
-
         /*"play cards only if input is valid" in{
             val p1 = Player("Alice")
             val p2 = Player("Dave")
