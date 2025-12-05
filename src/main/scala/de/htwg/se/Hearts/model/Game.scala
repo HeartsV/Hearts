@@ -11,7 +11,8 @@ case class Game(
     trickCards: List[Card] = Nil,
     highestCard: Option[Card] = None,
     currentWinner: Option[Player] = None,
-    firstPlayer: Option[Player] = None):
+    firstPlayer: Option[Player] = None,
+    lastCardPlayed: Try[Card] = ):
 
   def addPlayer(newPlayer: Player): Game =copy(players = players :+ newPlayer)
 

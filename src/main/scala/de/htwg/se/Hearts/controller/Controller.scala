@@ -29,18 +29,23 @@ class Controller(var game: Game) extends Observable:
             game
         else
             val sortedHand = sortingStrategy.execute(game.getCurrentPlayer.get)
+            val builder = GameBuilder(game)
+            builder.setPlayers(game.players.updated(game.currentPlayerIndex.get, game.getCurrentPlayer.get.removeCard(sortedHand(index))))
+            builder.addCard(sortedHand(index))
+            builder.setCurrentWinnerAndHighestCard(updateCurrentWinner(game.getCurrentPlayer.get,sortedHand(index)))
+            if (game.firstCard)
+                builder.setFirstCard(false)
+            if ((sortedHand(index).suit == Suit.Hearts || sortedHand(index).equals(Card(Rank.Queen, Suit.Spades))) && !game.startWithHearts)
+                builder.setStartWithHearts(true)
+            if (game.trickCards.size == game.playerNumber.get)
+                builder.updatePlayer(game.players.indexOf(game.currentWinner.get), game.currentWinner.get.addWonCards(game.trickCards))
+            //builder.setCurrentPlayerIndex(updateCurrentPlayer)
+            builder.getGame
+            /*
             game = game.updatePlayer(game.currentPlayerIndex.get, game.getCurrentPlayer.get.removeCard(sortedHand(index)))
             game = game.addCard(sortedHand(index))
             game = updateCurrentWinner(game.getCurrentPlayer.get, sortedHand(index))
-            if (game.firstCard)
-                game = game.setFirstCard(false)
-            if ((sortedHand(index).suit == Suit.Hearts || sortedHand(index).equals(Card(Rank.Queen, Suit.Spades))) && !game.startWithHearts)
-                game = game.setStartWithHearts(true)
-            if (game.trickCards.size == game.playerNumber.get)
-                game = game.updatePlayer(game.players.indexOf(game.currentWinner.get), game.currentWinner.get.addWonCards(game.trickCards))
-                game = updateCurrentPlayer
-            game
-
+            */
             /*
             val currentPlayerIndex = game.currentPlayerIndex
             val currentPlayer = game.getCurrentPlayer.get
@@ -57,27 +62,27 @@ class Controller(var game: Game) extends Observable:
             newGame = updateCurrentPlayer
             newGame*/
 
-    def updateCurrentWinner(currentPlayer: Player, newCard: Card): Game =
+    def updateCurrentWinner(newWinner: (Player, Card)): (Player, Card) =
         if (game.highestCard == None || game.highestCard.exists(card => card.suit == game.trickCards.last.suit && game.trickCards.last.rank.compare(card.rank) > 0))
-            game.setTrick(currentPlayer, newCard)
+            newWinner
         else
-            game
+            (game.currentWinner.get, game.highestCard.get)
+
+    def updateCurrentPlayer: Int =
+    if (game.firstCard == true)
+        game.players.indexWhere(_.hand.contains(Card(Rank.Two,Suit.Clubs)))
+    else if (game.players.size == game.trickCards.size)
+        game.players.indexOf(game.currentWinner)
+    else if (game.currentPlayerIndex.get + 1 == game.players.size)
+        0
+    else
+        game.currentPlayerIndex.get + 1
 
     def trickToString: String =
         if (game.trickCards.nonEmpty) game.trickCards.map(card => s" $card ").mkString("|", "|", "|")
         else "|"
 
     def completeTrickString: String = trickToString + "     |" * (game.players.size - game.trickCards.size)
-
-    def updateCurrentPlayer: Game =
-    if (game.firstCard == true)
-        game.setCurrentPlayerIndex(game.players.indexWhere(_.hand.contains(Card(Rank.Two,Suit.Clubs))))
-    else if (game.players.size == game.trickCards.size)
-        game.setCurrentPlayerIndex(game.players.indexOf(game.currentWinner))
-    else if (game.currentPlayerIndex.get + 1 == game.players.size)
-        game.setCurrentPlayerIndex(0)
-    else
-        game.setCurrentPlayerIndex(game.currentPlayerIndex.get + 1)
 
     def createDeck: List[Card] =
         for
