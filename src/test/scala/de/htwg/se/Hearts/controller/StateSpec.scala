@@ -12,7 +12,7 @@ class StateSpec extends AnyWordSpec with Matchers{
         val card3 = Card(Rank.Ace,Suit.Clubs)
         val card4 = Card(Rank.Ace,Suit.Diamonds)
         val card5 = Card(Rank.Jack,Suit.Hearts)
-        val card6 = Card(Rank.Jack,Suit.Hearts)
+        val card6 = Card(Rank.Jack,Suit.Clubs)
         val card7 = Card(Rank.Ten,Suit.Clubs)
         val card8 = Card(Rank.Ten,Suit.Diamonds)
         val p1 = Player("Alice", List(card1, card2, card3, card4), List(card5))
@@ -67,10 +67,9 @@ class StateSpec extends AnyWordSpec with Matchers{
         }
 
         "process input for GetPlayerNamesState correctly" in {
-            val game = Game()
+            val game = Game(playerNumber = Some(3))
             val gameController = Controller(game)
             gameController.state = GetPlayerNamesState(gameController)
-            gameController.setPlayerNumber(Some(3))
             gameController.processInput("Alice")
             gameController.game.players(0).name should be ("Alice")
             gameController.state.getStateString should be ("GetPlayerNamesState")
@@ -81,7 +80,6 @@ class StateSpec extends AnyWordSpec with Matchers{
             gameController.game.players(2).name should be ("P3")
             gameController.game.players.size should equal (game.playerNumber.get)
             gameController.state.getStateString should be ("SetMaxScoreState")
-
         }
 
         "process input for SetMaxScoreState correctly" in {
