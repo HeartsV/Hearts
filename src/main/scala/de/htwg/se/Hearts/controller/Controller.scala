@@ -11,7 +11,7 @@ class Controller(var game: Game) extends Observable:
         game = state.processInput(input)
         game.lastCardPlayed match
             case Right(card) => game.setCurrentPlayerIndex(updateCurrentPlayer)
-            case _ => 
+            case _ =>
 
         notifyObservers
         game
@@ -20,12 +20,8 @@ class Controller(var game: Game) extends Observable:
 
     def cardAllowed(index: Int): Boolean =
         game.getCurrentPlayer.exists { player =>
-            val sortedHand = sortingStrategy.execute(player)
-            if (index < 0 || index >= sortedHand.size)
-                false
-            else
-                val card = sortedHand(index)
-                ChainOfResponsibility.validateMove(game, player, card)
+
+                ChainOfResponsibility.validateMove(game, sortingStrategy.execute(player), index)
         }
 
     def playCard(index: Int): Game =
