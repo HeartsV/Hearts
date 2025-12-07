@@ -72,6 +72,7 @@ class SetMaxScoreState(controller: Controller) extends State(controller: Control
         else if(input.trim.equals(""))
             controller.changeState(GamePlayState(controller))
             builder.setMaxScore(100)
+        builder.setCurrentPlayerIndex(controller.updateCurrentPlayer)
         builder.getGame
 
     def getStateString: String ="SetMaxScoreState"
@@ -96,7 +97,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
             case _ =>
                 if(!input.toIntOption.equals(None))
                     val result = ChainOfResponsibility.validateMove(controller.game,
-                    controller.sortingStrategy.execute(controller.game.getCurrentPlayer.get), input.toInt - 1)
+                        controller.sortingStrategy.execute(controller.game.getCurrentPlayer.get), input.toInt - 1)
                     result match
                         case Left(error) =>
                             builder.setLastPlayedCard(result)
