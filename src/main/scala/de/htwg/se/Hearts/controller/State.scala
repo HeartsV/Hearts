@@ -53,11 +53,10 @@ class GetPlayerNamesState(controller: Controller) extends State(controller: Cont
     def processInput(input: String): Game =
         val builder = GameBuilder(controller.game)
         if(!input.trim.equals(""))
-            builder.setPlayers(controller.game.players :+ Player(input))
+            builder.setPlayers(builder.game.players :+ Player(input))
         else
-            builder.setPlayers(controller.game.players :+ Player(s"P${controller.game.players.size + 1}"))
+            builder.setPlayers(builder.game.players :+ Player(s"P${builder.game.players.size + 1}"))
         if(builder.game.players.size == builder.game.playerNumber.get)
-            builder.setPlayers(controller.dealCards(controller.shuffledeck(controller.createDeck)))
             controller.changeState(SetMaxScoreState(controller))
         builder.getGame
 
@@ -72,6 +71,7 @@ class SetMaxScoreState(controller: Controller) extends State(controller: Control
         else if(input.trim.equals(""))
             controller.changeState(GamePlayState(controller))
             builder.setMaxScore(100)
+        builder.setPlayers(controller.dealCards(controller.shuffledeck(controller.createDeck)))
         builder.setCurrentPlayerIndex(controller.updateCurrentPlayer)
         builder.getGame
 
