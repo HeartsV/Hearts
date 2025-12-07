@@ -22,7 +22,7 @@ class CoRSpec extends AnyWordSpec with Matchers {
         val gameWithTrick = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false, currentPlayerIndex = Some(0),trickCards = List(card7))
 
         "check if card allowed for first card in game" in {
-            ChainOfResponsibility.validateMove(gameFirstCard, p1.hand, 2) should be (Left("Index: 2 was out of bounds!\n"))
+            ChainOfResponsibility.validateMove(gameFirstCard, p1.hand, 2) should be (Left("Index: 3 was out of bounds!\n"))
             ChainOfResponsibility.validateMove(gameFirstCard, p1.hand, 1) should be (Left("First trick must start with 2 \u2663!\n"))
             ChainOfResponsibility.validateMove(gameFirstCard, p1.hand, 0) should be (Right(card1))
         }

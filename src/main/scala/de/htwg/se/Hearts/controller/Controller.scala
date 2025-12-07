@@ -58,10 +58,10 @@ class Controller(var game: Game) extends Observable:
         else
             deck
 
-    def dealCards(deck: List[Card]): Vector[Player] =
+    def dealCards(deck: List[Card], newGame: Game): Vector[Player] =
         val newdeck = filterOneCardOut(deck)
-        val handlist = deck.grouped(newdeck.size/game.playerNumber.get).toList
-        (game.players.zip(handlist).map { case (player, newCards) => player.copy(hand = newCards)}).toVector
+        val handlist = newdeck.grouped(newdeck.size/newGame.playerNumber.get).toList
+        (newGame.players.zip(handlist).map { case (player, newCards) => player.copy(hand = newCards)}).toVector
 
     def cardPoints(card: Card): Int =
         card match

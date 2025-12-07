@@ -14,7 +14,7 @@ object ChainOfResponsibility:
 
     val indexMustBeInBounds: CardRule = ctx =>
         if ctx.index < 0 || ctx.index >= ctx.playerHand.size then
-            Left(s"Index: ${ctx.index} was out of bounds!\n")
+            Left(s"Index: ${ctx.index + 1} was out of bounds!\n")
         else
             Right(())
 

@@ -57,6 +57,7 @@ class GetPlayerNamesState(controller: Controller) extends State(controller: Cont
         else
             builder.setPlayers(builder.game.players :+ Player(s"P${builder.game.players.size + 1}"))
         if(builder.game.players.size == builder.game.playerNumber.get)
+            builder.setPlayers(controller.dealCards(controller.shuffledeck(controller.createDeck), builder.game))
             controller.changeState(SetMaxScoreState(controller))
         builder.getGame
 
@@ -71,7 +72,6 @@ class SetMaxScoreState(controller: Controller) extends State(controller: Control
         else if(input.trim.equals(""))
             controller.changeState(GamePlayState(controller))
             builder.setMaxScore(100)
-        builder.setPlayers(controller.dealCards(controller.shuffledeck(controller.createDeck)))
         builder.setCurrentPlayerIndex(controller.updateCurrentPlayer)
         builder.getGame
 
@@ -92,7 +92,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
                 controller.changeState(RulesScreenState(controller))
                 builder.getGame
             case "exit"|"e" =>
-                controller.setKeepProcessRunning(false)
+                builder.setKeepProcessRunning(false)
                 builder.getGame
             case _ =>
                 if(!input.toIntOption.equals(None))
@@ -113,7 +113,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
                             if (builder.game.trickCards.size == builder.game.playerNumber.get)
                                 builder.updatePlayer(builder.game.players.indexOf(builder.game.currentWinner.get), builder.game.currentWinner.get.addWonCards(builder.game.trickCards))
                             builder.setLastPlayedCard(result)
-                    if (controller.game.getCurrentPlayer.get.hand.size == 0)
+                    if (builder.game.getCurrentPlayer.get.hand.size == 0)
                         if(!controller.checkGameOver)
                             controller.changeState(ShowScoreState(controller))
                         else
@@ -121,6 +121,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
                         builder.setPlayers(controller.addPointsToPlayers)
                     builder.getGame
                 else
+                    builder.setLastPlayedCard(Left("No allowed input!"))
                     builder.getGame
 
     def getStateString: String = "GamePlayState"
@@ -128,7 +129,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
 class ShowScoreState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
         val builder = GameBuilder(controller.game)
-        builder.setPlayers(controller.dealCards(controller.shuffledeck(controller.createDeck)))
+        builder.setPlayers(controller.dealCards(controller.shuffledeck(controller.createDeck), builder.game))
         builder.setFirstCard(true)
         builder.setStartWithHearts(false)
         controller.changeState(GamePlayState(controller))
@@ -149,7 +150,7 @@ class GameOverState(controller: Controller) extends State(controller: Controller
                         controller.changeState(MainScreenState(controller))
                 builder.getGame
             case "again"|"a" =>
-                builder.setPlayers(controller.dealCards(controller.shuffledeck(controller.createDeck)))
+                builder.setPlayers(controller.dealCards(controller.shuffledeck(controller.createDeck), builder.game))
                 val director = Director()
                 director.resetForNextGame(builder)
                 controller.changeState(GamePlayState(controller))

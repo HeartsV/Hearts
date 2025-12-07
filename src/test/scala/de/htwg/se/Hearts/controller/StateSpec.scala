@@ -3,6 +3,7 @@ package de.htwg.se.Hearts.controller
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import de.htwg.se.Hearts.model._
+import scalafx.scene.input.KeyCode.P
 
 class StateSpec extends AnyWordSpec with Matchers{
 
@@ -109,11 +110,22 @@ class StateSpec extends AnyWordSpec with Matchers{
             gameController.state = GamePlayState(gameController)
             gameController.processInput("a")
             gameController.game.firstCard should be (true)
-            gameController.processInput("1")
+            gameController.processInput("2")
             gameController.game.firstCard should be (false)
-            gameController.processInput("1")
-            gameController.processInput("1")
+            gameController.processInput("3")
+            gameController.processInput("2")
             gameController.game.trickCards.size should be (3)
+        }
+
+        "setStartWithHearts after heart card is played" in {
+            val game = Game(playerNumber = Some(2),players = Vector(Player("P1", List(card1,card2)),Player("P2", List(card5,Card(Rank.Two, Suit.Hearts)))),firstCard = false,currentPlayerIndex = Some(0))
+            val gameController = Controller(game)
+            gameController.state = GamePlayState(gameController)
+            gameController.processInput("3")
+            gameController.game.lastCardPlayed should be (Left("Index: 3 was out of bounds!\n"))
+            gameController.processInput("1")
+            gameController.processInput("1")
+            gameController.game.startWithHearts should be (true)
         }
 
         "be able to change sortingStrategies" in {
@@ -129,14 +141,32 @@ class StateSpec extends AnyWordSpec with Matchers{
             gameController.sortingStrategy.execute(gameController.game.getCurrentPlayer.get) should equal (sortedRank)
         }
 
-        "process input for GamePlayState correctly when someone reaches max score" in {
-            val game = Game(maxScore = Some(0), players = Vector(p1, p2, p3), playerNumber = Some(3), currentPlayerIndex = Some(0))
+        "process rules und exit input for GamePlayState correctly" in {
+            val p1 = Player("Alice",(List(card1, card2, card3, card4, card5, card6, card7, card8)))
+            val game = Game(players = Vector(p1), currentPlayerIndex = Some(0))
             val gameController = Controller(game)
             gameController.state = GamePlayState(gameController)
-            gameController.processInput("a") should be (game)
-            gameController.processInput("1") should be (Game(maxScore = Some(0), players = Vector(p1, p2, p3), playerNumber = Some(3), currentPlayerIndex = Some(0), firstCard = false))
+            gameController.processInput("rules")
+            gameController.state.getStateString should be ("RulesScreenState")
+            gameController.state = GamePlayState(gameController)
+            gameController.processInput("exit")
+            gameController.game.keepProcessRunning should be (false)
+        }
+
+        "process input for GamePlayState correctly when someone reaches max score" in {
+            val game = Game(maxScore = Some(10), players = Vector(Player("P1", List(card1), points = 10), Player("P2", List()), Player("P3", List())), playerNumber = Some(3), currentPlayerIndex = Some(0))
+            val gameController = Controller(game)
+            gameController.state = GamePlayState(gameController)
             gameController.processInput("1")
-            gameController.processInput("1").trickCards.size should be (3)
+            gameController.state.getClass should be (GameOverState(gameController).getClass)
+
+        }
+        "process input for GamePlayState correctly when no one reaches max score" in {
+            val game = Game(maxScore = Some(10), players = Vector(Player("P1", List(card1)), Player("P2", List()), Player("P3", List())), playerNumber = Some(3), currentPlayerIndex = Some(0))
+            val gameController = Controller(game)
+            gameController.state = GamePlayState(gameController)
+            gameController.processInput("1")
+            gameController.state.getClass should be (ShowScoreState(gameController).getClass)
         }
 
         "process input for ShowScoreState correctly" in {
@@ -149,7 +179,6 @@ class StateSpec extends AnyWordSpec with Matchers{
             gameController.game.firstCard should be (true)
             gameController.game.startWithHearts should be (false)
             gameController.game.players(0).hand.size should be (17)
-
         }
 
         "process input for GameOverState correctly" in {
