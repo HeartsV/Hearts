@@ -9,6 +9,10 @@ class Controller(var game: Game) extends Observable:
 
     def processInput(input: String): Game =
         game = state.processInput(input)
+        game.lastCardPlayed match
+            case Right(card) => game.setCurrentPlayerIndex(updateCurrentPlayer)
+            case _ => 
+
         notifyObservers
         game
 
@@ -25,11 +29,12 @@ class Controller(var game: Game) extends Observable:
         }
 
     def playCard(index: Int): Game =
+        val builder = GameBuilder(game)
         if (!cardAllowed(index))
-            game
+            builder.setLastPlayedCard(Left("Card not allowed"))
+            builder.getGame
         else
             val sortedHand = sortingStrategy.execute(game.getCurrentPlayer.get)
-            val builder = GameBuilder(game)
             builder.setPlayers(game.players.updated(game.currentPlayerIndex.get, game.getCurrentPlayer.get.removeCard(sortedHand(index))))
             builder.addCard(sortedHand(index))
             builder.setCurrentWinnerAndHighestCard(updateCurrentWinner(game.getCurrentPlayer.get,sortedHand(index)))
@@ -39,7 +44,7 @@ class Controller(var game: Game) extends Observable:
                 builder.setStartWithHearts(true)
             if (game.trickCards.size == game.playerNumber.get)
                 builder.updatePlayer(game.players.indexOf(game.currentWinner.get), game.currentWinner.get.addWonCards(game.trickCards))
-            //builder.setCurrentPlayerIndex(updateCurrentPlayer)
+            builder.setLastPlayedCard(Right(sortedHand(index)))
             builder.getGame
             /*
             game = game.updatePlayer(game.currentPlayerIndex.get, game.getCurrentPlayer.get.removeCard(sortedHand(index)))

@@ -12,6 +12,7 @@ trait Builder:
 	def setTrickCards(trick: List[Card]): Unit
 	def setCurrentWinnerAndHighestCard(newWinner: (Player, Card)): Unit
 	def setFirstPlayer(firstP: Player): Unit
+	def setLastPlayedCard(card: Either[String, Card]): Unit
 
 class GameBuilder(var game: Game = Game()) extends Builder:
 	def reset: Unit = game = Game()
@@ -20,7 +21,7 @@ class GameBuilder(var game: Game = Game()) extends Builder:
 	def setKeepProcessRunning(kpr: Boolean): Unit = game = game.copy(keepProcessRunning = kpr)
 	def setFirstCard(fc: Boolean): Unit = game = game.copy(firstCard = fc)
 	def setPlayers(players: Vector[Player]): Unit = game = game.copy(players = players)
-	
+
 	def updatePlayer(index: Int, updatedPlayer: Player): Unit = game = game.copy(players = game.players.updated(index, updatedPlayer))
 	def setMaxScore(score: Int): Unit = game = game.copy(maxScore = Some(score))
 	def setCurrentPlayerIndex(cpi: Int): Unit = game = game.copy(currentPlayerIndex = Some(cpi))
@@ -30,6 +31,8 @@ class GameBuilder(var game: Game = Game()) extends Builder:
 
 	def setCurrentWinnerAndHighestCard(newWinner: (Player, Card)): Unit = game = game.copy(currentWinner = Some(newWinner(0)), highestCard = Some(newWinner(1)))
 	def setFirstPlayer(firstP: Player): Unit = game = game.copy(firstPlayer = Some(firstP))
+
+	def setLastPlayedCard(card: Either[String, Card]): Unit = game = game.copy(lastCardPlayed = card)
 
 	def getGame: Game =
 		 val newGame = game

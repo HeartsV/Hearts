@@ -109,7 +109,6 @@ class ShowScoreState(controller: Controller) extends State(controller: Controlle
         controller.game.setFirstCard(true)
         controller.game.setStartWithHearts(false)
         controller.changeState(GamePlayState(controller))
-        controller.updateCurrentPlayer
 
     def getStateString: String = "ShowScoreState"
 

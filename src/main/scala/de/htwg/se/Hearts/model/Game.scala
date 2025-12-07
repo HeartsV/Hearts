@@ -12,7 +12,7 @@ case class Game(
     highestCard: Option[Card] = None,
     currentWinner: Option[Player] = None,
     firstPlayer: Option[Player] = None,
-    lastCardPlayed: Try[Card] = ):
+    lastCardPlayed: Either[String, Card] = Left("No Card")):
 
   def addPlayer(newPlayer: Player): Game =copy(players = players :+ newPlayer)
 
