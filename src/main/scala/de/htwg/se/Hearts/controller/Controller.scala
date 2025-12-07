@@ -19,27 +19,6 @@ class Controller(var game: Game) extends Observable:
 
     def changeState(newState:State): Unit = state = newState
 
-    def playCard(index: Int): Game =
-        val builder = GameBuilder(game)
-        val result = ChainOfResponsibility.validateMove(game, sortingStrategy.execute(game.getCurrentPlayer.get), index)
-        result match
-            case Left(error) =>
-                builder.setLastPlayedCard(result)
-                builder.getGame
-            case Right(cardToPlay) =>
-                val sortedHand = sortingStrategy.execute(game.getCurrentPlayer.get)
-                builder.setPlayers(game.players.updated(game.currentPlayerIndex.get, game.getCurrentPlayer.get.removeCard(cardToPlay)))
-                builder.addCard(cardToPlay)
-                builder.setCurrentWinnerAndHighestCard(updateCurrentWinner(game.getCurrentPlayer.get,cardToPlay))
-                if (game.firstCard)
-                    builder.setFirstCard(false)
-                if ((cardToPlay.suit == Suit.Hearts || cardToPlay.equals(Card(Rank.Queen, Suit.Spades))) && !game.startWithHearts)
-                    builder.setStartWithHearts(true)
-                if (game.trickCards.size == game.playerNumber.get)
-                    builder.updatePlayer(game.players.indexOf(game.currentWinner.get), game.currentWinner.get.addWonCards(game.trickCards))
-                builder.setLastPlayedCard(result)
-                builder.getGame
-
     def updateCurrentWinner(newWinner: (Player, Card)): (Player, Card) =
         if (game.highestCard == None || game.highestCard.exists(card => card.suit == game.trickCards.last.suit && game.trickCards.last.rank.compare(card.rank) > 0))
             newWinner
@@ -105,8 +84,8 @@ class Controller(var game: Game) extends Observable:
         else
             points
 
-    def addPointsToPlayers: Game =
-        game.copy(players = (applyShootingTheMoon.map{ case (player, newPoints) => player.addPoints(newPoints)}).toVector)
+    def addPointsToPlayers: Vector[Player] =
+        (applyShootingTheMoon.map{ case (player, newPoints) => player.addPoints(newPoints)}).toVector
 
     def getPlayersWithPoints: List[(String, Int)] =
         for {

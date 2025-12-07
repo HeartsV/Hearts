@@ -95,14 +95,32 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
                 builder.getGame
             case _ =>
                 if(!input.toIntOption.equals(None))
-                    controller.game = controller.playCard(input.toInt-1)
-                    if(controller.game.getCurrentPlayer.get.hand.size == 0 && !controller.checkGameOver)
-                        controller.changeState(ShowScoreState(controller))
-                    if (controller.game.getCurrentPlayer.get.hand.size == 0 && controller.checkGameOver)
-                        controller.changeState(GameOverState(controller))
-                    controller.addPointsToPlayers
+                    val result = ChainOfResponsibility.validateMove(controller.game,
+                    controller.sortingStrategy.execute(controller.game.getCurrentPlayer.get), input.toInt - 1)
+                    result match
+                        case Left(error) =>
+                            builder.setLastPlayedCard(result)
+                        case Right(cardToPlay) =>
+                            val sortedHand = controller.sortingStrategy.execute(builder.game.getCurrentPlayer.get)
+                            builder.setPlayers(builder.game.players.updated(builder.game.currentPlayerIndex.get, builder.game.getCurrentPlayer.get.removeCard(cardToPlay)))
+                            builder.addCard(cardToPlay)
+                            builder.setCurrentWinnerAndHighestCard(controller.updateCurrentWinner(builder.game.getCurrentPlayer.get,cardToPlay))
+                            if (builder.game.firstCard)
+                                builder.setFirstCard(false)
+                            if ((cardToPlay.suit == Suit.Hearts || cardToPlay.equals(Card(Rank.Queen, Suit.Spades))) && !builder.game.startWithHearts)
+                                builder.setStartWithHearts(true)
+                            if (builder.game.trickCards.size == builder.game.playerNumber.get)
+                                builder.updatePlayer(builder.game.players.indexOf(builder.game.currentWinner.get), builder.game.currentWinner.get.addWonCards(builder.game.trickCards))
+                            builder.setLastPlayedCard(result)
+                    if (controller.game.getCurrentPlayer.get.hand.size == 0)
+                        if(!controller.checkGameOver)
+                            controller.changeState(ShowScoreState(controller))
+                        else
+                            controller.changeState(GameOverState(controller))
+                        builder.setPlayers(controller.addPointsToPlayers)
+                    builder.getGame
                 else
-                    controller.game
+                    builder.getGame
 
     def getStateString: String = "GamePlayState"
 
