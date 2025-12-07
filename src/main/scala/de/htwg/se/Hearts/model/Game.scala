@@ -35,7 +35,3 @@ case class Game(
   def setFirstCard(a: Boolean): Game = copy(firstCard = a)
 
   def updatePlayer(index: Int, updatedPlayer: Player): Game = copy(players = players.updated(index, updatedPlayer))
-
-  def resetForNewGame: Game =
-    val resetPlayers = players.map(_.copy(points = 0))
-    copy(players = resetPlayers, firstCard = true, startWithHearts = false)

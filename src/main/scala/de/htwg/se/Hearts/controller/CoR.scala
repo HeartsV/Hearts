@@ -123,13 +123,9 @@ object ChainOfResponsibility:
 
     // Wir gehen nacheinander durch alle Regeln
     val result: Either[String, Unit] =
-      validationChain.foldLeft[Either[String, Unit]](Right(())) { (acc, rule) =>
-        // Wenn schon ein Fehler (Left) aufgetreten ist, bleibt es Left
-        // Wenn Right, dann nächste Regel ausführen
-        acc.flatMap(_ => rule(ctx))
+      validationChain.foldLeft[Either[String, Unit]](Right(())) { (previousResult, rule) =>
+        previousResult.flatMap(_ => rule(ctx))
       }
-
-    // Wenn alles ok (Right), gib die gespielte Karte zurück
     result.map(_ => ctx.playerHand(index))
 
 

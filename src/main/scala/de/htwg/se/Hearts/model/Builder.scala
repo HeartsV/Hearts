@@ -14,6 +14,13 @@ trait Builder:
 	def setFirstPlayer(firstP: Player): Unit
 	def setLastPlayedCard(card: Either[String, Card]): Unit
 
+class Director:
+
+	def resetForNextGame(builder: GameBuilder): Unit =
+		builder.setPlayers(builder.game.players.map(_.copy(points = 0)))
+		builder.setFirstCard(true)
+		builder.setStartWithHearts(false)
+
 class GameBuilder(var game: Game = Game()) extends Builder:
 	def reset: Unit = game = Game()
 	def setPlayerNumber(playerNumber: Int): Unit = game = game.copy(playerNumber = Some(playerNumber))

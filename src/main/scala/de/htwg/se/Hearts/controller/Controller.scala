@@ -7,61 +7,38 @@ class Controller(var game: Game) extends Observable:
     var state: State = MainScreenState(this)
     var sortingStrategy: Strategy = SortByRankStrategy()
 
-    def processInput(input: String): Game =
+    def processInput(input: String): Unit =
         game = state.processInput(input)
         game.lastCardPlayed match
-            case Right(card) => game.setCurrentPlayerIndex(updateCurrentPlayer)
+            case Right(card) =>
+                val builder = GameBuilder(game)
+                builder.setCurrentPlayerIndex(updateCurrentPlayer)
+                game = builder.getGame
             case _ =>
-
         notifyObservers
-        game
 
     def changeState(newState:State): Unit = state = newState
 
-    def cardAllowed(index: Int): Boolean =
-        game.getCurrentPlayer.exists { player =>
-
-                ChainOfResponsibility.validateMove(game, sortingStrategy.execute(player), index)
-        }
-
     def playCard(index: Int): Game =
         val builder = GameBuilder(game)
-        if (!cardAllowed(index))
-            builder.setLastPlayedCard(Left("Card not allowed"))
-            builder.getGame
-        else
-            val sortedHand = sortingStrategy.execute(game.getCurrentPlayer.get)
-            builder.setPlayers(game.players.updated(game.currentPlayerIndex.get, game.getCurrentPlayer.get.removeCard(sortedHand(index))))
-            builder.addCard(sortedHand(index))
-            builder.setCurrentWinnerAndHighestCard(updateCurrentWinner(game.getCurrentPlayer.get,sortedHand(index)))
-            if (game.firstCard)
-                builder.setFirstCard(false)
-            if ((sortedHand(index).suit == Suit.Hearts || sortedHand(index).equals(Card(Rank.Queen, Suit.Spades))) && !game.startWithHearts)
-                builder.setStartWithHearts(true)
-            if (game.trickCards.size == game.playerNumber.get)
-                builder.updatePlayer(game.players.indexOf(game.currentWinner.get), game.currentWinner.get.addWonCards(game.trickCards))
-            builder.setLastPlayedCard(Right(sortedHand(index)))
-            builder.getGame
-            /*
-            game = game.updatePlayer(game.currentPlayerIndex.get, game.getCurrentPlayer.get.removeCard(sortedHand(index)))
-            game = game.addCard(sortedHand(index))
-            game = updateCurrentWinner(game.getCurrentPlayer.get, sortedHand(index))
-            */
-            /*
-            val currentPlayerIndex = game.currentPlayerIndex
-            val currentPlayer = game.getCurrentPlayer.get
-            val card = sortedHand(index)
-            val updatedPlayer = currentPlayer.removeCard(card)
-            var newGame = game.updatePlayer(currentPlayerIndex.get, updatedPlayer)
-            newGame = newGame.addCard(card)
-            newGame = updateCurrentWinner(updatedPlayer, card)
-
-                val winner = newGame.currentWinner.get
-                val winnerIndex = newGame.players.indexOf(winner)
-                val winnerWithHand = winner.addWonCards(newGame.trickCards)
-                newGame = newGame.updatePlayer(winnerIndex, winnerWithHand).clearTrick
-            newGame = updateCurrentPlayer
-            newGame*/
+        val result = ChainOfResponsibility.validateMove(game, sortingStrategy.execute(game.getCurrentPlayer.get), index)
+        result match
+            case Left(error) =>
+                builder.setLastPlayedCard(result)
+                builder.getGame
+            case Right(cardToPlay) =>
+                val sortedHand = sortingStrategy.execute(game.getCurrentPlayer.get)
+                builder.setPlayers(game.players.updated(game.currentPlayerIndex.get, game.getCurrentPlayer.get.removeCard(cardToPlay)))
+                builder.addCard(cardToPlay)
+                builder.setCurrentWinnerAndHighestCard(updateCurrentWinner(game.getCurrentPlayer.get,cardToPlay))
+                if (game.firstCard)
+                    builder.setFirstCard(false)
+                if ((cardToPlay.suit == Suit.Hearts || cardToPlay.equals(Card(Rank.Queen, Suit.Spades))) && !game.startWithHearts)
+                    builder.setStartWithHearts(true)
+                if (game.trickCards.size == game.playerNumber.get)
+                    builder.updatePlayer(game.players.indexOf(game.currentWinner.get), game.currentWinner.get.addWonCards(game.trickCards))
+                builder.setLastPlayedCard(result)
+                builder.getGame
 
     def updateCurrentWinner(newWinner: (Player, Card)): (Player, Card) =
         if (game.highestCard == None || game.highestCard.exists(card => card.suit == game.trickCards.last.suit && game.trickCards.last.rank.compare(card.rank) > 0))
@@ -101,10 +78,10 @@ class Controller(var game: Game) extends Observable:
         else
             deck
 
-    def dealCards(deck: List[Card]): Game =
+    def dealCards(deck: List[Card]): Vector[Player] =
         val newdeck = filterOneCardOut(deck)
         val handlist = deck.grouped(newdeck.size/game.playerNumber.get).toList
-        game.copy(players = (game.players.zip(handlist).map { case (player, newCards) => player.copy(hand = newCards)}).toVector)
+        (game.players.zip(handlist).map { case (player, newCards) => player.copy(hand = newCards)}).toVector
 
     def cardPoints(card: Card): Int =
         card match
@@ -174,7 +151,7 @@ class Controller(var game: Game) extends Observable:
 
     def setStrategy(strategy:Strategy): Unit = this.sortingStrategy = strategy
 
-    def executeStrategy: Game = game.copy(players = game.players.map(player => player.copy(hand = sortingStrategy.execute(player))))
+    def executeStrategy: Vector[Player] = game.players.map(player => player.copy(hand = sortingStrategy.execute(player)))
     //falls ich das nur für einen spieler machen will
     /*def executeStrategy: Game =
         val i = game.getCurrentPlayerIndex

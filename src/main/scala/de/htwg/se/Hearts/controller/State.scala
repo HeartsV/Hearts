@@ -39,57 +39,60 @@ class RulesScreenState(controller: Controller) extends State(controller: Control
 
 class GetPlayerNumberState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
+        val builder = GameBuilder(controller.game)
         if(input.toIntOption.exists(intInput => intInput >= 3 && intInput <= 4))
             controller.changeState(GetPlayerNamesState(controller))
-            controller.setPlayerNumber(Some(input.toInt))
+            builder.setPlayerNumber(input.toInt)
+            builder.getGame
         else
-            controller.game
+            builder.getGame
 
     def getStateString: String = "GetPlayerNumberState"
 
 class GetPlayerNamesState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
+        val builder = GameBuilder(controller.game)
         if(!input.trim.equals(""))
-            controller.game = controller.game.addPlayer(Player(input))
+            builder.setPlayers(controller.game.players :+ Player(input))
         else
-            controller.game =controller.game.addPlayer(Player(s"P${controller.game.players.size + 1}"))
-        if(controller.game.players.size == controller.game.playerNumber.get)
-            controller.game = controller.dealCards(controller.shuffledeck(controller.createDeck))
+            builder.setPlayers(controller.game.players :+ Player(s"P${controller.game.players.size + 1}"))
+        if(builder.game.players.size == builder.game.playerNumber.get)
+            builder.setPlayers(controller.dealCards(controller.shuffledeck(controller.createDeck)))
             controller.changeState(SetMaxScoreState(controller))
-            controller.game = controller.updateCurrentPlayer
-        controller.game
+        builder.getGame
 
     def getStateString: String = "GetPlayerNamesState"
 
 class SetMaxScoreState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
+        val builder = GameBuilder(controller.game)
         if(input.toIntOption.exists(intInput => intInput >= 1 && intInput <= 400))
             controller.changeState(GamePlayState(controller))
-            controller.game.setMaxScore(input.toInt)
+            builder.setMaxScore(input.toInt)
         else if(input.trim.equals(""))
             controller.changeState(GamePlayState(controller))
-            controller.game.setMaxScore(100)
-        else
-            controller.game
+            builder.setMaxScore(100)
+        builder.getGame
 
     def getStateString: String ="SetMaxScoreState"
 
 class GamePlayState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
-        controller.game = controller.executeStrategy
+        val builder = GameBuilder(controller.game)
+        builder.setPlayers(controller.executeStrategy)
         input.trim.toLowerCase match
             case "suit" | "s" =>
                 controller.setStrategy(SortBySuitStrategy())
-                controller.game
+                builder.getGame
             case "rank" | "r" =>
                 controller.setStrategy(SortByRankStrategy())
-                controller.game
+                builder.getGame
             case "rules"|"ru" =>
                 controller.changeState(RulesScreenState(controller))
-                controller.game
+                builder.getGame
             case "exit"|"e" =>
                 controller.setKeepProcessRunning(false)
-                controller.game
+                builder.getGame
             case _ =>
                 if(!input.toIntOption.equals(None))
                     controller.game = controller.playCard(input.toInt-1)
@@ -105,33 +108,37 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
 
 class ShowScoreState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
-        controller.dealCards(controller.shuffledeck(controller.createDeck))
-        controller.game.setFirstCard(true)
-        controller.game.setStartWithHearts(false)
+        val builder = GameBuilder(controller.game)
+        builder.setPlayers(controller.dealCards(controller.shuffledeck(controller.createDeck)))
+        builder.setFirstCard(true)
+        builder.setStartWithHearts(false)
         controller.changeState(GamePlayState(controller))
+        builder.getGame
 
     def getStateString: String = "ShowScoreState"
 
 class GameOverState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
+        val builder = GameBuilder(controller.game)
         input.toLowerCase().trim match
             case "new"|"n"|"quit"|"q" =>
-                controller.game.resetForNewGame
-                controller.game = controller.game.copy(players = Vector.empty)
+                builder.reset
                 input.toLowerCase().trim match
                     case "new"|"n" =>
                         controller.changeState(GetPlayerNumberState(controller))
                     case "quit"|"q" =>
                         controller.changeState(MainScreenState(controller))
-                controller.game
+                builder.getGame
             case "again"|"a" =>
                 controller.dealCards(controller.shuffledeck(controller.createDeck))
                 controller.changeState(GamePlayState(controller))
-                controller.game.resetForNewGame
+                val director = Director()
+                director.resetForNextGame(builder)
+                builder.getGame
             case "exit"|"e" =>
-                controller.setKeepProcessRunning(false)
-                controller.game
+                builder.setKeepProcessRunning(false)
+                builder.getGame
             case _ =>
-                controller.game
+                builder.getGame
 
     def getStateString: String = "GameOverState"
