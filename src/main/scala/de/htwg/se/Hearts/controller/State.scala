@@ -149,10 +149,10 @@ class GameOverState(controller: Controller) extends State(controller: Controller
                         controller.changeState(MainScreenState(controller))
                 builder.getGame
             case "again"|"a" =>
-                controller.dealCards(controller.shuffledeck(controller.createDeck))
-                controller.changeState(GamePlayState(controller))
+                builder.setPlayers(controller.dealCards(controller.shuffledeck(controller.createDeck)))
                 val director = Director()
                 director.resetForNextGame(builder)
+                controller.changeState(GamePlayState(controller))
                 builder.getGame
             case "exit"|"e" =>
                 builder.setKeepProcessRunning(false)

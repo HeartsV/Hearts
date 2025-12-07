@@ -20,7 +20,6 @@ class CoRSpec extends AnyWordSpec with Matchers {
         val gameNoHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,currentPlayerIndex = Some(0))
         val gameHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,startWithHearts = true,currentPlayerIndex = Some(0))
         val gameWithTrick = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false, currentPlayerIndex = Some(0),trickCards = List(card7))
-        val sortingStrategy = SortByRankStrategy()
 
         "check if card allowed for first card in game" in {
             ChainOfResponsibility.validateMove(gameFirstCard, p1.hand, 2) should be (Left("Index: 2 was out of bounds!\n"))

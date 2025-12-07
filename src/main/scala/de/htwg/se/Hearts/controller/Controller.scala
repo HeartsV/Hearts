@@ -7,7 +7,7 @@ class Controller(var game: Game) extends Observable:
     var state: State = MainScreenState(this)
     var sortingStrategy: Strategy = SortByRankStrategy()
 
-    def processInput(input: String): Unit =
+    def processInput(input: String): Game =
         game = state.processInput(input)
         game.lastCardPlayed match
             case Right(card) =>
@@ -16,6 +16,7 @@ class Controller(var game: Game) extends Observable:
                 game = builder.getGame
             case _ =>
         notifyObservers
+        game
 
     def changeState(newState:State): Unit = state = newState
 
