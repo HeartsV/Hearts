@@ -10,7 +10,6 @@ class MainScreenState(controller: Controller) extends State(controller: Controll
     def processInput(input: String): Game =
         val builder = GameBuilder(controller.game)
         input.toLowerCase.trim match{
-
         case "new"| "n" =>
             controller.changeState(GetPlayerNumberState(controller))
             controller.game
@@ -83,6 +82,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
     def processInput(input: String): Game =
         val builder = GameBuilder(controller.game)
         builder.setPlayers(controller.executeStrategy)
+        builder.setLastPlayedCard(Left("control input"))
         input.trim.toLowerCase match
             case "suit" | "s" =>
                 controller.setStrategy(SortBySuitStrategy())
