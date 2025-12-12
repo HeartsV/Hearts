@@ -121,13 +121,7 @@ class Controller(var game: Game) extends Observable:
         else
             false
 
-    def getPlayerNumber: Option[Int] = game.playerNumber
-
-    def setPlayerNumber(number: Option[Int]): Game = game.copy(playerNumber = number)
-
     def getKeepProcessRunning: Boolean = game.keepProcessRunning
-
-    def setKeepProcessRunning(a: Boolean): Unit = game = game.copy(keepProcessRunning = a)
 
     def setStrategy(strategy:Strategy): Unit = this.sortingStrategy = strategy
 

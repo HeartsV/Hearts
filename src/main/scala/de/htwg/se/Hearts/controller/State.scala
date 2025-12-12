@@ -8,7 +8,9 @@ trait State(controller: Controller):
 
 class MainScreenState(controller: Controller) extends State(controller: Controller):
     def processInput(input: String): Game =
+        val builder = GameBuilder(controller.game)
         input.toLowerCase.trim match{
+
         case "new"| "n" =>
             controller.changeState(GetPlayerNumberState(controller))
             controller.game
@@ -16,8 +18,8 @@ class MainScreenState(controller: Controller) extends State(controller: Controll
             controller.changeState(RulesScreenState(controller))
             controller.game
         case "exit"|"e" =>
-            controller.setKeepProcessRunning(false)
-            controller.game
+            builder.setKeepProcessRunning(false)
+            builder.getGame
         case _ =>
             controller.game
         }
