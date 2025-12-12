@@ -8,13 +8,4 @@ object Main:
     val gameCo = Controller(game)
     val gameTui = Tui(gameCo)
     gameCo.add(gameTui)
-
-    // Start GUI in a separate thread
-    val guiThread = new Thread(() =>
-      GuiApp.init(gameCo)            // inject controller & register observer
-      GuiApp.main(Array.empty[String])   // start ScalaFX app
-    )
-    guiThread.setDaemon(true)
-    guiThread.start()
-
     gameTui.runGame

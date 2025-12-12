@@ -20,8 +20,6 @@ class Controller(var game: Game) extends Observable:
 
     def changeState(newState:State): Unit = state = newState
 
-    def getHand: List[Card] = game.players(game.currentPlayerIndex.get).hand
-
     def updateCurrentWinner(newWinner: (Player, Card)): (Player, Card) =
         if (game.highestCard == None || game.highestCard.exists(card => card.suit == game.trickCards.last.suit && game.trickCards.last.rank.compare(card.rank) > 0))
             newWinner
