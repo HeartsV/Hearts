@@ -20,11 +20,11 @@ class Controller(var game: Game) extends Observable:
 
     def changeState(newState:State): Unit = state = newState
 
-    def updateCurrentWinner(newWinner: (Int, Card)): (Int, Card) =
+    def updateCurrentWinner(newWinner: (Int, Card)): (Option[Int], Option[Card]) =
         if (game.highestCard == None || game.highestCard.exists(card => card.suit == game.trickCards.last.suit && game.trickCards.last.rank.compare(card.rank) > 0))
-            newWinner
+            (Some(newWinner(0)), Some(newWinner(1)))
         else
-            (game.currentWinnerIndex.get, game.highestCard.get)
+            (game.currentWinnerIndex, game.highestCard)
 
     def updateCurrentPlayer: Int =
     if (game.firstCard == true)

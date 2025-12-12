@@ -98,14 +98,15 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
                 builder.getGame
             case _ =>
                 if(!input.toIntOption.equals(None))
+                    if (builder.game.trickCards.size == builder.game.playerNumber.get)
+                        builder.setTrickCards(List())
+                        builder.setCurrentWinnerAndHighestCard(None, None)
                     val result = ChainOfResponsibility.validateMove(controller.game,
                         controller.sortingStrategy.execute(controller.game.getCurrentPlayer.get), input.toInt - 1)
                     result match
                         case Left(error) =>
                             builder.setLastPlayedCard(result)
                         case Right(cardToPlay) =>
-                            if (builder.game.trickCards.size == builder.game.playerNumber.get)
-                                builder.setTrickCards(List())
                             val sortedHand = controller.sortingStrategy.execute(builder.game.getCurrentPlayer.get)
                             builder.setPlayers(builder.game.players.updated(builder.game.currentPlayerIndex.get, builder.game.getCurrentPlayer.get.removeCard(cardToPlay)))
                             builder.addCard(cardToPlay)
@@ -118,7 +119,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
                                 builder.updatePlayer(builder.game.currentWinnerIndex.get, builder.game.players(builder.game.currentWinnerIndex.get).addWonCards(builder.game.trickCards))
                             builder.setLastPlayedCard(result)
                     if (builder.game.getCurrentPlayer.get.hand.size == 0)
-                        if(!controller.checkGameOver)
+                        if(!controller.checkGameOver) 
                             controller.changeState(ShowScoreState(controller))
                         else
                             controller.changeState(GameOverState(controller))
