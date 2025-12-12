@@ -20,7 +20,27 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         val gamefirstCard = Game(playerNumber = Some(2),players = Vector(p1,p2),currentPlayerIndex = Some(0))
         val gameNoHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,currentPlayerIndex = Some(0))
         val gameHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,startWithHearts = true, currentPlayerIndex = Some(0))
+        val gameWithTrick = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false, currentPlayerIndex = Some(0),trickCards = List(card7), highestCard = Some(card7),currentWinner = Some(p1))
+        val controllerHearts = Controller(gameHearts)
+        val contollerTrick = Controller(gameWithTrick)
+        val gameController = Controller(gamefirstCard)
+        val state = GamePlayState(gameController)
+        
 
+        "should change state" in {
+            gameController.changeState(state)
+            gameController.state should be (state)
+        }
+
+        "should return current winner" in {
+            contollerTrick.updateCurrentWinner((p1,card3)) should be (p1,card7)
+            controllerHearts.updateCurrentWinner((p1,card3)) should be (p1,card3)
+            contollerTrick.updateCurrentWinner((p1,card2)) should be (p1,card7)
+        }
+
+        "should update current player" in {
+            gameController.updateCurrentPlayer should be (0)
+        }
         /*"play cards only if input is valid" in{
             val p1 = Player("Alice")
             val p2 = Player("Dave")
