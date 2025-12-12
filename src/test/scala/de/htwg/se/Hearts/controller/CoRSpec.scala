@@ -37,6 +37,5 @@ class CoRSpec extends AnyWordSpec with Matchers {
             ChainOfResponsibility.validateMove(gameNoHearts, p3.hand, 0) should be(Right(card5))
             ChainOfResponsibility.validateMove(gameNoHearts, p2.hand, 2) should be(Left("You cannot play \u2665 until they are broken or you have only \u2665s\n"))
         }
-
     }
 }
