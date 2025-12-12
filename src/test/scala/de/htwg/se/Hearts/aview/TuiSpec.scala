@@ -8,21 +8,14 @@ import de.htwg.se.Hearts.controller.Controller
 
 class TuiSpec extends AnyWordSpec with Matchers {
 	"A Tui" should {
-        val game = Game()
+
+        val p1 = Player("Alice", List(Card(Rank.Two,Suit.Clubs)), points = 30)
+        val p2 = Player("Dave", List(Card(Rank.Ace,Suit.Clubs)), points = 20)
+        val p3 = Player("Charlie", List(Card(Rank.Jack,Suit.Clubs)), points = 20)
+        val p4 = Player("David", List(Card(Rank.Ten,Suit.Clubs)), points = 10)
+        val game = Game(players = Vector(p1, p2, p3, p4), playerNumber = Some(4), currentPlayerIndex = Some(0))
         val gameController = Controller(game)
         val tui = Tui(gameController)
-        val p1 = Player("Alice")
-        val p2 = Player("Dave")
-        val p3 = Player("Charlie")
-        val p4 = Player("David")
-        p1.addPoints(30)
-        p2.addPoints(20)
-        p3.addPoints(20)
-        p4.addPoints(10)
-        p1.addAllCards(List(Card(Rank.Two,Suit.Clubs)))
-        p2.addAllCards(List(Card(Rank.Ace,Suit.Clubs)))
-        p3.addAllCards(List(Card(Rank.Jack,Suit.Clubs)))
-        p4.addAllCards(List(Card(Rank.Ten,Suit.Clubs)))
 
         "get the correct getMainScreenStateString" in {
             val expected ="Hearts" + "\n\n" +
@@ -31,7 +24,7 @@ class TuiSpec extends AnyWordSpec with Matchers {
                 "- r or rules for the rules" + "\n" +
                 "- e or exit to end the program" + "\n"
                 tui.getMainScreenStateString should be (expected)
-        }/*
+        }
 
         "get the correct getRulesScreenStateString" in {
             val expected =
@@ -96,19 +89,11 @@ class TuiSpec extends AnyWordSpec with Matchers {
         }
 
         "get the correct GameplayStateString" in {
-            gameController.updateCurrentPlayer
             tui.getGameplayStateString should be ("Trick:\n|     |     |     |     |\nAlice please select card to play:\n|  1  |\n| 2 ♣ |\n")
-            gameController.playCard(1)
-            game.setFirstCard(false)
-            gameController.updateCurrentPlayer
-            tui.getGameplayStateString should be ("Trick:\n| 2 ♣ |     |     |     |\nDave please select card to play:\n|  1  |\n| A ♣ |\n")
-            gameController.playCard(2)
-            tui.getGameplayStateString should be ("Trick:\n| 2 ♣ |     |     |     |\nDave please select card to play:\n|  1  |\n| A ♣ |\n")
         }
 
         "get the correct getShowScoreStateString" in {
             tui.getShowScoreStateString should be ("Scoreboard:\n1. David: 10\n2. Dave: 20\n2. Charlie: 20\n4. Alice: 30\nPress any button to continue\n")
-
         }
 
         "get the correct getGameOverStateString" in {
@@ -119,7 +104,7 @@ class TuiSpec extends AnyWordSpec with Matchers {
                 "- a or again for playing again" + "\n" +
                 "- q or quit to go back to Mainmenu" + "\n" +
                 "- e or exit to end the program" + "\n")
-        }*/
+        }
     }
 
 }
