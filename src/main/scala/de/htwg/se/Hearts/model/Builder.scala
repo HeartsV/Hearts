@@ -10,7 +10,7 @@ trait Builder:
 	def setMaxScore(maxScore: Int): Unit
 	def setCurrentPlayerIndex(cpi: Int): Unit
 	def setTrickCards(trick: List[Card]): Unit
-	def setCurrentWinnerAndHighestCard(newWinner: (Player, Card)): Unit
+	def setCurrentWinnerAndHighestCard(newWinner: (Int, Card)): Unit
 	def setFirstPlayer(firstP: Player): Unit
 	def setLastPlayedCard(card: Either[String, Card]): Unit
 
@@ -36,7 +36,7 @@ class GameBuilder(var game: Game = Game()) extends Builder:
 
 	def addCard(card: Card): Unit = game = game.copy(trickCards = game.trickCards :+ card)
 
-	def setCurrentWinnerAndHighestCard(newWinner: (Player, Card)): Unit = game = game.copy(currentWinner = Some(newWinner(0)), highestCard = Some(newWinner(1)))
+	def setCurrentWinnerAndHighestCard(newWinner: (Int, Card)): Unit = game = game.copy(currentWinnerIndex = Some(newWinner(0)), highestCard = Some(newWinner(1)))
 	def setFirstPlayer(firstP: Player): Unit = game = game.copy(firstPlayer = Some(firstP))
 
 	def setLastPlayedCard(card: Either[String, Card]): Unit = game = game.copy(lastCardPlayed = card)

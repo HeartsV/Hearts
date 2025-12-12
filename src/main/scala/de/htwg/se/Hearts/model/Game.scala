@@ -10,9 +10,9 @@ case class Game(
     currentPlayerIndex: Option[Int] = None,
     trickCards: List[Card] = Nil,
     highestCard: Option[Card] = None,
-    currentWinner: Option[Player] = None,
+    currentWinnerIndex: Option[Int] = None,
     firstPlayer: Option[Player] = None,
     lastCardPlayed: Either[String, Card] = Left("No Card")):
-      
+
   def getCurrentPlayer: Option[Player] = currentPlayerIndex.flatMap(players.lift)
 

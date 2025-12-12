@@ -20,17 +20,17 @@ class Controller(var game: Game) extends Observable:
 
     def changeState(newState:State): Unit = state = newState
 
-    def updateCurrentWinner(newWinner: (Player, Card)): (Player, Card) =
+    def updateCurrentWinner(newWinner: (Int, Card)): (Int, Card) =
         if (game.highestCard == None || game.highestCard.exists(card => card.suit == game.trickCards.last.suit && game.trickCards.last.rank.compare(card.rank) > 0))
             newWinner
         else
-            (game.currentWinner.get, game.highestCard.get)
+            (game.currentWinnerIndex.get, game.highestCard.get)
 
     def updateCurrentPlayer: Int =
     if (game.firstCard == true)
         game.players.indexWhere(_.hand.contains(Card(Rank.Two,Suit.Clubs)))
     else if (game.players.size == game.trickCards.size)
-        game.players.indexOf(game.currentWinner)
+        game.currentWinnerIndex.get
     else if (game.currentPlayerIndex.get + 1 == game.players.size)
         0
     else
