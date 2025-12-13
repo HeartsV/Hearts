@@ -101,8 +101,8 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
                     if (builder.game.trickCards.size == builder.game.playerNumber.get)
                         builder.setTrickCards(List())
                         builder.setCurrentWinnerAndHighestCard(None, None)
-                    val result = ChainOfResponsibility.validateMove(controller.game,
-                        controller.sortingStrategy.execute(controller.game.getCurrentPlayer.get), input.toInt - 1)
+                    val result = ChainOfResponsibility.validateMove(builder.game,
+                        controller.sortingStrategy.execute(builder.game.getCurrentPlayer.get), input.toInt - 1)
                     result match
                         case Left(error) =>
                             builder.setLastPlayedCard(result)
@@ -119,7 +119,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
                                 builder.updatePlayer(builder.game.currentWinnerIndex.get, builder.game.players(builder.game.currentWinnerIndex.get).addWonCards(builder.game.trickCards))
                             builder.setLastPlayedCard(result)
                     if (builder.game.getCurrentPlayer.get.hand.size == 0)
-                        if(!controller.checkGameOver) 
+                        if(!controller.checkGameOver)
                             controller.changeState(ShowScoreState(controller))
                         else
                             controller.changeState(GameOverState(controller))
