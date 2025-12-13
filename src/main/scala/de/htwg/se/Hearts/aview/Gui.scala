@@ -1,6 +1,7 @@
 package de.htwg.se.Hearts.aview
 
 import de.htwg.se.Hearts.controller._
+import scala.compiletime.uninitialized
 
 import scalafx._
 import scalafx.application.JFXApp3
@@ -14,7 +15,7 @@ import scalafx.geometry.Insets
 import scalafx.Includes.*
 
 object Gui extends JFXApp3 with Observer:
-	var gameController: Controller = _
+	var gameController: Controller = uninitialized
 
 	def init(controller: Controller): Unit =
 		this.gameController = controller
@@ -41,22 +42,22 @@ object Gui extends JFXApp3 with Observer:
 				case "GameOverState" => showGameOverState()*/
 		}
 
-	val newGameButton = new Button("New Game"):
+	lazy val newGameButton = new Button("New Game"):
 		onAction = _ => gameController.processInput("n")
-	val rulesButton = new Button("Rules"):
+	lazy val rulesButton = new Button("Rules"):
 		onAction = _ => gameController.processInput("rules")
-	val exitButton = new Button("Exit"):
+	lazy val exitButton = new Button("Exit"):
 		onAction = _ => gameController.processInput("e")
-	val textField = new TextField():
+	lazy val textField = new TextField():
 		onAction = _ => gameController.processInput(text())
-	val backButton = new Button("Back"):
+	lazy val backButton = new Button("Back"):
 		onAction = _ => gameController.processInput("b")
-	val suitSortButton = new Button("Sort by: suit"):
+	lazy val suitSortButton = new Button("Sort by: suit"):
 		onAction = _ => gameController.processInput("suit")
-	val rankSortButton = new Button("Sort by: rank"):
+	lazy val rankSortButton = new Button("Sort by: rank"):
 		onAction = _ => gameController.processInput("rank")
-	val trickBox = new HBox()
-	val handBox = new HBox()
+	lazy val trickBox = new HBox()
+	lazy val handBox = new HBox()
 
 	def renderTrick(imageUrls: List[String]): Unit =
 		trickBox.children.clear()
@@ -164,7 +165,7 @@ object Gui extends JFXApp3 with Observer:
 
 
 		val bottomBox = new VBox:
-			renderHand(gameController.cardsPathList(gameController.game.getCurrentPlayer.get.hand))
+			renderHand(gameController.cardsPathList(gameController.sortingStrategy.execute(gameController.game.getCurrentPlayer.get)))
 			children = Seq(
 				Label("Hand:"),
 				handBox
