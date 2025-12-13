@@ -12,7 +12,7 @@ class GameSpec extends AnyWordSpec with Matchers {
         val card2 = Card(Rank.Two,Suit.Diamonds)
         val p1 = Player("Alice", List(card1),points = 10)
         val p2 = Player("Bob", List(card2))
-        val game = Game(players = Vector(p1),trickCards = List(card1),currentPlayerIndex = Some(0),currentWinner = Some(p1))
+        val game = Game(players = Vector(p1),trickCards = List(card1),currentPlayerIndex = Some(0),currentWinnerIndex = Some(0))
 
         "get the current player" in {
             game.getCurrentPlayer should be (Some(p1))

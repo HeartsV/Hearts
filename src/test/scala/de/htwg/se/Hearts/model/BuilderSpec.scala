@@ -87,8 +87,8 @@ class BuilderSpec extends AnyWordSpec with Matchers {
 
 		"setCurrentWinnerAndHighestCard" in {
 			val builder = GameBuilder()
-			builder.setCurrentWinnerAndHighestCard((p1,card8))
-			builder.game.currentWinner should be (Some(p1))
+			builder.setCurrentWinnerAndHighestCard((Some(0),Some(card8)))
+			builder.game.currentWinnerIndex should be (Some(0))
 			builder.game.highestCard should be (Some(card8))
 		}
 

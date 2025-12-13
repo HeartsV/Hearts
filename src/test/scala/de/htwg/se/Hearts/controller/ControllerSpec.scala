@@ -25,7 +25,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         val gameSecondPlayer = Game(playerNumber = Some(2),players = Vector(p1,p2), currentPlayerIndex = Some(1), firstCard = false)
         val gameNoHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,currentPlayerIndex = Some(0))
         val gameHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,startWithHearts = true, currentPlayerIndex = Some(0))
-        val gameWithTrick = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false, currentPlayerIndex = Some(0),trickCards = List(card7), highestCard = Some(card7),currentWinner = Some(p1))
+        val gameWithTrick = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false, currentPlayerIndex = Some(0),trickCards = List(card7), highestCard = Some(card7),currentWinnerIndex = Some(0))
         val controllerSecondPlayer = Controller(gameSecondPlayer)
         val controller3Players = Controller(game3Players)
         val controllerHearts = Controller(gameHearts)
@@ -40,9 +40,9 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         }
 
         "should return current winner" in {
-            contollerTrick.updateCurrentWinner((p1,card3)) should be (p1,card7)
-            controllerHearts.updateCurrentWinner((p1,card3)) should be (p1,card3)
-            contollerTrick.updateCurrentWinner((p1,card2)) should be (p1,card7)
+            contollerTrick.updateCurrentWinner((0,card3)) should be (Some(0),Some(card7))
+            controllerHearts.updateCurrentWinner((0,card3)) should be (Some(0),Some(card3))
+            contollerTrick.updateCurrentWinner((0,card2)) should be (Some(0),Some(card7))
         }
 
         "should update current player" in {
