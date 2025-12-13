@@ -42,6 +42,10 @@ class Controller(var game: Game) extends Observable:
 
     def completeTrickString: String = trickToString + "     |" * (game.players.size - game.trickCards.size)
 
+    def pngUrl(c: Card): String = getClass.getResource(s"/cards/${c.pngName(c)}").toExternalForm
+
+    def cardsPathList(list: List[Card]): List[String] = list.map(pngUrl(_))
+
     def createDeck: List[Card] =
         for
             suit <- Suit.values.toList

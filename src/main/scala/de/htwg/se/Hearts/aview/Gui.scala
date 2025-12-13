@@ -1,0 +1,187 @@
+package de.htwg.se.Hearts.aview
+
+import de.htwg.se.Hearts.controller._
+
+import scalafx._
+import scalafx.application.JFXApp3
+import scalafx.application.Platform
+import scalafx.application.{JFXApp3, Platform}
+import scalafx.scene.Scene
+import scalafx.scene.control.*
+import scalafx.scene.image.{Image, ImageView}
+import scalafx.scene.layout.*
+import scalafx.geometry.Insets
+import scalafx.Includes.*
+
+object Gui extends JFXApp3 with Observer:
+	var gameController: Controller = _
+
+	def init(controller: Controller): Unit =
+		this.gameController = controller
+		gameController.add(this)
+
+	val rootBorderPane = new BorderPane()
+	override def start(): Unit =
+		stage = new JFXApp3.PrimaryStage:
+			title = "Hearts"
+			scene = new Scene(1000, 700):
+				root = rootBorderPane
+		update
+
+	override def update: Unit =
+		Platform.runLater {
+			gameController.state.getStateString match
+				case "MainScreenState" => showMainScreenState()
+				case "RulesScreenState" => showRulesScreenState()
+				case "GetPlayerNumberState" => showPlayerNumberState()
+				case "GetPlayerNamesState" => showPlayerNamesState()
+				case "SetMaxScoreState" => showMaxScoreState()
+				case "GamePlayState" => showGameplayState()/*
+				case "ShowScoreState" => showShowScoreState()
+				case "GameOverState" => showGameOverState()*/
+		}
+
+	val newGameButton = new Button("New Game"):
+		onAction = _ => gameController.processInput("n")
+	val rulesButton = new Button("Rules"):
+		onAction = _ => gameController.processInput("rules")
+	val exitButton = new Button("Exit"):
+		onAction = _ => gameController.processInput("e")
+	val textField = new TextField():
+		onAction = _ => gameController.processInput(text())
+	val backButton = new Button("Back"):
+		onAction = _ => gameController.processInput("b")
+	val suitSortButton = new Button("Sort by: suit"):
+		onAction = _ => gameController.processInput("suit")
+	val rankSortButton = new Button("Sort by: rank"):
+		onAction = _ => gameController.processInput("rank")
+	val trickBox = new HBox()
+	val handBox = new HBox()
+
+	def renderTrick(imageUrls: List[String]): Unit =
+		trickBox.children.clear()
+
+		imageUrls.foreach {
+			url =>
+				val iv = new ImageView(new Image(url))
+				trickBox.children.add(iv)
+		}
+
+	def renderHand(imageUrls: List[String]): Unit =
+		handBox.children.clear()
+
+		imageUrls.zipWithIndex.foreach {
+			case (url, index) =>
+				val iv = new ImageView(new Image(url)) {
+					onMouseClicked = _ => gameController.processInput("" + (index + 1))
+				}
+				handBox.children.add(iv)
+		}
+
+	def showMainScreenState(): Unit =
+		val centerBox = new VBox:
+			children = Seq(
+				Label("Main Menu"),
+				newGameButton,
+				rulesButton,
+				exitButton
+			)
+		rootBorderPane.top = new VBox:
+			children = new Label("Hearts")
+		rootBorderPane.center = centerBox
+		rootBorderPane.bottom = null
+
+
+	def showRulesScreenState(): Unit =
+		val text = "a, b, c"
+		val ruleText = new TextArea(text):
+			editable = false
+
+		rootBorderPane.top = new Label("Rules")
+		rootBorderPane.center = ruleText
+		rootBorderPane.bottom = backButton
+
+	def showPlayerNumberState(): Unit =
+
+		val centerBox = new VBox:
+			children = Seq(
+				Label("please enter a number:"),
+				textField
+			)
+
+		rootBorderPane.top = Label("Setup")
+		rootBorderPane.center = centerBox
+		rootBorderPane.bottom = null
+
+
+	def showPlayerNamesState(): Unit =
+
+		val centerBox = new VBox:
+			children = Seq(
+				Label(f"please input the names of the ${gameController.game.players.size +1}. player"),
+				textField
+			)
+
+		rootBorderPane.top = Label("Setup")
+		rootBorderPane.center = centerBox
+		rootBorderPane.bottom = null
+
+	def showMaxScoreState(): Unit =
+
+		val centerBox = new VBox:
+			children = Seq(
+				Label("please enter the score required to win (between 1 and 400)"),
+				textField
+			)
+
+		rootBorderPane.top = Label("Setup")
+		rootBorderPane.center = centerBox
+		rootBorderPane.bottom = null
+
+	def showGameplayState(): Unit =
+
+		val buttonBox = new HBox:
+			children = Seq(
+				suitSortButton,
+				rankSortButton,
+				exitButton,
+				rulesButton
+			)
+
+		val topBox = new VBox:
+			children = Seq(
+				Label(""),
+				buttonBox
+			)
+
+		val centerBox = new VBox:
+			renderTrick(gameController.cardsPathList(gameController.game.trickCards))
+			children = Seq(
+				Label("Trick:"),
+				trickBox
+			)
+
+
+
+		val bottomBox = new VBox:
+			renderHand(gameController.cardsPathList(gameController.game.getCurrentPlayer.get.hand))
+			children = Seq(
+				Label("Hand:"),
+				handBox
+			)
+
+		rootBorderPane.top = topBox
+		rootBorderPane.center = centerBox
+		rootBorderPane.bottom = bottomBox
+
+	/*def showShowScoreState(): Unit =
+
+		rootBorderPane.top =
+		rootBorderPane.center =
+		rootBorderPane.bottom =
+
+	def showGameOverState(): Unit =
+
+		rootBorderPane.top =
+		rootBorderPane.center =
+		rootBorderPane.bottom =*/
