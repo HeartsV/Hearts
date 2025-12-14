@@ -64,6 +64,14 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             contollerTrick.completeTrickString should be ("| 10\u2663 |     |")
         }
 
+        "create the correct path string of png" in {
+            gameController.pngUrl(card1) should be ("/cards/2_of_clubs.png")
+        }
+
+        "create a list of string paths" in {
+            gameController.cardsPathList(List(card1, card2)) should be (List("/cards/2_of_clubs.png", "/cards/2_of_diamonds.png"))
+        }
+
         "filter the correct Card out" in {
             controller3Players.filterOneCardOut(List(card1, card2)) should be (List(card1))
             controller3Players.filterOneCardOut(List(card2, card1)) should be (List(card1))

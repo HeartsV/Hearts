@@ -6,6 +6,8 @@ import org.scalatest.matchers.should.Matchers
 class CardSpec extends AnyWordSpec with Matchers {
 
 	"A Card" should {
+		val card1 = Card(Rank.Two, Suit.Clubs)
+
 		val Deck : List[Card] =
 			for
 				suit <- Suit.values.toList
@@ -52,6 +54,10 @@ class CardSpec extends AnyWordSpec with Matchers {
 			Deck(13).suit.fileName should be ("spades")
 			Deck(26).suit.fileName should be ("diamonds")
 			Deck(39).suit.fileName should be ("clubs")
+		}
+
+		"create the correct cardname of png" in {
+			card1.pngName should be ("2_of_clubs.png")
 		}
 	}
 }
