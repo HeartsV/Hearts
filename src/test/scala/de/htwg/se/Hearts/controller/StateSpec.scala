@@ -23,7 +23,7 @@ class StateSpec extends AnyWordSpec with Matchers{
         val gameNoHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,currentPlayerIndex = Some(0))
         val gameHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,startWithHearts = true,currentPlayerIndex = Some(0))
         val gameWithTrick = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false, currentPlayerIndex = Some(0),trickCards = List(card7))
-        val gameWithFullTrick = Game(playerNumber = Some(3),players = Vector(p1,p2, p3),firstCard = false, currentPlayerIndex = Some(3),
+        val gameWithFullTrick = Game(playerNumber = Some(3),players = Vector(p1,p2, p3),firstCard = false, currentPlayerIndex = Some(2),
                             trickCards = List(card1, card2, card7), highestCard = Some(card7),currentWinnerIndex = Some(2))
         val gameController = Controller(game = Game())
 
@@ -174,7 +174,7 @@ class StateSpec extends AnyWordSpec with Matchers{
         "process input for GamePlayState correctly when trick is full" in {
             val gameController = Controller(gameWithFullTrick)
             gameController.state = GamePlayState(gameController)
-            gameController.processInput("1").trickCards should be (List())
+            gameController.processInput("1").trickCards should be (List(card8))
         }
 
         "process input for ShowScoreState correctly" in {
