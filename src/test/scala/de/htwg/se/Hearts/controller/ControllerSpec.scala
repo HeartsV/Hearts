@@ -25,13 +25,17 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         val gameSecondPlayer = Game(playerNumber = Some(2),players = Vector(p1,p2), currentPlayerIndex = Some(1), firstCard = false)
         val gameNoHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,currentPlayerIndex = Some(0))
         val gameHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,startWithHearts = true, currentPlayerIndex = Some(0))
-        val gameWithTrick = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false, currentPlayerIndex = Some(0),trickCards = List(card7), highestCard = Some(card7),currentWinnerIndex = Some(0))
+        val gameWithTrick = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false, currentPlayerIndex = Some(0),trickCards = List(card7),
+                            highestCard = Some(card7),currentWinnerIndex = Some(0))
+        val gameWithFullTrick = Game(playerNumber = Some(3),players = Vector(p1,p2, p3),firstCard = false, currentPlayerIndex = Some(3),
+                            trickCards = List(card1, card2, card7), highestCard = Some(card7),currentWinnerIndex = Some(2))
         val controllerSecondPlayer = Controller(gameSecondPlayer)
         val controller3Players = Controller(game3Players)
         val controllerHearts = Controller(gameHearts)
         val contollerTrick = Controller(gameWithTrick)
         val gameController = Controller(gameFirstCard)
         val state = GamePlayState(gameController)
+        val controllerWithFullTrick = Controller(gameWithFullTrick)
 
 
         "change state" in {
@@ -48,6 +52,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         "update current player" in {
             gameController.updateCurrentPlayer should be (0)
             controllerSecondPlayer.updateCurrentPlayer should be (0)
+            controllerWithFullTrick.updateCurrentPlayer should be (2)
         }
 
         "output the correct strings for played Cards" in {
