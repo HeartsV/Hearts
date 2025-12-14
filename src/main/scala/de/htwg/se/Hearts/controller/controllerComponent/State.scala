@@ -1,6 +1,7 @@
-package de.htwg.se.Hearts.controller
+package de.htwg.se.Hearts.controller.controllerComponent
 
 import de.htwg.se.Hearts.model.*
+import de.htwg.se.Hearts.controller._
 
 trait State(controller: Controller):
     def processInput(input: String): Game

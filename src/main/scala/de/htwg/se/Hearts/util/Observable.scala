@@ -1,4 +1,4 @@
-package de.htwg.se.Hearts.controller
+package de.htwg.se.Hearts.util
 
 trait Observer:
     def update : Unit

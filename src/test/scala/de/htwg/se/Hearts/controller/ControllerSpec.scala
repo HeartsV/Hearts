@@ -138,5 +138,9 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         "get/pass CurrentPlayer correctly" in {
             gameController.passCurrentPlayer should be (p1)
         }
+
+        "get/pass StateString correctly" in {
+            contollerTrick.passStateString should be ("MainScreenState")
+        }
     }
 }

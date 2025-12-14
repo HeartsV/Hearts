@@ -1,5 +1,6 @@
-package de.htwg.se.Hearts.controller
+package de.htwg.se.Hearts.controller.controllerComponent
 
+import de.htwg.se.Hearts.util._
 import de.htwg.se.Hearts.model._
 
 class Controller(var game: Game) extends Observable:
@@ -137,7 +138,7 @@ class Controller(var game: Game) extends Observable:
 
     def passCurrentPlayer: Player = game.getCurrentPlayer.get
 
-
+    def passStateString: String = state.getStateString
 
     def setStrategy(strategy:Strategy): Unit = this.sortingStrategy = strategy
 
