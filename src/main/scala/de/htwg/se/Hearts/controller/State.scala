@@ -110,7 +110,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
                             val sortedHand = controller.sortingStrategy.execute(builder.game.getCurrentPlayer.get)
                             builder.setPlayers(builder.game.players.updated(builder.game.currentPlayerIndex.get, builder.game.getCurrentPlayer.get.removeCard(cardToPlay)))
                             builder.addCard(cardToPlay)
-                            builder.setCurrentWinnerAndHighestCard(controller.updateCurrentWinner(builder.game.currentPlayerIndex.get,cardToPlay))
+                            builder.setCurrentWinnerAndHighestCard(controller.updateCurrentWinner((builder.game.currentPlayerIndex.get,cardToPlay), builder.game))
                             if (builder.game.firstCard)
                                 builder.setFirstCard(false)
                             if ((cardToPlay.suit == Suit.Hearts || cardToPlay.equals(Card(Rank.Queen, Suit.Spades))) && !builder.game.startWithHearts)
