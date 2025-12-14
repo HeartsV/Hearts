@@ -14,6 +14,8 @@ lazy val root = project
     fork in Test := true,
     Test / javaOptions += "-Djava.awt.headless=true",
 
+    Compile / mainClass := Some("de.htwg.se.Hearts.Main"),
+
     scalacOptions ++= Seq("-deprecation", "-feature"),
 
     libraryDependencies ++= Seq(

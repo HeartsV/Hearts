@@ -47,7 +47,9 @@ object Gui extends JFXApp3 with Observer:
 	lazy val rulesButton = new Button("Rules"):
 		onAction = _ => gameController.processInput("rules")
 	lazy val exitButton = new Button("Exit"):
-		onAction = _ => gameController.processInput("e")
+		onAction = _ =>
+			gameController.processInput("exit")
+			Platform.exit()
 	lazy val textField = new TextField():
 		onAction = _ => gameController.processInput(text())
 	lazy val backButton = new Button("Back"):

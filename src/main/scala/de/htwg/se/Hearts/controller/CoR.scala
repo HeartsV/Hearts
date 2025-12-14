@@ -45,7 +45,7 @@ object ChainOfResponsibility:
 
         if card.suit != Suit.Hearts then
             Right(())
-        else if ctx.game.startWithHearts || ctx.playerHand.forall(_.suit == Suit.Hearts) then
+        else if ctx.game.startWithHearts || ctx.playerHand.forall(_.suit == Suit.Hearts) || ctx.game.trickCards.nonEmpty then
             Right(())
         else
             Left("You cannot play \u2665 until they are broken or you have only \u2665s\n")
