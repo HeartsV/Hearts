@@ -29,9 +29,9 @@ class Controller(var game: Game) extends Observable:
     def updateCurrentPlayer: Int =
     if (game.firstCard == true)
         game.players.indexWhere(_.hand.contains(Card(Rank.Two,Suit.Clubs)))
-    else if (game.players.size == game.trickCards.size)
+    else if (game.playerNumber.get == game.trickCards.size)
         game.currentWinnerIndex.get
-    else if (game.currentPlayerIndex.get + 1 == game.players.size)
+    else if (game.currentPlayerIndex.get + 1 == game.playerNumber.get)
         0
     else
         game.currentPlayerIndex.get + 1

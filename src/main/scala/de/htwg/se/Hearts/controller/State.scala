@@ -118,7 +118,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
                             if (builder.game.trickCards.size == builder.game.playerNumber.get)
                                 builder.updatePlayer(builder.game.currentWinnerIndex.get, builder.game.players(builder.game.currentWinnerIndex.get).addWonCards(builder.game.trickCards))
                             builder.setLastPlayedCard(result)
-                    if (builder.game.getCurrentPlayer.get.hand.size == 0)
+                    if (builder.game.players.forall(_.hand.size == 0))
                         if(!controller.checkGameOver)
                             controller.changeState(ShowScoreState(controller))
                         else

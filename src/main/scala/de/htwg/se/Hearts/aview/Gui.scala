@@ -13,6 +13,7 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.*
 import scalafx.geometry.Insets
 import scalafx.Includes.*
+import scalafx.scene.shape.StrokeLineCap.Butt
 
 object Gui extends JFXApp3 with Observer:
 	var gameController: Controller = uninitialized
@@ -37,9 +38,9 @@ object Gui extends JFXApp3 with Observer:
 				case "GetPlayerNumberState" => showPlayerNumberState()
 				case "GetPlayerNamesState" => showPlayerNamesState()
 				case "SetMaxScoreState" => showMaxScoreState()
-				case "GamePlayState" => showGameplayState()/*
+				case "GamePlayState" => showGameplayState()
 				case "ShowScoreState" => showShowScoreState()
-				case "GameOverState" => showGameOverState()*/
+				case "GameOverState" => showGameOverState()
 		}
 
 	lazy val newGameButton = new Button("New Game"):
@@ -50,8 +51,14 @@ object Gui extends JFXApp3 with Observer:
 		onAction = _ =>
 			gameController.processInput("exit")
 			Platform.exit()
+	lazy val againButton = new Button("Play again with same settings"):
+		onAction = _ => gameController.processInput("a")
+	lazy val quitButton = new Button("Quit to Main Menu"):
+		onAction = _ => gameController.processInput("q")
 	lazy val textField = new TextField():
-		onAction = _ => gameController.processInput(text())
+		onAction = _ =>
+			gameController.processInput(text())
+			text = ""
 	lazy val backButton = new Button("Back"):
 		onAction = _ => gameController.processInput("b")
 	lazy val suitSortButton = new Button("Sort by: suit"):
@@ -60,6 +67,7 @@ object Gui extends JFXApp3 with Observer:
 		onAction = _ => gameController.processInput("rank")
 	lazy val trickBox = new HBox()
 	lazy val handBox = new HBox()
+	lazy val scoreBox = new VBox()
 
 	def renderTrick(imageUrls: List[String]): Unit =
 		trickBox.children.clear()
@@ -80,6 +88,15 @@ object Gui extends JFXApp3 with Observer:
 				}
 				handBox.children.add(iv)
 		}
+
+	def renderScoreBoard: Unit =
+		scoreBox.children.clear()
+
+		gameController.rankPlayers(gameController.getPlayersWithPoints).foreach(
+			(r, n, p) =>
+				val label = new Label(""+ r + ". " + n + 	": " + p)
+				scoreBox.children.add(label)
+			)
 
 	def showMainScreenState(): Unit =
 		val centerBox = new VBox:
@@ -168,8 +185,9 @@ object Gui extends JFXApp3 with Observer:
 
 		val bottomBox = new VBox:
 			renderHand(gameController.cardsPathList(gameController.sortingStrategy.execute(gameController.game.getCurrentPlayer.get)))
+			val pHand = gameController.getCurrentPlayerName
 			children = Seq(
-				Label("Hand:"),
+				Label(pHand + "'s hand:"),
 				handBox
 			)
 
@@ -177,14 +195,26 @@ object Gui extends JFXApp3 with Observer:
 		rootBorderPane.center = centerBox
 		rootBorderPane.bottom = bottomBox
 
-	/*def showShowScoreState(): Unit =
+	def showShowScoreState(): Unit =
+		renderScoreBoard
 
-		rootBorderPane.top =
-		rootBorderPane.center =
+		rootBorderPane.top = Label("Scoreboard:")
+		rootBorderPane.center = scoreBox
 		rootBorderPane.bottom =
+			new Button("Continue"):
+				onAction = _ => gameController.processInput("a")
 
 	def showGameOverState(): Unit =
+		renderScoreBoard
 
-		rootBorderPane.top =
-		rootBorderPane.center =
-		rootBorderPane.bottom =*/
+		val bottomBox = new HBox:
+			children = Seq(
+				newGameButton,
+				againButton,
+				quitButton,
+				exitButton
+			)
+
+		rootBorderPane.top = Label("GAME OVER")
+		rootBorderPane.center = scoreBox
+		rootBorderPane.bottom = bottomBox
