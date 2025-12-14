@@ -198,7 +198,11 @@ object Gui extends JFXApp3 with Observer:
 	def showShowScoreState(): Unit =
 		renderScoreBoard
 
-		rootBorderPane.top = Label("Scoreboard:");rootBorderPane.center = scoreBox;rootBorderPane.bottom =new Button("Continue"){onAction = _ => gameController.processInput("a")}
+		rootBorderPane.top = Label("Scoreboard:")
+		rootBorderPane.center = scoreBox
+		rootBorderPane.bottom =
+			new Button("Continue"):
+				onAction = _ => gameController.processInput("a")
 
 	def showGameOverState(): Unit =
 		renderScoreBoard
@@ -211,4 +215,6 @@ object Gui extends JFXApp3 with Observer:
 				exitButton
 			)
 
-		rootBorderPane.top = Label("GAME OVER");rootBorderPane.center = scoreBox;rootBorderPane.bottom = bottomBox
+		rootBorderPane.top = Label("GAME OVER")
+		rootBorderPane.center = scoreBox
+		rootBorderPane.bottom = bottomBox
