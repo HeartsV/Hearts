@@ -138,7 +138,7 @@ object Gui extends JFXApp3 with Observer:
 
 		val centerBox = new VBox:
 			children = Seq(
-				Label(f"please input the names of the ${gameController.game.players.size +1}. player"),
+				Label(f"please input the names of the ${gameController.getPlayerSize + 1}. player"),
 				textField
 			)
 
@@ -175,7 +175,7 @@ object Gui extends JFXApp3 with Observer:
 			)
 
 		val centerBox = new VBox:
-			renderTrick(gameController.cardsPathList(gameController.game.trickCards))
+			renderTrick(gameController.cardsPathList(gameController.getTrickCards))
 			children = Seq(
 				Label("Trick:"),
 				trickBox
@@ -184,7 +184,7 @@ object Gui extends JFXApp3 with Observer:
 
 
 		val bottomBox = new VBox:
-			renderHand(gameController.cardsPathList(gameController.sortingStrategy.execute(gameController.game.getCurrentPlayer.get)))
+			renderHand(gameController.cardsPathList(gameController.getSortingStrategy.execute(gameController.passCurrentPlayer)))
 			val pHand = gameController.getCurrentPlayerName
 			children = Seq(
 				Label(pHand + "'s hand:"),

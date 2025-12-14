@@ -37,7 +37,6 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         val state = GamePlayState(gameController)
         val controllerWithFullTrick = Controller(gameWithFullTrick)
 
-
         "change state" in {
             gameController.changeState(state)
             gameController.state should be (state)
@@ -118,6 +117,26 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
         "get keepProcessRunning correctly" in {
             gameController.getKeepProcessRunning should be (true)
+        }
+
+        "get PlayerSize correctly" in {
+            gameController.getPlayerSize should be (2)
+        }
+
+        "get trickCards correctly" in {
+            contollerTrick.getTrickCards should be (List(card7))
+        }
+
+        "get PlayerHand correctly" in {
+            gameController.getPlayerHand should be (List(card1, card2))
+        }
+
+        "get SortingStrategy correctly" in {
+            gameController.getSortingStrategy.getClass should be (SortByRankStrategy().getClass())
+        }
+
+        "get/pass CurrentPlayer correctly" in {
+            gameController.passCurrentPlayer should be (p1)
         }
     }
 }

@@ -127,6 +127,18 @@ class Controller(var game: Game) extends Observable:
 
     def getKeepProcessRunning: Boolean = game.keepProcessRunning
 
+    def getPlayerSize: Int = game.players.size
+
+    def getTrickCards: List[Card] = game.trickCards
+
+    def getPlayerHand: List[Card] = game.players(game.currentPlayerIndex.get).hand
+
+    def getSortingStrategy: Strategy = sortingStrategy
+
+    def passCurrentPlayer: Player = game.getCurrentPlayer.get
+
+
+
     def setStrategy(strategy:Strategy): Unit = this.sortingStrategy = strategy
 
     def executeStrategy: Vector[Player] = game.players.map(player => player.copy(hand = sortingStrategy.execute(player)))

@@ -64,7 +64,7 @@ class Tui(gameController: Controller)  extends Observer:
 
 	def getPlayerNumberStateString: String = "please input a Number of Players between 3 and 4" + "\n"
 
-	def getPlayerNamesStateString: String = f"please input the names of the ${gameController.game.players.size +1}. player" + "\n"
+	def getPlayerNamesStateString: String = f"please input the names of the ${gameController.getPlayerSize + 1}. player" + "\n"
 
 	def setMaxScoreStateString: String = "please enter the score required to win (between 1 and 400)" + "\n"
 
