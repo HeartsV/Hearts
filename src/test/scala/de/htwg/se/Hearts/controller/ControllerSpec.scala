@@ -34,18 +34,18 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         val state = GamePlayState(gameController)
 
 
-        "should change state" in {
+        "change state" in {
             gameController.changeState(state)
             gameController.state should be (state)
         }
 
-        "should return current winner" in {
-            contollerTrick.updateCurrentWinner((0,card3)) should be (Some(0),Some(card7))
+        "return current winner" in {
+            contollerTrick.updateCurrentWinner((1,card3)) should be (Some(1),Some(card3))
             controllerHearts.updateCurrentWinner((0,card3)) should be (Some(0),Some(card3))
-            contollerTrick.updateCurrentWinner((0,card2)) should be (Some(0),Some(card7))
+            contollerTrick.updateCurrentWinner((1,card2)) should be (Some(0),Some(card7))
         }
 
-        "should update current player" in {
+        "update current player" in {
             gameController.updateCurrentPlayer should be (0)
             controllerSecondPlayer.updateCurrentPlayer should be (0)
         }
