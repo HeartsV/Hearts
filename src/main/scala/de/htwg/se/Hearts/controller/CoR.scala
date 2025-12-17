@@ -2,7 +2,7 @@ package de.htwg.se.Hearts.controller
 
 import de.htwg.se.Hearts.model._
 
-object ChainOfResponsibility:
+class ChainOfResponsibility:
 
     final case class MoveContext(
         game: Game,

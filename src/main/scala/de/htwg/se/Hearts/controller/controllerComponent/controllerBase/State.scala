@@ -103,7 +103,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
                     if (builder.game.trickCards.size == builder.game.playerNumber.get)
                         builder.setTrickCards(List())
                         builder.setCurrentWinnerAndHighestCard(None, None)
-                    val result = ChainOfResponsibility.validateMove(builder.game,
+                    val result = ChainOfResponsibility().validateMove(builder.game,
                         controller.sortingStrategy.execute(builder.game.getCurrentPlayer.get), input.toInt - 1)
                     result match
                         case Left(error) =>

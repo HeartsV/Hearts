@@ -20,22 +20,23 @@ class CoRSpec extends AnyWordSpec with Matchers {
         val gameNoHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,currentPlayerIndex = Some(0))
         val gameHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,startWithHearts = true,currentPlayerIndex = Some(0))
         val gameWithTrick = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false, currentPlayerIndex = Some(0),trickCards = List(card7))
+        val cOR = ChainOfResponsibility()
 
         "check if card allowed for first card in game" in {
-            ChainOfResponsibility.validateMove(gameFirstCard, p1.hand, 2) should be (Left("Index: 3 was out of bounds!\n"))
-            ChainOfResponsibility.validateMove(gameFirstCard, p1.hand, 1) should be (Left("First trick must start with 2 \u2663!\n"))
-            ChainOfResponsibility.validateMove(gameFirstCard, p1.hand, 0) should be (Right(card1))
+            cOR.validateMove(gameFirstCard, p1.hand, 2) should be (Left("Index: 3 was out of bounds!\n"))
+            cOR.validateMove(gameFirstCard, p1.hand, 1) should be (Left("First trick must start with 2 \u2663!\n"))
+            cOR.validateMove(gameFirstCard, p1.hand, 0) should be (Right(card1))
         }
 
         "check if card allowed for cards after the first" in {
-            ChainOfResponsibility.validateMove(gameWithTrick, p1.hand, 1) should be (Left("You have at least one card with Suit \u2663! You must follow this Suit!\n"))
-            ChainOfResponsibility.validateMove(gameWithTrick, p1.hand, 0) should be (Right(card1))
+            cOR.validateMove(gameWithTrick, p1.hand, 1) should be (Left("You have at least one card with Suit \u2663! You must follow this Suit!\n"))
+            cOR.validateMove(gameWithTrick, p1.hand, 0) should be (Right(card1))
         }
 
         "check if heart allowed when hearts are broken" in {
-            ChainOfResponsibility.validateMove(gameHearts, p2.hand, 2) should be (Right(card5))
-            ChainOfResponsibility.validateMove(gameNoHearts, p3.hand, 0) should be(Right(card5))
-            ChainOfResponsibility.validateMove(gameNoHearts, p2.hand, 2) should be(Left("You cannot play \u2665 until they are broken or you have only \u2665s\n"))
+            cOR.validateMove(gameHearts, p2.hand, 2) should be (Right(card5))
+            cOR.validateMove(gameNoHearts, p3.hand, 0) should be(Right(card5))
+            cOR.validateMove(gameNoHearts, p2.hand, 2) should be(Left("You cannot play \u2665 until they are broken or you have only \u2665s\n"))
         }
     }
 }
