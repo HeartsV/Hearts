@@ -180,7 +180,7 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 
 
 		val bottomBox = new VBox:
-			renderHand(gameController.cardsPathList(gameController.getSortingStrategy.execute(gameController.passCurrentPlayer)))
+			renderHand(gameController.cardsPathList(gameController.getPlayerHand))
 			val pHand = gameController.getCurrentPlayerName
 			children = Seq(
 				Label(pHand + "'s hand:"),

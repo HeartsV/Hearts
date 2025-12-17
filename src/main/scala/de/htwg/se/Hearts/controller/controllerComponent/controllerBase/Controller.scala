@@ -38,12 +38,6 @@ class Controller(var game: Game) extends Observable with ControllerInterface:
     else
         game.currentPlayerIndex.get + 1
 
-    def trickToString: String =
-        if (game.trickCards.nonEmpty) game.trickCards.map(card => s" $card ").mkString("|", "|", "|")
-        else "|"
-
-    def completeTrickString: String = trickToString + "     |" * (game.players.size - game.trickCards.size)
-
     def pngUrl(c: Card): String = (s"/cards/${c.pngName}")
 
     def cardsPathList(list: List[Card]): List[String] = list.map(pngUrl(_))
@@ -113,11 +107,6 @@ class Controller(var game: Game) extends Observable with ControllerInterface:
                 (lastRank, name, points)
         }
 
-    def handToString: String =
-        val h = sortingStrategy.execute(game.getCurrentPlayer.get)
-        (1 to h.size).map(index => s"  $index".padTo(5, ' ')).mkString("|", "|", "|") + "\n" +
-        h.map(card => s" $card ").mkString("|", "|", "|")
-
     def getCurrentPlayerName: String = game.getCurrentPlayer.get.name
 
     def checkGameOver: Boolean =
@@ -133,7 +122,7 @@ class Controller(var game: Game) extends Observable with ControllerInterface:
 
     def getTrickCards: List[Card] = game.trickCards
 
-    def getPlayerHand: List[Card] = game.players(game.currentPlayerIndex.get).hand
+    def getPlayerHand: List[Card] = sortingStrategy.execute(game.players(game.currentPlayerIndex.get))
 
     def getSortingStrategy: Strategy = sortingStrategy
 

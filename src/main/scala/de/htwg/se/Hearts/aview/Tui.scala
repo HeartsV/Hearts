@@ -10,6 +10,17 @@ import de.htwg.se.Hearts.model.Suit
 
 class Tui(gameController: ControllerInterface)  extends Observer:
 
+	def trickToString: String =
+		if (gameController.getTrickCards.nonEmpty) gameController.getTrickCards.map(card => s" $card ").mkString("|", "|", "|")
+		else "|"
+
+	def completeTrickString: String = trickToString + "     |" * (gameController.getPlayerSize - gameController.getTrickCards.size)
+
+	def handToString: String =
+		val h = gameController.getPlayerHand
+		(1 to h.size).map(index => s"  $index".padTo(5, ' ')).mkString("|", "|", "|") + "\n" +
+		h.map(card => s" $card ").mkString("|", "|", "|")
+
 	def getMainScreenStateString: String =
 		"Hearts" + "\n\n" +
 		"Please enter:" + "\n" +
@@ -72,9 +83,9 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 
 	def getGameplayStateString: String =
 		"Trick:" + "\n" +
-		gameController.completeTrickString + "\n" +
+		completeTrickString + "\n" +
 		gameController.getCurrentPlayerName +" please select card to play:" + "\n" +
-		gameController.handToString + "\n"
+		handToString + "\n"
 
 	def getShowScoreStateString: String =
 		"Scoreboard:\n" +

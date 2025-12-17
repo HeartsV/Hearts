@@ -1,8 +1,10 @@
 package de.htwg.se.Hearts.controller
+
 import de.htwg.se.Hearts.model._
+import de.htwg.se.Hearts.controller.controllerComponent.controllerBase._
+
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import de.htwg.se.Hearts.controller.chainOfResponibilityComponent.ChainOfResponsibilityBase._
 
 class CoRSpec extends AnyWordSpec with Matchers {
     "A CoR" should {
