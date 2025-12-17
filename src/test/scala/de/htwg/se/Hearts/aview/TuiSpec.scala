@@ -3,7 +3,7 @@ import de.htwg.se.Hearts.model.*
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import _root_.de.htwg.se.Hearts.aview.Tui
-import de.htwg.se.Hearts.controller.Controller
+import de.htwg.se.Hearts.controller.controllerComponent.controllerBase._
 
 
 class TuiSpec extends AnyWordSpec with Matchers {

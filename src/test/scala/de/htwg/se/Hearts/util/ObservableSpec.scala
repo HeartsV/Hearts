@@ -1,4 +1,4 @@
-package de.htwg.se.Hearts.controller
+package de.htwg.se.Hearts.util
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
