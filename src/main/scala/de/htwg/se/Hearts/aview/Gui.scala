@@ -1,7 +1,6 @@
 package de.htwg.se.Hearts.aview
 
-import de.htwg.se.Hearts.controller.controllerComponent._
-import de.htwg.se.Hearts.controller._
+import de.htwg.se.Hearts.controller.controllerComponent.ControllerInterface
 import de.htwg.se.Hearts.util._
 import scala.compiletime.uninitialized
 
@@ -18,9 +17,9 @@ import scalafx.Includes.*
 import scalafx.scene.shape.StrokeLineCap.Butt
 
 object Gui extends JFXApp3 with Observer:
-	var gameController: Controller = uninitialized
+	var gameController: ControllerInterface = uninitialized
 
-	def init(controller: Controller): Unit =
+	def init(controller: ControllerInterface): Unit =
 		this.gameController = controller
 		gameController.add(this)
 
@@ -34,7 +33,7 @@ object Gui extends JFXApp3 with Observer:
 
 	override def update: Unit =
 		Platform.runLater {
-			gameController.state.getStateString match
+			gameController.getStateString match
 				case "MainScreenState" => showMainScreenState()
 				case "RulesScreenState" => showRulesScreenState()
 				case "GetPlayerNumberState" => showPlayerNumberState()

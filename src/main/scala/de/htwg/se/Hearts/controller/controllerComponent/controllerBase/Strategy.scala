@@ -1,4 +1,4 @@
-package de.htwg.se.Hearts.controller.controllerComponent
+package de.htwg.se.Hearts.controller.controllerComponent.controllerBase
 import de.htwg.se.Hearts.model.*
 
 trait Strategy:

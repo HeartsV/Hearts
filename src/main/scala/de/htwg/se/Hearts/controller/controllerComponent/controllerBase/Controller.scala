@@ -1,9 +1,10 @@
-package de.htwg.se.Hearts.controller.controllerComponent
+package de.htwg.se.Hearts.controller.controllerComponent.controllerBase
 
 import de.htwg.se.Hearts.util._
 import de.htwg.se.Hearts.model._
+import de.htwg.se.Hearts.controller.controllerComponent._
 
-class Controller(var game: Game) extends Observable:
+class Controller(var game: Game) extends Observable with ControllerInterface:
 
     var state: State = MainScreenState(this)
     var sortingStrategy: Strategy = SortByRankStrategy()
