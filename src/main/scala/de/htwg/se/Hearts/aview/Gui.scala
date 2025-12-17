@@ -16,12 +16,7 @@ import scalafx.geometry.Insets
 import scalafx.Includes.*
 import scalafx.scene.shape.StrokeLineCap.Butt
 
-object Gui extends JFXApp3 with Observer:
-	var gameController: ControllerInterface = uninitialized
-
-	def init(controller: ControllerInterface): Unit =
-		this.gameController = controller
-		gameController.add(this)
+class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 
 	val rootBorderPane = new BorderPane()
 	override def start(): Unit =
@@ -33,7 +28,7 @@ object Gui extends JFXApp3 with Observer:
 
 	override def update: Unit =
 		Platform.runLater {
-			gameController.getStateString match
+			gameController.passStateString match
 				case "MainScreenState" => showMainScreenState()
 				case "RulesScreenState" => showRulesScreenState()
 				case "GetPlayerNumberState" => showPlayerNumberState()

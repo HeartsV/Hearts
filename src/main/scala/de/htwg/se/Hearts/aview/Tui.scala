@@ -1,6 +1,6 @@
 package de.htwg.se.Hearts.aview
 
-import de.htwg.se.Hearts.controller.controllerComponent.controllerBase.*
+import de.htwg.se.Hearts.controller.controllerComponent.ControllerInterface
 import de.htwg.se.Hearts.controller._
 import de.htwg.se.Hearts.util._
 
@@ -8,7 +8,7 @@ import scala.io.StdIn.readLine
 
 import de.htwg.se.Hearts.model.Suit
 
-class Tui(gameController: Controller)  extends Observer:
+class Tui(gameController: ControllerInterface)  extends Observer:
 
 	def getMainScreenStateString: String =
 		"Hearts" + "\n\n" +
@@ -92,7 +92,7 @@ class Tui(gameController: Controller)  extends Observer:
 		"- e or exit to end the program" + "\n"
 
 	def update: Unit =
-		gameController.state.getStateString match
+		gameController.passStateString match
 			case "MainScreenState" => print(getMainScreenStateString)
 			case "RulesScreenState" => print(getRulesScreenStateString)
 			case "GetPlayerNumberState" => print(getPlayerNumberStateString)
