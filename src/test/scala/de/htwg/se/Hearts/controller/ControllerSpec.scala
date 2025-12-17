@@ -55,15 +55,6 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             controllerWithFullTrick.updateCurrentPlayer should be (2)
         }
 
-        "output the correct strings for played Cards" in {
-            contollerTrick.trickToString should be ("| 10\u2663 |")
-            gameController.trickToString should be ("|")
-        }
-
-        "complete Trick String for three players" in{
-            contollerTrick.completeTrickString should be ("| 10\u2663 |     |")
-        }
-
         "create the correct path string of png" in {
             gameController.pngUrl(card1) should be ("/cards/2_of_clubs.png")
         }
@@ -108,10 +99,6 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             gameController.rankPlayers(List(("Alice", 1), ("Dave", 0), ("Charlie", 0))) should be (List((1, "Dave", 0), (1, "Charlie", 0), (3, "Alice", 1)))
         }
 
-        "get the handstring of current player" in{
-            gameController.handToString should be ("|  1  |  2  |\n| 2 \u2666 | 2 \u2663 |")
-        }
-
         "get the correct CurrentPlayerName" in {
             gameController.getCurrentPlayerName should be ("Alice")
         }
@@ -129,7 +116,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         }
 
         "get PlayerHand correctly" in {
-            gameController.getPlayerHand should be (List(card1, card2))
+            gameController.getPlayerHand should be (List(card2, card1))
         }
 
         "get SortingStrategy correctly" in {

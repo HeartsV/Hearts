@@ -9,13 +9,43 @@ import de.htwg.se.Hearts.controller.controllerComponent.controllerBase._
 class TuiSpec extends AnyWordSpec with Matchers {
 	"A Tui" should {
 
+        val card1 = Card(Rank.Two,Suit.Clubs)
+        val card2 = Card(Rank.Two,Suit.Diamonds)
+        val card3 = Card(Rank.Ace,Suit.Clubs)
+        val card4 = Card(Rank.Ace,Suit.Diamonds)
+        val card5 = Card(Rank.Jack,Suit.Hearts)
+        val card6 = Card(Rank.Jack,Suit.Clubs)
+        val card7 = Card(Rank.Ten,Suit.Clubs)
+        val card8 = Card(Rank.Ten,Suit.Diamonds)
         val p1 = Player("Alice", List(Card(Rank.Two,Suit.Clubs)), points = 30)
         val p2 = Player("Dave", List(Card(Rank.Ace,Suit.Clubs)), points = 20)
         val p3 = Player("Charlie", List(Card(Rank.Jack,Suit.Clubs)), points = 20)
         val p4 = Player("David", List(Card(Rank.Ten,Suit.Clubs)), points = 10)
+        val pl1 = Player("Alice",List(card1,card2),List(card5), points = 1)
+        val pl2 = Player("Dave",List(card3,card4))
         val game = Game(players = Vector(p1, p2, p3, p4), playerNumber = Some(4), currentPlayerIndex = Some(0))
+        val gameFirstCard = Game(playerNumber = Some(2),players = Vector(pl1,pl2),currentPlayerIndex = Some(0))
+        val gameWithTrick = Game(playerNumber = Some(2),players = Vector(pl1,pl2),firstCard = false, currentPlayerIndex = Some(0),
+                                trickCards = List(card7), highestCard = Some(card7),currentWinnerIndex = Some(0))
         val gameController = Controller(game)
+        val contollerTrick = Controller(gameWithTrick)
+        val gameCo = Controller(gameFirstCard)
         val tui = Tui(gameController)
+        val tuiFullTrick = Tui(contollerTrick)
+        val tui2 = Tui(gameCo)
+
+        "output the correct strings for played Cards" in {
+            tuiFullTrick.trickToString should be ("| 10\u2663 |")
+            tui.trickToString should be ("|")
+        }
+
+        "complete Trick String for three players" in{
+            tuiFullTrick.completeTrickString should be ("| 10\u2663 |     |")
+        }
+
+        "get the handstring of current player" in{
+            tui2.handToString should be ("|  1  |  2  |\n| 2 \u2666 | 2 \u2663 |")
+        }
 
         "get the correct getMainScreenStateString" in {
             val expected ="Hearts" + "\n\n" +
