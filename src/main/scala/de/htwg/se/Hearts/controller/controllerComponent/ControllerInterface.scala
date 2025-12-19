@@ -19,8 +19,8 @@ trait ControllerInterface extends Observable:
     def getSortingStrategy: Strategy
     def getKeepProcessRunning: Boolean
     def getPlayerHand: List[Card]
+    def dealNewRound(game: Game): Vector[Player]
+    def getLastCardPlayed: Either[String,Card]
 
-trait StrategyInterface:
-    def execute(player: Player): List[Card]
 
 

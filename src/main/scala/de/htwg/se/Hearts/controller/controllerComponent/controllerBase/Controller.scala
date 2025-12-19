@@ -3,140 +3,68 @@ package de.htwg.se.Hearts.controller.controllerComponent.controllerBase
 import de.htwg.se.Hearts.util._
 import de.htwg.se.Hearts.model._
 import de.htwg.se.Hearts.controller.controllerComponent._
+import de.htwg.se.Hearts.controller.deckmanagerComponent._
+import de.htwg.se.Hearts.controller.LeaderBoardComponent._
+import de.htwg.se.Hearts.controller.PlayerTurnComponent._
+import de.htwg.se.Hearts.controller.scoringComponent._
+
+import de.htwg.se.Hearts.controller.deckmanagerComponent.deckmanagerBase._
+import de.htwg.se.Hearts.controller.LeaderBoardComponent.LeaderBoardBase._
+import de.htwg.se.Hearts.controller.PlayerTurnComponent.PlayerTurnBase._
+import de.htwg.se.Hearts.controller.scoringComponent.scoringBase._
 
 class Controller(var game: Game) extends Observable with ControllerInterface:
 
-    var state: State = MainScreenState(this)
-    var sortingStrategy: Strategy = SortByRankStrategy()
+  var state: State = MainScreenState(this)
+  var sortingStrategy: Strategy = SortByRankStrategy()
 
-    def processInput(input: String): Game =
-        game = state.processInput(input)
-        game.lastCardPlayed match
-            case Right(card) =>
-                val builder = GameBuilder(game)
-                builder.setCurrentPlayerIndex(updateCurrentPlayer)
-                game = builder.getGame
-            case _ =>
-        notifyObservers
-        game
+  val deckmanger: DeckmanagerInterface = Deckmanager()
+  val scoringService: ScoringInterface = HeartsScoring()
+  val turnService: PlayerTurnInterface = PlayerTurn()
+  val leaderboardService: LeaderBoardInterface = LeaderBoard()
 
-    def changeState(newState:State): Unit = state = newState
+  def processInput(input: String): Game =
+    game = state.processInput(input)
+    notifyObservers
+    game
 
-    def updateCurrentWinner(newWinner: (Int, Card), builderGame: Game): (Option[Int], Option[Card]) =
-        if (builderGame.highestCard == None || builderGame.highestCard.exists(card => card.suit.compare(newWinner._2.suit) == 0 && newWinner._2.rank.compare(card.rank) > 0))
-            (Some(newWinner(0)), Some(newWinner(1)))
-        else
-            (builderGame.currentWinnerIndex, builderGame.highestCard)
+  def changeState(newState: State): Unit = state = newState
 
-    def updateCurrentPlayer: Int =
-    if (game.firstCard == true)
-        game.players.indexWhere(_.hand.contains(Card(Rank.Two,Suit.Clubs)))
-    else if (game.playerNumber.get == game.trickCards.size)
-        game.currentWinnerIndex.get
-    else if (game.currentPlayerIndex.get + 1 == game.playerNumber.get)
-        0
-    else
-        game.currentPlayerIndex.get + 1
+  def pngUrl(c: Card): String = s"/cards/${c.pngName}"
+  def cardsPathList(list: List[Card]): List[String] = list.map(pngUrl)
 
-    def pngUrl(c: Card): String = (s"/cards/${c.pngName}")
+  def getPlayersWithPoints: List[(String, Int)] =
+    leaderboardService.playersWithPoints(game.players)
 
-    def cardsPathList(list: List[Card]): List[String] = list.map(pngUrl(_))
+  def rankPlayers(players: List[(String, Int)]): List[(Int, String, Int)] =
+    leaderboardService.rankPlayers(players)
 
-    def createDeck: List[Card] =
-        for
-            suit <- Suit.values.toList
-            rank <- Rank.values.toList
-        yield Card(rank, suit)
+  def getCurrentPlayerName: String = game.getCurrentPlayer.get.name
 
-    def shuffledeck(deck: List[Card]): List[Card] = util.Random().shuffle(deck)
+  def checkGameOver: Boolean =
+    val maxScorePoints = game.players.map(p => p -> p.points).toMap
+    maxScorePoints.exists { case (_, point) => point >= game.maxScore.get }
 
-    def filterOneCardOut(deck: List[Card]): List[Card] =
-        if (deck.head == Card(Rank.Two,Suit.Clubs) && game.playerNumber.get == 3)
-            deck.filterNot(_ == deck(1))
-        else if (game.playerNumber.get == 3)
-            deck.filterNot(_ == deck.head)
-        else
-            deck
+  def getKeepProcessRunning: Boolean = game.keepProcessRunning
+  def getPlayerSize: Int = game.playerNumber.get
+  def getTrickCards: List[Card] = game.trickCards
+  def getPlayerHand: List[Card] = game.players(game.currentPlayerIndex.get).hand
+  def getSortingStrategy: Strategy = sortingStrategy
+  def passCurrentPlayer: Player = game.getCurrentPlayer.get
+  def passStateString: String = state.getStateString
 
-    def dealCards(deck: List[Card], newGame: Game): Vector[Player] =
-        val newdeck = filterOneCardOut(deck)
-        val handlist = newdeck.grouped(newdeck.size/newGame.playerNumber.get).toList
-        (newGame.players.zip(handlist).map { case (player, newCards) => player.copy(hand = newCards)}).toVector
+  def setStrategy(strategy: Strategy): Unit = this.sortingStrategy = strategy
+  def executeStrategy: Vector[Player] =
+    game.players.map(p => p.copy(hand = sortingStrategy.execute(p)))
 
-    def cardPoints(card: Card): Int =
-        card match
-            case Card(_, Suit.Hearts) => 1
-            case Card(Rank.Queen, Suit.Spades) => 13
-            case _ => 0
+  def dealNewRound(game: Game): Vector[Player] =
+    deckmanger.deal(deckmanger.shuffle(deckmanger.createDeck), game)
 
-    def pointsForPlayer(player: Player): Int = player.wonCards.map(cardPoints).sum
+  def updateCurrentPlayer: Int = turnService.nextPlayerIndex(game)
+  def updateCurrentWinner(newWinner: (Int, Card), builderGame: Game): (Option[Int], Option[Card]) =
+    turnService.updateCurrentWinner(newWinner, builderGame)
 
-    def rawPointsPerPlayer: Map[Player, Int] = game.players.map(p => p -> pointsForPlayer(p)).toMap
+  def addPointsToPlayers: Vector[Player] = scoringService.addPointsToPlayers(game)
 
-    def applyShootingTheMoon: Map[Player, Int] =
-        val points = rawPointsPerPlayer
-        val nonZero = points.filter { case (_, p) => p > 0 }
-        if (nonZero.size == 1 && points.exists { case (_, p) => p == 0 })
-            val (moonPlayer, moonPoints) = nonZero.head
-            points.map {
-                case (p, _) if p == moonPlayer  => p -> 0
-                case (p, _)                     => p -> moonPoints
-            }
-        else
-            points
-
-    def addPointsToPlayers: Vector[Player] =
-        (applyShootingTheMoon.map{ case (player, newPoints) => player.addPoints(newPoints)}).toVector
-
-    def getPlayersWithPoints: List[(String, Int)] =
-        for {
-            n <- game.players.toList
-        } yield (n.name, n.points)
-
-    def rankPlayers(players: List[(String, Int)]): List[(Int, String, Int)] =
-        val sorted = players.sortBy(_._2)
-        var lastPoints = -1
-        var lastRank = 0
-        var index = 0
-        sorted.map {
-            case (name, points) =>
-                index += 1
-                if (points != lastPoints)
-                    lastRank = index
-                    lastPoints = points
-                (lastRank, name, points)
-        }
-
-    def getCurrentPlayerName: String = game.getCurrentPlayer.get.name
-
-    def checkGameOver: Boolean =
-        val maxScorePoints = game.players.map(p => p -> p.points).toMap
-        if(maxScorePoints.exists {case (_, point) => point >= game.maxScore.get})
-            true
-        else
-            false
-
-    def getKeepProcessRunning: Boolean = game.keepProcessRunning
-
-    def getPlayerSize: Int = game.players.size
-
-    def getTrickCards: List[Card] = game.trickCards
-
-    def getPlayerHand: List[Card] = sortingStrategy.execute(game.players(game.currentPlayerIndex.get))
-
-    def getSortingStrategy: Strategy = sortingStrategy
-
-    def passCurrentPlayer: Player = game.getCurrentPlayer.get
-
-    def passStateString: String = state.getStateString
-
-    def setStrategy(strategy:Strategy): Unit = this.sortingStrategy = strategy
-
-    def executeStrategy: Vector[Player] = game.players.map(player => player.copy(hand = sortingStrategy.execute(player)))
-    //falls ich das nur für einen spieler machen will
-    /*def executeStrategy: Game =
-        val i = game.getCurrentPlayerIndex
-        val p = game.players(i)
-        val sorted = sortingStrategy.execute(p)
-        game.updatePlayer(i, p.copy(hand = sorted))*/
+  def getLastCardPlayed: Either[String,Card] = game.lastCardPlayed
 

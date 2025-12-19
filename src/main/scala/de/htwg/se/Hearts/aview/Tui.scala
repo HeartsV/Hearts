@@ -82,8 +82,13 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 	def setMaxScoreStateString: String = "please enter the score required to win (between 1 and 400)" + "\n"
 
 	def getGameplayStateString: String =
+		val lastCard = gameController.getLastCardPlayed match
+			case Left(error) => error
+			case Right(card) => card.toString + "played" + "\n"
+
 		"Trick:" + "\n" +
 		completeTrickString + "\n" +
+		lastCard + "\n" +
 		gameController.getCurrentPlayerName +" please select card to play:" + "\n" +
 		handToString + "\n"
 

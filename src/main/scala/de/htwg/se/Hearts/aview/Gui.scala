@@ -2,7 +2,6 @@ package de.htwg.se.Hearts.aview
 
 import de.htwg.se.Hearts.controller.controllerComponent.ControllerInterface
 import de.htwg.se.Hearts.util._
-import scala.compiletime.uninitialized
 
 import scalafx._
 import scalafx.application.JFXApp3
@@ -180,9 +179,13 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 
 
 		val bottomBox = new VBox:
+			val lastCard = gameController.getLastCardPlayed match
+				case Left(error) => error
+				case Right(card) => card.toString + " played"
 			renderHand(gameController.cardsPathList(gameController.getPlayerHand))
 			val pHand = gameController.getCurrentPlayerName
 			children = Seq(
+				Label(lastCard),
 				Label(pHand + "'s hand:"),
 				handBox
 			)
