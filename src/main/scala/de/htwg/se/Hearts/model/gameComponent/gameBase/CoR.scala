@@ -1,13 +1,12 @@
-package de.htwg.se.Hearts.controller.controllerComponent.controllerBase
+package de.htwg.se.Hearts.model.gameComponent.gameBase
 
-import de.htwg.se.Hearts.model.gameComponent.GameInterface
-import de.htwg.se.Hearts.model.gameComponent.CardInterface
+import de.htwg.se.Hearts.model.gameComponent.CoRInterface
 
-class ChainOfResponsibility:
+class ChainOfResponsibility extends CoRInterface:
 
     final case class MoveContext(
-        game: GameInterface,
-        playerHand: List[CardInterface],
+        game: Game,
+        playerHand: List[Card],
         index: Int
     )
 
@@ -20,7 +19,7 @@ class ChainOfResponsibility:
             Right(())
 
     val firstTrickMustStartWithTwoOfClubs: CardRule = ctx =>
-        if ctx.game.getFirstCard then
+        if ctx.game.firstCard then
             val card = ctx.playerHand(ctx.index)
             if card == Card(Rank.Two, Suit.Clubs) then
                 Right(())
@@ -30,7 +29,7 @@ class ChainOfResponsibility:
             Right(())
 
     val mustFollowSuitIfPossible: CardRule = ctx =>
-        ctx.game.trickCards.headOption match
+        ctx.game.getTrickCards.headOption match
             case None => Right(())
             case Some(leadCard) =>
                 val hasSuit = ctx.playerHand.exists(_.suit == leadCard.suit)
@@ -44,7 +43,7 @@ class ChainOfResponsibility:
     val heartsOnlyIfBrokenOrNoAlternative: CardRule = ctx =>
         val card = ctx.playerHand(ctx.index)
 
-        if card.suit != Suit.Hearts then
+        if card.getSuit != Suit.Hearts then
             Right(())
         else if ctx.game.startWithHearts || ctx.playerHand.forall(_.suit == Suit.Hearts) || ctx.game.trickCards.nonEmpty then
             Right(())

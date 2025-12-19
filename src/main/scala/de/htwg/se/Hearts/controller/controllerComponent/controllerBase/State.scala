@@ -2,8 +2,11 @@ package de.htwg.se.Hearts.controller.controllerComponent.controllerBase
 
 import de.htwg.se.Hearts.model._
 import de.htwg.se.Hearts.model.gameComponent.gameBase.{Director, GameBuilder}
-import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
+import de.htwg.se.Hearts.model.gameComponent.CoRInterface
+import de.htwg.se.Hearts.model.gameComponent.gameBase.ChainOfResponsibility
+import de.htwg.se.Hearts.model.gameComponent.GameInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
+import de.htwg.se.Hearts.model.gameComponent.PlayerInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
 
 trait State(controller: Controller):
@@ -87,6 +90,8 @@ class SetMaxScoreState(controller: Controller) extends State(controller: Control
   def getStateString: String = "SetMaxScoreState"
 
 class GamePlayState(controller: Controller) extends State(controller: Controller):
+
+  val cOR: CoRInterface = ChainOfResponsibility()
   def processInput(input: String): Game =
     val builder = GameBuilder(controller.game)
 
