@@ -46,7 +46,7 @@ class Controller(var game: Game) extends Observable with ControllerInterface:
     maxScorePoints.exists { case (_, point) => point >= game.maxScore.get }
 
   def getKeepProcessRunning: Boolean = game.keepProcessRunning
-  def getPlayerSize: Int = game.playerNumber.get
+  def getPlayerSize: Int = game.players.size
   def getTrickCards: List[Card] = game.trickCards
   def getPlayerHand: List[Card] = game.players(game.currentPlayerIndex.get).hand
   def getSortingStrategy: Strategy = sortingStrategy
