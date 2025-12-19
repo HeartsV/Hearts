@@ -44,7 +44,7 @@ trait PlayerInterface:
 trait CoRInterface:
 	def validateMove(game: Game, playerHand: List[Card], index: Int): Either[String, Card]
 
-trait DeckmanagerInterface:
+trait DeckManagerInterface:
 	def createDeck: List[Card]
 	def shuffle(deck: List[Card]): List[Card]
 	def deal(deck: List[Card], game: Game): Vector[Player]

@@ -1,7 +1,7 @@
-package de.htwg.se.Hearts.controller.LeaderBoardComponent
+package de.htwg.se.Hearts.controller.leaderBoardComponent
 
 import de.htwg.se.Hearts.model.gameComponent.gameBase.*
 
 trait LeaderBoardInterface:
-  def playersWithPoints(players: Vector[Player]): List[(String, Int)]
-  def rankPlayers(players: List[(String, Int)]): List[(Int, String, Int)]
+    def playersWithPoints(players: Vector[Player]): List[(String, Int)]
+    def rankPlayers(players: List[(String, Int)]): List[(Int, String, Int)]

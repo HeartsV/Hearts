@@ -1,4 +1,5 @@
 package de.htwg.se.Hearts.model.gameComponent.gameBase
+
 import de.htwg.se.Hearts.model.gameComponent.GameInterface
 
 case class Game(
