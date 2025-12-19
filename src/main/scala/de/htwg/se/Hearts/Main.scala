@@ -1,6 +1,6 @@
 package de.htwg.se.Hearts
 
-import de.htwg.se.Hearts.model._
+import de.htwg.se.Hearts.model.gameComponent.gameBase.*
 import de.htwg.se.Hearts.controller.controllerComponent.controllerBase.*
 import de.htwg.se.Hearts.controller._
 import de.htwg.se.Hearts.util._

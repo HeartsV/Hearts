@@ -2,6 +2,8 @@ package de.htwg.se.Hearts.controller.scoringComponent.scoringBase
 
 import de.htwg.se.Hearts.controller.scoringComponent.ScoringInterface
 import de.htwg.se.Hearts.model._
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
 
 
 class HeartsScoring extends ScoringInterface:

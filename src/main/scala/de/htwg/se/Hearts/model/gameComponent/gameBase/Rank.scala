@@ -1,4 +1,4 @@
-package de.htwg.se.Hearts.model
+package de.htwg.se.Hearts.model.gameComponent.gameBase
 
 enum Rank(val value: Int) extends Ordered[Rank]:
 

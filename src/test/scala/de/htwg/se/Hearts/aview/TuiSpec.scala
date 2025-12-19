@@ -1,5 +1,5 @@
 package de.htwg.se.Hearts.aview
-import de.htwg.se.Hearts.model.*
+import de.htwg.se.Hearts.model.gameComponent.gameBase.*
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import _root_.de.htwg.se.Hearts.aview.Tui

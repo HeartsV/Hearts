@@ -2,6 +2,9 @@ package de.htwg.se.Hearts.controller.deckmanagerComponent.deckmanagerBase
 
 import de.htwg.se.Hearts.controller.deckmanagerComponent.DeckmanagerInterface
 import de.htwg.se.Hearts.model._
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
 
 class Deckmanager extends DeckmanagerInterface:
 

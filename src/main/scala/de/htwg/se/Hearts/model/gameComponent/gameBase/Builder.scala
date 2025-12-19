@@ -1,18 +1,6 @@
-package de.htwg.se.Hearts.model
+package de.htwg.se.Hearts.model.gameComponent.gameBase
 
-trait Builder:
-	def reset: Unit
-	def setPlayerNumber(playerNumber: Int): Unit
-	def setStartWithHearts(swh: Boolean): Unit
-	def setKeepProcessRunning(kpr: Boolean): Unit
-	def setFirstCard(fc: Boolean): Unit
-	def setPlayers(players: Vector[Player]): Unit
-	def setMaxScore(maxScore: Int): Unit
-	def setCurrentPlayerIndex(cpi: Int): Unit
-	def setTrickCards(trick: List[Card]): Unit
-	def setCurrentWinnerAndHighestCard(newWinner: (Option[Int], Option[Card])): Unit
-	def setFirstPlayer(firstP: Player): Unit
-	def setLastPlayedCard(card: Either[String, Card]): Unit
+import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
 
 class Director:
 
@@ -21,7 +9,7 @@ class Director:
 		builder.setFirstCard(true)
 		builder.setStartWithHearts(false)
 
-class GameBuilder(var game: Game = Game()) extends Builder:
+class GameBuilder(var game: Game = Game()) extends BuilderInterface:
 	def reset: Unit = game = Game()
 	def setPlayerNumber(playerNumber: Int): Unit = game = game.copy(playerNumber = Some(playerNumber))
 	def setStartWithHearts(swh: Boolean): Unit = game = game.copy(startWithHearts = swh)
@@ -37,7 +25,6 @@ class GameBuilder(var game: Game = Game()) extends Builder:
 	def addCard(card: Card): Unit = game = game.copy(trickCards = game.trickCards :+ card)
 
 	def setCurrentWinnerAndHighestCard(newWinner: (Option[Int], Option[Card])): Unit = game = game.copy(currentWinnerIndex = newWinner(0), highestCard = newWinner(1))
-	def setFirstPlayer(firstP: Player): Unit = game = game.copy(firstPlayer = Some(firstP))
 
 	def setLastPlayedCard(card: Either[String, Card]): Unit = game = game.copy(lastCardPlayed = card)
 

@@ -2,7 +2,7 @@ package de.htwg.se.Hearts.controller.LeaderBoardComponent.LeaderBoardBase
 
 import de.htwg.se.Hearts.controller.LeaderBoardComponent.LeaderBoardInterface
 
-import de.htwg.se.Hearts.model._
+import de.htwg.se.Hearts.model.gameComponent.gameBase.*
 
 class LeaderBoard extends LeaderBoardInterface:
   override def playersWithPoints(players: Vector[Player]): List[(String, Int)] =

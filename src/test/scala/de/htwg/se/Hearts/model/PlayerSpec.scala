@@ -3,6 +3,8 @@ package de.htwg.se.Hearts.model
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import scala.collection.mutable.ListBuffer
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
 
 class PlayerSpec extends AnyWordSpec with Matchers {
     "A player" should {

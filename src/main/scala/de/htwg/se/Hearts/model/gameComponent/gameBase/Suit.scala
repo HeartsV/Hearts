@@ -1,4 +1,4 @@
-package de.htwg.se.Hearts.model
+package de.htwg.se.Hearts.model.gameComponent.gameBase
 
 enum Suit extends Ordered[Suit]:
 

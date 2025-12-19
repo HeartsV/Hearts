@@ -12,6 +12,10 @@ import de.htwg.se.Hearts.controller.deckmanagerComponent.deckmanagerBase._
 import de.htwg.se.Hearts.controller.LeaderBoardComponent.LeaderBoardBase._
 import de.htwg.se.Hearts.controller.PlayerTurnComponent.PlayerTurnBase._
 import de.htwg.se.Hearts.controller.scoringComponent.scoringBase._
+import de.htwg.se.Hearts.model.gameComponent.gameBase.GameBuilder
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
 
 class Controller(var game: Game) extends Observable with ControllerInterface:
 

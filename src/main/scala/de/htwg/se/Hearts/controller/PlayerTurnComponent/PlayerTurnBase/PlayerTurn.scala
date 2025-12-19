@@ -2,13 +2,15 @@ package de.htwg.se.Hearts.controller.PlayerTurnComponent.PlayerTurnBase
 
 import de.htwg.se.Hearts.model._
 import de.htwg.se.Hearts.controller.PlayerTurnComponent.PlayerTurnInterface
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 
 class PlayerTurn extends PlayerTurnInterface:
 
   override def nextPlayerIndex(game: Game): Int =
     if game.firstCard then
       game.players.indexWhere(_.hand.contains(
-        de.htwg.se.Hearts.model.Card(de.htwg.se.Hearts.model.Rank.Two, de.htwg.se.Hearts.model.Suit.Clubs)
+        de.htwg.se.Hearts.model.gameComponent.gameBase.Card(de.htwg.se.Hearts.model.Rank.Two, de.htwg.se.Hearts.model.Suit.Clubs)
       ))
     else if game.playerNumber.get == game.trickCards.size then
       game.currentWinnerIndex.get

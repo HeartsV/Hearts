@@ -6,7 +6,7 @@ import de.htwg.se.Hearts.util._
 
 import scala.io.StdIn.readLine
 
-import de.htwg.se.Hearts.model.Suit
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Suit
 
 class Tui(gameController: ControllerInterface)  extends Observer:
 

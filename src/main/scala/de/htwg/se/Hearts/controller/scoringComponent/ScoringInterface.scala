@@ -1,5 +1,8 @@
 package de.htwg.se.Hearts.controller.scoringComponent
 import de.htwg.se.Hearts.model._
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
 
 trait ScoringInterface:
   def cardPoints(card: Card): Int

@@ -2,7 +2,7 @@ package de.htwg.se.Hearts.controller
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import de.htwg.se.Hearts.model._
+import de.htwg.se.Hearts.model.gameComponent.gameBase.*
 import de.htwg.se.Hearts.controller.controllerComponent.controllerBase._
 
 class StrategySpec extends AnyWordSpec with Matchers {

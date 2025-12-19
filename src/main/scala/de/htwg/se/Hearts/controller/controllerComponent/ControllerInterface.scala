@@ -3,6 +3,9 @@ import de.htwg.se.Hearts.util._
 import de.htwg.se.Hearts.model._
 import de.htwg.se.Hearts.controller._
 import de.htwg.se.Hearts.controller.controllerComponent.controllerBase.Strategy
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
 
 trait ControllerInterface extends Observable:
 

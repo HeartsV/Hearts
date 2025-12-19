@@ -1,12 +1,13 @@
 package de.htwg.se.Hearts.controller.controllerComponent.controllerBase
 
-import de.htwg.se.Hearts.model._
+import de.htwg.se.Hearts.model.gameComponent.GameInterface
+import de.htwg.se.Hearts.model.gameComponent.CardInterface
 
 class ChainOfResponsibility:
 
     final case class MoveContext(
-        game: Game,
-        playerHand: List[Card],
+        game: GameInterface,
+        playerHand: List[CardInterface],
         index: Int
     )
 
@@ -19,7 +20,7 @@ class ChainOfResponsibility:
             Right(())
 
     val firstTrickMustStartWithTwoOfClubs: CardRule = ctx =>
-        if ctx.game.firstCard then
+        if ctx.game.getFirstCard then
             val card = ctx.playerHand(ctx.index)
             if card == Card(Rank.Two, Suit.Clubs) then
                 Right(())
