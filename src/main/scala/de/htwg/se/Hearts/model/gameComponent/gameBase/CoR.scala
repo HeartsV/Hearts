@@ -1,6 +1,8 @@
 package de.htwg.se.Hearts.model.gameComponent.gameBase
 
 import de.htwg.se.Hearts.model.gameComponent.CoRInterface
+import de.htwg.se.Hearts.model.gameComponent.Suit
+import de.htwg.se.Hearts.model.gameComponent.Rank
 
 class ChainOfResponsibility extends CoRInterface:
 

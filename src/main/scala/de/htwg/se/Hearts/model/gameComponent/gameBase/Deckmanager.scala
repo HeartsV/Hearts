@@ -1,7 +1,11 @@
-package de.htwg.se.Hearts.controller.deckmanagerComponent.deckmanagerBase
+package de.htwg.se.Hearts.model.gameComponent.gameBase
 
-import de.htwg.se.Hearts.controller.deckmanagerComponent.DeckmanagerInterface
-import de.htwg.se.Hearts.model._
+import de.htwg.se.Hearts.model.gameComponent.DeckmanagerInterface
+import de.htwg.se.Hearts.model.gameComponent.Suit
+import de.htwg.se.Hearts.model.gameComponent.Rank
+import de.htwg.se.Hearts.model.gameComponent.GameInterface
+import de.htwg.se.Hearts.model.gameComponent.PlayerInterface
+import de.htwg.se.Hearts.model.gameComponent.CardInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Player

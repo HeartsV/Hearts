@@ -26,7 +26,6 @@ trait BuilderInterface:
 	def setCurrentPlayerIndex(cpi: Int): Unit
 	def setTrickCards(trick: List[Card]): Unit
 	def setCurrentWinnerAndHighestCard(newWinner: (Option[Int], Option[Card])): Unit
-	def setFirstPlayer(firstP: Player): Unit
 	def setLastPlayedCard(card: Either[String, Card]): Unit
 
 trait CardInterface:
@@ -43,4 +42,63 @@ trait PlayerInterface:
 	def addPoints(newPoints: Int): Player
 
 trait CoRInterface:
-	def validateMove(game: GameInterface, playerHand: List[CardInterface], index: Int): Either[String, CardInterface]
+	def validateMove(game: Game, playerHand: List[Card], index: Int): Either[String, Card]
+
+trait DeckmanagerInterface:
+	def createDeck: List[Card]
+	def shuffle(deck: List[Card]): List[Card]
+	def deal(deck: List[Card], game: Game): Vector[Player]
+
+enum Suit extends Ordered[Suit]:
+
+    case Hearts, Spades, Diamonds, Clubs
+
+    def fileName: String = this match
+        case Hearts     => "hearts"
+        case Spades     => "spades"
+        case Diamonds   => "diamonds"
+        case Clubs      => "clubs"
+
+    def compare(that: Suit): Int =
+        this.ordinal.compare(that.asInstanceOf[Suit].ordinal)
+
+    override def toString: String = this match
+        case Hearts     => "\u2665"
+        case Spades     => "\u2660"
+        case Diamonds   => "\u2666"
+        case Clubs      => "\u2663"
+
+enum Rank(val value: Int) extends Ordered[Rank]:
+
+    case Two   extends Rank(1)
+    case Three extends Rank(2)
+    case Four  extends Rank(3)
+    case Five  extends Rank(4)
+    case Six   extends Rank(5)
+    case Seven extends Rank(6)
+    case Eight extends Rank(7)
+    case Nine  extends Rank(8)
+    case Ten   extends Rank(9)
+    case Jack  extends Rank(10)
+    case Queen extends Rank(11)
+    case King  extends Rank(12)
+    case Ace   extends Rank(13)
+
+    def compare(that: Rank): Int =
+        this.value.compare(that.value)
+
+    override def toString: String =
+        this match
+            case Two   => "2"
+            case Three => "3"
+            case Four  => "4"
+            case Five  => "5"
+            case Six   => "6"
+            case Seven => "7"
+            case Eight => "8"
+            case Nine  => "9"
+            case Ten   => "10"
+            case Jack  => "J"
+            case Queen => "Q"
+            case King  => "K"
+            case Ace   => "A"

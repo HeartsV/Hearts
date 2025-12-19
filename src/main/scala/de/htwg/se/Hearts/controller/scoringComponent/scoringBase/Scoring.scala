@@ -4,6 +4,8 @@ import de.htwg.se.Hearts.controller.scoringComponent.ScoringInterface
 import de.htwg.se.Hearts.model._
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
+import de.htwg.se.Hearts.model.gameComponent.Suit
+import de.htwg.se.Hearts.model.gameComponent.Rank
 
 
 class HeartsScoring extends ScoringInterface:

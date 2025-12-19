@@ -2,6 +2,8 @@ package de.htwg.se.Hearts.model.gameComponent.gameBase
 
 import scala.math.Ordered
 import de.htwg.se.Hearts.model.gameComponent.CardInterface
+import de.htwg.se.Hearts.model.gameComponent.Suit
+import de.htwg.se.Hearts.model.gameComponent.Rank
 
 case class Card(rank: Rank, suit: Suit) extends CardInterface:
     override def toString: String = s"${rank.toString.padTo(2, ' ')}${suit.toString}"

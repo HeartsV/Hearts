@@ -1,6 +1,7 @@
 package de.htwg.se.Hearts.controller.controllerComponent.controllerBase
 
-import de.htwg.se.Hearts.model._
+import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
+import de.htwg.se.Hearts.model.gameComponent.gameBase.GameBuilder
 import de.htwg.se.Hearts.model.gameComponent.gameBase.{Director, GameBuilder}
 import de.htwg.se.Hearts.model.gameComponent.CoRInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.ChainOfResponsibility
@@ -8,6 +9,8 @@ import de.htwg.se.Hearts.model.gameComponent.GameInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 import de.htwg.se.Hearts.model.gameComponent.PlayerInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
+import de.htwg.se.Hearts.model.gameComponent.Suit
+import de.htwg.se.Hearts.model.gameComponent.Rank
 
 trait State(controller: Controller):
   def processInput(input: String): Game
@@ -156,7 +159,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
 
               if builder.game.firstCard then builder.setFirstCard(false)
 
-              if (cardToPlay.suit == Suit.Hearts || cardToPlay.equals(Card(Rank.Queen, Suit.Spades))) && !builder.game.startWithHearts then
+              if (cardToPlay.suit == Suit.Hearts || (cardToPlay.getRank == Rank.Queen && cardToPlay.getSuit == Suit.Spades) && !builder.game.startWithHearts)
                 builder.setStartWithHearts(true)
 
               if builder.game.trickCards.size == builder.game.playerNumber.get then

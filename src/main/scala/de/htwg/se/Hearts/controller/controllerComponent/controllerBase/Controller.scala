@@ -3,16 +3,17 @@ package de.htwg.se.Hearts.controller.controllerComponent.controllerBase
 import de.htwg.se.Hearts.util._
 import de.htwg.se.Hearts.model._
 import de.htwg.se.Hearts.controller.controllerComponent._
-import de.htwg.se.Hearts.controller.deckmanagerComponent._
+import de.htwg.se.Hearts.model.gameComponent.DeckmanagerInterface
 import de.htwg.se.Hearts.controller.LeaderBoardComponent._
 import de.htwg.se.Hearts.controller.PlayerTurnComponent._
 import de.htwg.se.Hearts.controller.scoringComponent._
 
-import de.htwg.se.Hearts.controller.deckmanagerComponent.deckmanagerBase._
+import de.htwg.se.Hearts.model.gameComponent.gameBase.*
 import de.htwg.se.Hearts.controller.LeaderBoardComponent.LeaderBoardBase._
 import de.htwg.se.Hearts.controller.PlayerTurnComponent.PlayerTurnBase._
 import de.htwg.se.Hearts.controller.scoringComponent.scoringBase._
 import de.htwg.se.Hearts.model.gameComponent.gameBase.GameBuilder
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Deckmanager
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Player

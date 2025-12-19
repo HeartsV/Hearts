@@ -6,8 +6,6 @@ import de.htwg.se.Hearts.util._
 
 import scala.io.StdIn.readLine
 
-import de.htwg.se.Hearts.model.gameComponent.gameBase.Suit
-
 class Tui(gameController: ControllerInterface)  extends Observer:
 
 	def trickToString: String =
@@ -84,7 +82,7 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 	def getGameplayStateString: String =
 		val lastCard = gameController.getLastCardPlayed match
 			case Left(error) => error
-			case Right(card) => card.toString + "played" + "\n"
+			case Right(card) => card.toString + " played" + "\n"
 
 		"Trick:" + "\n" +
 		completeTrickString + "\n" +
