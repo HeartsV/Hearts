@@ -77,7 +77,6 @@ class SetMaxScoreState(controller: Controller) extends State(controller: Control
       controller.changeState(GamePlayState(controller))
       builder.setMaxScore(100)
 
-    // NEW: current player selection via TurnService (use builder.game, not controller.game)
     builder.setCurrentPlayerIndex(controller.turnService.nextPlayerIndex(builder.game))
     builder.getGame
 
@@ -88,15 +87,18 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
     val builder = GameBuilder(controller.game)
 
     builder.setPlayers(controller.executeStrategy)
-    builder.setLastPlayedCard(Left("control input"))
 
     input.trim.toLowerCase match
       case "suit" | "s" =>
         controller.setStrategy(SortBySuitStrategy())
+        builder.setPlayers(controller.executeStrategy)
+        builder.setLastPlayedCard(Left("Cards sorted by suit"))
         builder.getGame
 
       case "rank" | "r" =>
+        builder.setPlayers(controller.executeStrategy)
         controller.setStrategy(SortByRankStrategy())
+        builder.setLastPlayedCard(Left("Cards sorted by rank"))
         builder.getGame
 
       case "rules" | "ru" =>
@@ -116,7 +118,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
 
           val result = ChainOfResponsibility().validateMove(
             builder.game,
-            controller.sortingStrategy.execute(builder.game.getCurrentPlayer.get),
+            controller.getPlayerHand,
             input.toInt - 1
           )
 
@@ -125,7 +127,7 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
               builder.setLastPlayedCard(result)
 
             case Right(cardToPlay) =>
-              val sortedHand = controller.sortingStrategy.execute(builder.game.getCurrentPlayer.get)
+              val sortedHand = controller.getPlayerHand
 
               builder.setPlayers(
                 builder.game.players.updated(
@@ -136,7 +138,6 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
 
               builder.addCard(cardToPlay)
 
-              // NEW: winner/highest via TurnService
               builder.setCurrentWinnerAndHighestCard(
                 controller.turnService.updateCurrentWinner(
                   (builder.game.currentPlayerIndex.get, cardToPlay),
@@ -162,7 +163,6 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
             if !controller.checkGameOver then controller.changeState(ShowScoreState(controller))
             else controller.changeState(GameOverState(controller))
 
-            // NEW: scoring via ScoringService
             builder.setPlayers(controller.scoringService.addPointsToPlayers(builder.game))
 
           builder.getGame

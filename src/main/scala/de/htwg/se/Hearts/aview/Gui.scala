@@ -60,21 +60,20 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 		onAction = _ => gameController.processInput("suit")
 	lazy val rankSortButton = new Button("Sort by: rank"):
 		onAction = _ => gameController.processInput("rank")
-	lazy val trickBox = new HBox()
-	lazy val handBox = new HBox()
 	lazy val scoreBox = new VBox()
 
-	def renderTrick(imageUrls: List[String]): Unit =
-		trickBox.children.clear()
+	def renderTrick(imageUrls: List[String]): HBox =
+		val trickBox = new HBox()
 
 		imageUrls.foreach {
 			url =>
 				val iv = new ImageView(new Image(url))
 				trickBox.children.add(iv)
 		}
+		trickBox
 
-	def renderHand(imageUrls: List[String]): Unit =
-		handBox.children.clear()
+	def renderHand(imageUrls: List[String]): HBox =
+		val handBox = new HBox()
 
 		imageUrls.zipWithIndex.foreach {
 			case (url, index) =>
@@ -83,6 +82,7 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 				}
 				handBox.children.add(iv)
 		}
+		handBox
 
 	def renderScoreBoard: Unit =
 		scoreBox.children.clear()
@@ -170,10 +170,9 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 			)
 
 		val centerBox = new VBox:
-			renderTrick(gameController.cardsPathList(gameController.getTrickCards))
 			children = Seq(
 				Label("Trick:"),
-				trickBox
+				renderTrick(gameController.cardsPathList(gameController.getTrickCards))
 			)
 
 
@@ -182,12 +181,11 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 			val lastCard = gameController.getLastCardPlayed match
 				case Left(error) => error
 				case Right(card) => card.toString + " played"
-			renderHand(gameController.cardsPathList(gameController.getPlayerHand))
 			val pHand = gameController.getCurrentPlayerName
 			children = Seq(
 				Label(lastCard),
 				Label(pHand + "'s hand:"),
-				handBox
+				renderHand(gameController.cardsPathList(gameController.getPlayerHand))
 			)
 
 		rootBorderPane.top = topBox

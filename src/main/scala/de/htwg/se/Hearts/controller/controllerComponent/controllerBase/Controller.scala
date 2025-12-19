@@ -48,12 +48,15 @@ class Controller(var game: Game) extends Observable with ControllerInterface:
   def getKeepProcessRunning: Boolean = game.keepProcessRunning
   def getPlayerSize: Int = game.players.size
   def getTrickCards: List[Card] = game.trickCards
-  def getPlayerHand: List[Card] = game.players(game.currentPlayerIndex.get).hand
+  def getPlayerHand: List[Card] =
+    sortingStrategy.execute(game.players(game.currentPlayerIndex.get))
   def getSortingStrategy: Strategy = sortingStrategy
   def passCurrentPlayer: Player = game.getCurrentPlayer.get
   def passStateString: String = state.getStateString
 
-  def setStrategy(strategy: Strategy): Unit = this.sortingStrategy = strategy
+  def setStrategy(strategy: Strategy): Unit =
+    this.sortingStrategy = strategy
+    val builder = GameBuilder(game)
   def executeStrategy: Vector[Player] =
     game.players.map(p => p.copy(hand = sortingStrategy.execute(p)))
 
