@@ -149,20 +149,20 @@ class GamePlayState(controller: Controller) extends State(controller: Controller
 
                             if (cardToPlay.suit == Suit.Hearts || (cardToPlay.getRank == Rank.Queen && cardToPlay.getSuit == Suit.Spades) && !builder.game.startWithHearts)
                                 builder.setStartWithHearts(true)
-                    if builder.game.trickCards.size == builder.game.playerNumber.get then
-                        builder.updatePlayer(
-                            builder.game.currentWinnerIndex.get,
-                            builder.game.players(builder.game.currentWinnerIndex.get).addWonCards(builder.game.trickCards)
-                        )
+                            if builder.game.trickCards.size == builder.game.playerNumber.get then
+                                builder.updatePlayer(
+                                    builder.game.currentWinnerIndex.get,
+                                    builder.game.players(builder.game.currentWinnerIndex.get).addWonCards(builder.game.trickCards)
+                                )
 
-                    builder.setLastPlayedCard(result)
-                    builder.setCurrentPlayerIndex(controller.turnService.nextPlayerIndex(builder.game))
+                            builder.setLastPlayedCard(result)
+                            builder.setCurrentPlayerIndex(controller.turnService.nextPlayerIndex(builder.game))
 
-                    if builder.game.players.forall(_.hand.size == 0) then
-                        if !controller.checkGameOver then controller.changeState(ShowScoreState(controller))
-                        else controller.changeState(GameOverState(controller))
+                            if builder.game.players.forall(_.hand.size == 0) then
+                                if !controller.checkGameOver then controller.changeState(ShowScoreState(controller))
+                                else controller.changeState(GameOverState(controller))
 
-                        builder.setPlayers(controller.scoringService.addPointsToPlayers(builder.game))
+                                builder.setPlayers(controller.scoringService.addPointsToPlayers(builder.game))
 
                     builder.getGame
 
