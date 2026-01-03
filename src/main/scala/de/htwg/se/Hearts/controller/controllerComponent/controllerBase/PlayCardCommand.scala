@@ -12,6 +12,9 @@ import de.htwg.se.Hearts.model.gameComponent.gameBase.ChainOfResponsibility
 
 
 class PlayCardCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+    override def redoStep = ???
+    override def undoStep = ???
+
     override def doStep: Unit =
             val builder:BuilderInterface = GameBuilder(gameController.game.asInstanceOf[Game])
             builder.setPlayers(gameController.executeStrategy)
@@ -66,3 +69,4 @@ class PlayCardCommand(gameController:Controller,backup:GameInterface,index:Optio
                         builder.setPlayers(gameController.scoringService.addPointsToPlayers(builder.getCopy))
 
             builder.getGame
+

@@ -22,14 +22,14 @@ class DeckManager extends DeckManagerInterface:
         util.Random().shuffle(deck)
 
 
-    private def filterOneCardOut(deck: List[Card], game: Game): List[Card] =
-        if game.playerNumber.contains(3) then
+    private def filterOneCardOut(deck: List[Card], game: GameInterface): List[Card] =
+        if game.getPlayerNumber.contains(3) then
             if deck.head == Card(Rank.Two, Suit.Clubs) then deck.filterNot(_ == deck(1))
             else deck.tail
         else deck
 
-    override def deal(deck: List[Card], game: Game): Vector[Player] =
+    override def deal(deck: List[Card], game: GameInterface): Vector[Player] =
         val normalized = filterOneCardOut(deck, game)
-        val handSize = normalized.size / game.playerNumber.get
+        val handSize = normalized.size / game.getPlayerNumber.get
         val hands = normalized.grouped(handSize).toList
-        (game.players.zip(hands).map { case (p, cards) => p.copy(hand = cards) }).toVector
+        (game.getPlayers.zip(hands).map { case (p, cards) => p.copy(hand = cards) }).toVector

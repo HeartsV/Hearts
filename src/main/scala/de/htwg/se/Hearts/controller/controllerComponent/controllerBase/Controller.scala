@@ -36,7 +36,7 @@ class Controller(var game: GameInterface) extends Observable with ControllerInte
 
     def changeState(newState: State): Unit = state = newState
 
-    def getGame():GameInterface = game
+    def getGame:GameInterface = game
 
     def setGame(newGame: GameInterface): Unit = game = newGame
 
@@ -70,7 +70,7 @@ class Controller(var game: GameInterface) extends Observable with ControllerInte
     def executeStrategy: Vector[Player] =
         game.getPlayers.map(p => p.copy(hand = sortingStrategy.execute(p)))
 
-    def dealNewRound(game: Game): Vector[Player] =
+    def dealNewRound(game: GameInterface): Vector[Player] =
         deckmanger.deal(deckmanger.shuffle(deckmanger.createDeck), game)
 
     def updateCurrentPlayer: Int = turnService.nextPlayerIndex(game)

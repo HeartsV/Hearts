@@ -26,5 +26,6 @@ case class Game(
     def getHighestCard: Option[Card] = highestCard
     def getCurrentWinnerIndex: Option[Int] = currentWinnerIndex
     def getLastCardPlayed: Either[String, Card] = lastCardPlayed
+    def getCurrentPlayerIndex: Option[Int] = currentPlayerIndex
 
 

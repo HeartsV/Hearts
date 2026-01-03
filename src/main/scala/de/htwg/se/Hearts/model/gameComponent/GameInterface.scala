@@ -62,7 +62,7 @@ trait CoRInterface:
 trait DeckManagerInterface:
 	def createDeck: List[Card]
 	def shuffle(deck: List[Card]): List[Card]
-	def deal(deck: List[Card], game: Game): Vector[Player]
+	def deal(deck: List[Card], game: GameInterface): Vector[Player]
 
 enum Suit extends Ordered[Suit]:
 
