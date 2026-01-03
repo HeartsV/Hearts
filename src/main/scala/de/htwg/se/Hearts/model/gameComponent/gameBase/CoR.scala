@@ -9,20 +9,26 @@ class ChainOfResponsibility extends CoRInterface:
     final case class MoveContext(
         game: Game,
         playerHand: List[Card],
-        index: Int
+        index: Option[Int]
     )
 
     type CardRule = MoveContext => Either[String, Unit]
 
+    val indexNotNone: CardRule = ctx =>
+        if ctx.index == None then
+            Left(s"Index was not a number!\n")
+        else
+            Right(())
+
     val indexMustBeInBounds: CardRule = ctx =>
-        if ctx.index < 0 || ctx.index >= ctx.playerHand.size then
-            Left(s"Index: ${ctx.index + 1} was out of bounds!\n")
+        if ctx.index.get < 0 || ctx.index.get >= ctx.playerHand.size then
+            Left(s"Index: ${ctx.index.get + 1} was out of bounds!\n")
         else
             Right(())
 
     val firstTrickMustStartWithTwoOfClubs: CardRule = ctx =>
         if ctx.game.firstCard then
-            val card = ctx.playerHand(ctx.index)
+            val card = ctx.playerHand(ctx.index.get)
             if card == Card(Rank.Two, Suit.Clubs) then
                 Right(())
             else
@@ -35,7 +41,7 @@ class ChainOfResponsibility extends CoRInterface:
             case None => Right(())
             case Some(leadCard) =>
                 val hasSuit = ctx.playerHand.exists(_.suit == leadCard.suit)
-                val playedCard = ctx.playerHand(ctx.index)
+                val playedCard = ctx.playerHand(ctx.index.get)
 
                 if hasSuit && playedCard.suit != leadCard.suit then
                     Left(f"You have at least one card with Suit ${leadCard.suit}! You must follow this Suit!\n")
@@ -43,7 +49,7 @@ class ChainOfResponsibility extends CoRInterface:
                     Right(())
 
     val heartsOnlyIfBrokenOrNoAlternative: CardRule = ctx =>
-        val card = ctx.playerHand(ctx.index)
+        val card = ctx.playerHand(ctx.index.get)
 
         if card.getSuit != Suit.Hearts then
             Right(())
@@ -60,14 +66,14 @@ class ChainOfResponsibility extends CoRInterface:
             heartsOnlyIfBrokenOrNoAlternative
         )
 
-    def validateMove(game: Game, playerHand: List[Card], index: Int): Either[String, Card] =
+    def validateMove(game: Game, playerHand: List[Card], index: Option[Int]): Either[String, Card] =
         val ctx = MoveContext(game, playerHand, index)
 
         val result: Either[String, Unit] =
             validationChain.foldLeft[Either[String, Unit]](Right(())) { (previousResult, rule) =>
                 previousResult.flatMap(_ => rule(ctx))
             }
-        result.map(_ => ctx.playerHand(index))
+        result.map(_ => ctx.playerHand(index.get))
 
 
 
