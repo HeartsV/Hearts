@@ -24,6 +24,8 @@ trait ControllerInterface extends Observable:
     def getPlayerHand: List[Card]
     def dealNewRound(game: Game): Vector[Player]
     def getLastCardPlayed: Either[String,Card]
+    def setGame(game: Game):Unit
+    def getGame:Game
 
 
 

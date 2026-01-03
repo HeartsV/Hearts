@@ -2,20 +2,22 @@ package de.htwg.se.Hearts.model.gameComponent
 
 import de.htwg.se.Hearts.model.gameComponent.gameBase._
 
-trait GameInterface:
-	def getPlayerNumber: Option[Int]
-	def getStartWithHearts: Boolean
-	def getKeepProcessRunning: Boolean
-	def getFirstCard: Boolean
-	def getPlayers: Vector[Player]
-	def getMaxScore: Option[Int]
-	def getCurrentPlayer: Option[Player]
-	def getTrickCards: List[Card]
-	def getHighestCard: Option[Card]
-	def getCurrentWinnerIndex: Option[Int]
-	def getLastCardPlayed: Either[String, Card]
 
-trait BuilderInterface:
+trait GameInterface():
+    def getPlayerNumber: Option[Int]
+    def getStartWithHearts: Boolean
+    def getKeepProcessRunning: Boolean
+    def getFirstCard: Boolean
+    def getPlayers: Vector[Player]
+    def getMaxScore: Option[Int]
+    def getCurrentPlayer: Option[Player]
+    def getTrickCards: List[Card]
+    def getHighestCard: Option[Card]
+    def getCurrentWinnerIndex: Option[Int]
+    def getLastCardPlayed: Either[String, Card]
+    def getCurrentPlayerIndex: Option[Int]
+
+trait BuilderInterface(game:Game):
 	def reset: Unit
 	def setPlayerNumber(playerNumber: Int): Unit
 	def setStartWithHearts(swh: Boolean): Unit

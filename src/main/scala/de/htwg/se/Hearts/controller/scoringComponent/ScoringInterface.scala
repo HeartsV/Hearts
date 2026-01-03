@@ -3,6 +3,7 @@ import de.htwg.se.Hearts.model._
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
+import de.htwg.se.Hearts.model.gameComponent.GameInterface
 
 trait ScoringInterface:
   def cardPoints(card: Card): Int
@@ -12,5 +13,5 @@ trait ScoringInterface:
   def addRoundPoints(players: Vector[Player]): Vector[Player]
 
   /** Adds points based on the wonCards currently stored on the players in this game. */
-  def addPointsToPlayers(game: Game): Vector[Player] =
-    addRoundPoints(game.players)
+  def addPointsToPlayers(game: GameInterface): Vector[Player] =
+    addRoundPoints(game.getPlayers)

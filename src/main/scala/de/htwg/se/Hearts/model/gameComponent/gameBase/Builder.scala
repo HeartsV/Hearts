@@ -1,15 +1,16 @@
 package de.htwg.se.Hearts.model.gameComponent.gameBase
 
 import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
+import de.htwg.se.Hearts.model.gameComponent.GameInterface
 
 class Director:
 
 	def resetForNextGame(builder: GameBuilder): Unit =
-		builder.setPlayers(builder.game.players.map(_.copy(points = 0)))
+		builder.setPlayers(builder.game.getPlayers.map(_.copy(points = 0)))
 		builder.setFirstCard(true)
 		builder.setStartWithHearts(false)
 
-class GameBuilder(var game: Game = Game()) extends BuilderInterface:
+class GameBuilder(var game:Game = Game()) extends BuilderInterface(game:Game):
 	def reset: Unit = game = Game()
 	def setPlayerNumber(playerNumber: Int): Unit = game = game.copy(playerNumber = Some(playerNumber))
 	def setStartWithHearts(swh: Boolean): Unit = game = game.copy(startWithHearts = swh)
