@@ -29,7 +29,13 @@ class GameBuilder(var game:Game = Game()) extends BuilderInterface:
 
 	def setLastPlayedCard(card: Either[String, Card]): Unit = game = game.copy(lastCardPlayed = card)
 
-	def getGame: Game =
+	def getCopy: GameInterface = game
+
+	def getTrickSize: Int = game.trickCards.size
+
+	def getPlayerNumber: Int = game.playerNumber.get
+
+	def getGame: GameInterface =
 		 val newGame = game
 		 reset
 		 newGame

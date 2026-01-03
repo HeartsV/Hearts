@@ -29,7 +29,10 @@ trait BuilderInterface:
     def setTrickCards(trick: List[Card]): Unit
     def setCurrentWinnerAndHighestCard(newWinner: (Option[Int], Option[Card])): Unit
     def setLastPlayedCard(card: Either[String, Card]): Unit
-    def getGame: Game
+    def getGame: GameInterface
+    def getCopy: GameInterface
+    def getTrickSize: Int
+    def getPlayerNumber: Int
 
 trait CardInterface:
 	override def toString: String
@@ -45,7 +48,7 @@ trait PlayerInterface:
 	def addPoints(newPoints: Int): Player
 
 trait CoRInterface:
-	def validateMove(game: Game, playerHand: List[Card], index: Int): Either[String, Card]
+	def validateMove(game: GameInterface, playerHand: List[Card], index: Int): Either[String, Card]
 
 trait DeckManagerInterface:
 	def createDeck: List[Card]

@@ -6,81 +6,69 @@ import de.htwg.se.Hearts.model.gameComponent.gameBase.GameBuilder
 import de.htwg.se.Hearts.util._
 import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
+import de.htwg.se.Hearts.model.gameComponent.CoRInterface
+import de.htwg.se.Hearts.model.gameComponent.gameBase.ChainOfResponsibility
 
-class PlayCardCommand(gameController:Controller,backup:GameInterface) extends Command:
+
+class PlayCardCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
     override def execute: Unit =
-        val builder:BuilderInterface = GameBuilder(gameController.game.asInstanceOf[Game])
-        builder.setPlayers(gameController.executeStrategy)
-        input.trim.toLowerCase match
-            case "suit" | "s" =>
-                gameController.setStrategy(SortBySuitStrategy())
-                builder.setPlayers(gameController.executeStrategy)
-                builder.setLastPlayedCard(Left("Cards sorted by suit"))
-                builder.getGame
-            case "rank" | "r" =>
-                builder.setPlayers(gameController.executeStrategy)
-                gameController.setStrategy(SortByRankStrategy())
-                builder.setLastPlayedCard(Left("Cards sorted by rank"))
-                builder.getGame
-            case "rules" | "ru" =>
-                gameController.changeState(RulesScreenState(gameController))
-                builder.getGame
-            case "exit" | "e" =>
-                builder.setKeepProcessRunning(false)
-                builder.getGame
-            case _ =>
-                if !input.toIntOption.equals(None) then
-                    if builder.game.trickCards.size == builder.game.playerNumber.get then
-                        builder.setTrickCards(List())
-                        builder.setCurrentWinnerAndHighestCard(None, None)
-                    val result = cOR.validateMove(
-                        builder.game,
-                        gameController.getPlayerHand,
-                        input.toInt - 1
+        if(index == None)
+        else
+
+            val builder:BuilderInterface = GameBuilder(gameController.game.asInstanceOf[Game])
+            builder.setPlayers(gameController.executeStrategy)
+            if builder.getTrickSize == builder.getPlayerNumber then
+                builder.setTrickCards(List())
+                builder.setCurrentWinnerAndHighestCard(None, None)
+            val cOR: CoRInterface = ChainOfResponsibility()
+            val result = cOR.validateMove(
+                builder.getCopy,
+                gameController.getPlayerHand,
+                input.toInt - 1
+            )
+
+            result match
+            case Left(_) => builder.setLastPlayedCard(result)
+            case Right(cardToPlay) =>
+                    val sortedHand = gameController.getPlayerHand
+
+                    builder.setPlayers(
+                        builder.game.players.updated(
+                            builder.game.currentPlayerIndex.get,
+                            builder.game.getCurrentPlayer.get.removeCard(cardToPlay)
+                        )
                     )
 
-                    result match
-                    case Left(_) => builder.setLastPlayedCard(result)
-                    case Right(cardToPlay) =>
-                            val sortedHand = gameController.getPlayerHand
+                    builder.addCard(cardToPlay)
 
-                            builder.setPlayers(
-                                builder.game.players.updated(
-                                    builder.game.currentPlayerIndex.get,
-                                    builder.game.getCurrentPlayer.get.removeCard(cardToPlay)
-                                )
-                            )
+                    builder.setCurrentWinnerAndHighestCard(
+                        gameController.turnService.updateCurrentWinner(
+                            (builder.game.currentPlayerIndex.get, cardToPlay),
+                            builder.game
+                        )
+                    )
 
-                            builder.addCard(cardToPlay)
+                    if builder.game.firstCard then builder.setFirstCard(false)
 
-                            builder.setCurrentWinnerAndHighestCard(
-                                gameController.turnService.updateCurrentWinner(
-                                    (builder.game.currentPlayerIndex.get, cardToPlay),
-                                    builder.game
-                                )
-                            )
+                    if (cardToPlay.suit == Suit.Hearts || (cardToPlay.getRank == Rank.Queen && cardToPlay.getSuit == Suit.Spades) && !builder.game.startWithHearts)
+                        builder.setStartWithHearts(true)
+                    if builder.game.trickCards.size == builder.game.playerNumber.get then
+                        builder.updatePlayer(
+                            builder.game.currentWinnerIndex.get,
+                            builder.game.players(builder.game.currentWinnerIndex.get).addWonCards(builder.game.trickCards)
+                        )
 
-                            if builder.game.firstCard then builder.setFirstCard(false)
+                    builder.setLastPlayedCard(result)
+                    builder.setCurrentPlayerIndex(gameController.turnService.nextPlayerIndex(builder.game))
 
-                            if (cardToPlay.suit == Suit.Hearts || (cardToPlay.getRank == Rank.Queen && cardToPlay.getSuit == Suit.Spades) && !builder.game.startWithHearts)
-                                builder.setStartWithHearts(true)
-                            if builder.game.trickCards.size == builder.game.playerNumber.get then
-                                builder.updatePlayer(
-                                    builder.game.currentWinnerIndex.get,
-                                    builder.game.players(builder.game.currentWinnerIndex.get).addWonCards(builder.game.trickCards)
-                                )
+                    if builder.game.players.forall(_.hand.size == 0) then
+                        if !gameController.checkGameOver then gameController.changeState(ShowScoreState(gameController))
+                        else gameController.changeState(GameOverState(gameController))
 
-                            builder.setLastPlayedCard(result)
-                            builder.setCurrentPlayerIndex(gameController.turnService.nextPlayerIndex(builder.game))
+                        builder.setPlayers(gameController.scoringService.addPointsToPlayers(builder.game))
 
-                            if builder.game.players.forall(_.hand.size == 0) then
-                                if !gameController.checkGameOver then gameController.changeState(ShowScoreState(gameController))
-                                else gameController.changeState(GameOverState(gameController))
+            builder.getGame
 
-                                builder.setPlayers(gameController.scoringService.addPointsToPlayers(builder.game))
-
-                    builder.getGame
-
-                else
-                    builder.setLastPlayedCard(Left("No allowed input!"))
-                    builder.getGame
+        else
+            builder.setLastPlayedCard(Left("No allowed input!"))
+            builder.getGame
