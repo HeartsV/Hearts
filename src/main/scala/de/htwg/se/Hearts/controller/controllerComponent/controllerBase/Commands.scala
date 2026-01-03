@@ -63,13 +63,23 @@ class SetSortingRankCommand(gameController: Controller, backup: (GameInterface, 
     override def redoStep = ???
     override def undoStep = ???
 
-    override def doStep: Unit = ???
+    override def doStep: Unit =
+        val builder:BuilderInterface = GameBuilder(gameController.game.asInstanceOf[Game])
+        builder.setPlayers(gameController.executeStrategy)
+        gameController.setStrategy(SortByRankStrategy())
+        builder.setLastPlayedCard(Left("Cards sorted by rank"))
+        gameController.game = builder.getGame
 
 class SetSortingSuitCommand(gameController: Controller, backup: (GameInterface, State), index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
-    override def doStep: Unit = ???
+    override def doStep: Unit =
+        val builder:BuilderInterface = GameBuilder(gameController.game.asInstanceOf[Game])
+        gameController.setStrategy(SortBySuitStrategy())
+        builder.setPlayers(gameController.executeStrategy)
+        builder.setLastPlayedCard(Left("Cards sorted by suit"))
+        gameController.game = builder.getGame
 
 class NewCommand(gameController: Controller, backup: (GameInterface, State)) extends Command:
     override def redoStep = ???
