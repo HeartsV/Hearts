@@ -10,6 +10,72 @@ import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 import de.htwg.se.Hearts.model.gameComponent.CoRInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.ChainOfResponsibility
 
+class SetPlayerNumberCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+    override def redoStep = ???
+    override def undoStep = ???
+
+    override def doStep: Unit = ???
+
+class AddPlayerCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+    override def redoStep = ???
+    override def undoStep = ???
+
+    override def doStep: Unit = ???
+
+class SetMaxScoreCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+    override def redoStep = ???
+    override def undoStep = ???
+
+    override def doStep: Unit = ???
+
+class SetSortingRankCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+    override def redoStep = ???
+    override def undoStep = ???
+
+    override def doStep: Unit = ???
+
+class SetSortingSuitCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+    override def redoStep = ???
+    override def undoStep = ???
+
+    override def doStep: Unit = ???
+
+class NewCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+    override def redoStep = ???
+    override def undoStep = ???
+
+    override def doStep: Unit = ???
+
+class AgainCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+    override def redoStep = ???
+    override def undoStep = ???
+
+    override def doStep: Unit = ???
+
+class QuitCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+    override def redoStep = ???
+    override def undoStep = ???
+
+    override def doStep: Unit = ???
+
+class ExitCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+    override def redoStep = ???
+    override def undoStep = ???
+
+    override def doStep: Unit = ???
+
+class RulesCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+    override def redoStep = ???
+    override def undoStep = ???
+
+    override def doStep: Unit = ???
+
+class BackCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+    override def redoStep = ???
+    override def undoStep = ???
+
+    override def doStep: Unit = ???
+
 
 class PlayCardCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
     override def redoStep = ???
