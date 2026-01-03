@@ -119,4 +119,13 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 	def runGame: Unit =
 		update
 		while (gameController.getKeepProcessRunning)
-			gameController.processInput(readLine)
+			/*gameController.processInput(readLine)
+			case "suit" | "s" =>
+
+            case "rank" | "r" =>
+
+            case "rules" | "ru" =>
+
+            case "exit" | "e" =>
+
+			case "back" | "b" =>*/

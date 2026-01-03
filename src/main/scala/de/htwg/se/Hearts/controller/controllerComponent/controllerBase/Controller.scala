@@ -29,10 +29,9 @@ class Controller(var game: GameInterface) extends Observable with ControllerInte
     val turnService: PlayerTurnInterface = PlayerTurn()
     val leaderboardService: LeaderBoardInterface = LeaderBoard()
 
-    def processInput(input: String): GameInterface =
-        game = state.processInput(input)
+    def processInput(next: Command): Unit =
+        next.doStep
         notifyObservers
-        game
 
     def changeState(newState: State): Unit = state = newState
 
@@ -80,4 +79,5 @@ class Controller(var game: GameInterface) extends Observable with ControllerInte
     def addPointsToPlayers: Vector[Player] = scoringService.addPointsToPlayers(game)
 
     def getLastCardPlayed: Either[String,Card] = game.getLastCardPlayed
+    def getState: State = state
 

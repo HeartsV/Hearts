@@ -7,12 +7,13 @@ import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
 import de.htwg.se.Hearts.model.gameComponent.GameInterface
+import de.htwg.se.Hearts.controller.controllerComponent.controllerBase.State
 
 trait ControllerInterface extends Observable:
 
     def add(s:Observer): Unit
     def passStateString: String
-    def processInput(input: String): GameInterface
+    def processInput(next: Command): Unit
     def cardsPathList(list: List[Card]): List[String]
     def getPlayersWithPoints: List[(String, Int)]
     def rankPlayers(players: List[(String, Int)]): List[(Int, String, Int)]
@@ -27,6 +28,7 @@ trait ControllerInterface extends Observable:
     def getLastCardPlayed: Either[String,Card]
     def setGame(game: GameInterface):Unit
     def getGame: GameInterface
+    def getState: State
 
 
 

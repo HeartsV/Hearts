@@ -14,6 +14,7 @@ import scalafx.scene.layout.*
 import scalafx.geometry.Insets
 import scalafx.Includes.*
 import scalafx.scene.shape.StrokeLineCap.Butt
+import de.htwg.se.Hearts.controller.controllerComponent.controllerBase.NewCommand
 
 class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 
@@ -39,7 +40,7 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 		}
 
 	lazy val newGameButton = new Button("New Game"):
-		onAction = _ => gameController.processInput("n")
+		onAction = _ => gameController.processInput(NewCommand(gameController,(gameController.getGame, gameController.getState)))
 	lazy val rulesButton = new Button("Rules"):
 		onAction = _ => gameController.processInput("rules")
 	lazy val exitButton = new Button("Exit"):

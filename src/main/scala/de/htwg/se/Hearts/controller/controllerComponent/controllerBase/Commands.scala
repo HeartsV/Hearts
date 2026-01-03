@@ -5,6 +5,7 @@ import de.htwg.se.Hearts.model.gameComponent.gameBase.GameBuilder
 import de.htwg.se.Hearts.model.gameComponent.Suit
 import de.htwg.se.Hearts.model.gameComponent.Rank
 import de.htwg.se.Hearts.util._
+import de.htwg.se.Hearts.controller.controllerComponent.ControllerInterface
 import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 import de.htwg.se.Hearts.model.gameComponent.CoRInterface
@@ -12,12 +13,12 @@ import de.htwg.se.Hearts.model.gameComponent.gameBase.ChainOfResponsibility
 import de.htwg.se.Hearts.model.gameComponent.gameBase.{Director, GameBuilder}
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
 
-class SetPlayerNumberCommand(gameController: Controller, backup: (GameInterface, State), index: Option[Int]) extends Command:
+class SetPlayerNumberCommand(gameController: ControllerInterface, backup: (GameInterface, State), index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit =
-        val builder:BuilderInterface = GameBuilder(gameController.game.asInstanceOf[Game])
+        val builder:BuilderInterface = GameBuilder(gameController.getGame.asInstanceOf[Game])
         if index.exists(intInput => intInput >= 3 && intInput <= 4) then
             gameController.changeState(GetPlayerNamesState(gameController))
             builder.setPlayerNumber(index.get)
@@ -25,7 +26,7 @@ class SetPlayerNumberCommand(gameController: Controller, backup: (GameInterface,
         else
             gameController.game = builder.getGame
 
-class AddPlayerCommand(gameController: Controller, backup: (GameInterface, State), name: String) extends Command:
+class AddPlayerCommand(gameController: ControllerInterface, backup: (GameInterface, State), name: String) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
@@ -43,7 +44,7 @@ class AddPlayerCommand(gameController: Controller, backup: (GameInterface, State
 
         gameController.game = builder.getGame
 
-class SetMaxScoreCommand(gameController: Controller, backup: (GameInterface, State), index: Option[Int]) extends Command:
+class SetMaxScoreCommand(gameController: ControllerInterface, backup: (GameInterface, State), index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
@@ -59,7 +60,7 @@ class SetMaxScoreCommand(gameController: Controller, backup: (GameInterface, Sta
         builder.setCurrentPlayerIndex(gameController.turnService.nextPlayerIndex(builder.getCopy))
         gameController.game = builder.getGame
 
-class SetSortingRankCommand(gameController: Controller, backup: (GameInterface, State), index: Option[Int]) extends Command:
+class SetSortingRankCommand(gameController: ControllerInterface, backup: (GameInterface, State), index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
@@ -70,7 +71,7 @@ class SetSortingRankCommand(gameController: Controller, backup: (GameInterface, 
         builder.setLastPlayedCard(Left("Cards sorted by rank"))
         gameController.game = builder.getGame
 
-class SetSortingSuitCommand(gameController: Controller, backup: (GameInterface, State), index: Option[Int]) extends Command:
+class SetSortingSuitCommand(gameController: ControllerInterface, backup: (GameInterface, State), index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
@@ -81,13 +82,13 @@ class SetSortingSuitCommand(gameController: Controller, backup: (GameInterface, 
         builder.setLastPlayedCard(Left("Cards sorted by suit"))
         gameController.game = builder.getGame
 
-class NewCommand(gameController: Controller, backup: (GameInterface, State)) extends Command:
+class NewCommand(gameController: ControllerInterface, backup: (GameInterface, State)) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit = gameController.changeState(GetPlayerNumberState(gameController))
 
-class AgainCommand(gameController: Controller, backup: (GameInterface, State)) extends Command:
+class AgainCommand(gameController: ControllerInterface, backup: (GameInterface, State)) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
@@ -99,13 +100,13 @@ class AgainCommand(gameController: Controller, backup: (GameInterface, State)) e
             gameController.changeState(GamePlayState(gameController))
         gameController.game = builder.getGame
 
-class QuitCommand(gameController: Controller, backup: (GameInterface, State)) extends Command:
+class QuitCommand(gameController: ControllerInterface, backup: (GameInterface, State)) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit = gameController.changeState(MainScreenState(gameController))
 
-class ExitCommand(gameController: Controller, backup: (GameInterface, State)) extends Command:
+class ExitCommand(gameController: ControllerInterface, backup: (GameInterface, State)) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
@@ -114,13 +115,13 @@ class ExitCommand(gameController: Controller, backup: (GameInterface, State)) ex
         builder.setKeepProcessRunning(false)
         gameController.game = builder.getGame
 
-class RulesCommand(gameController: Controller, backup: (GameInterface, State)) extends Command:
+class RulesCommand(gameController: ControllerInterface, backup: (GameInterface, State)) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit = gameController.changeState(RulesScreenState(gameController))
 
-class BackCommand(gameController: Controller, backup: (GameInterface, State)) extends Command:
+class BackCommand(gameController: ControllerInterface, backup: (GameInterface, State)) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
@@ -128,7 +129,7 @@ class BackCommand(gameController: Controller, backup: (GameInterface, State)) ex
         if gameController.game.getPlayers.equals(Vector.empty) then gameController.changeState(MainScreenState(gameController))
         else gameController.changeState(GamePlayState(gameController))
 
-class ContinueCommand(gameController: Controller, backup: (GameInterface, State)) extends Command:
+class ContinueCommand(gameController: ControllerInterface, backup: (GameInterface, State)) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
@@ -142,7 +143,7 @@ class ContinueCommand(gameController: Controller, backup: (GameInterface, State)
         gameController.game = builder.getGame
 
 
-class PlayCardCommand(gameController: Controller, backup: (GameInterface, State), index: Option[Int]) extends Command:
+class PlayCardCommand(gameController: ControllerInterface, backup: (GameInterface, State), index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
