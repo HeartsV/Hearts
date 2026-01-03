@@ -21,14 +21,14 @@ class ChainOfResponsibility extends CoRInterface:
             Right(())
 
     val indexMustBeInBounds: CardRule = ctx =>
-        if ctx.index.get < 0 || ctx.index.get >= ctx.playerHand.size then
-            Left(s"Index: ${ctx.index.get + 1} was out of bounds!\n")
+        if ctx.index.get < 1 || ctx.index.get>= ctx.playerHand.size + 1 then
+            Left(s"Index: ${ctx.index.get} was out of bounds!\n")
         else
             Right(())
 
     val firstTrickMustStartWithTwoOfClubs: CardRule = ctx =>
         if ctx.game.firstCard then
-            val card = ctx.playerHand(ctx.index.get)
+            val card = ctx.playerHand(ctx.index.get - 1)
             if card == Card(Rank.Two, Suit.Clubs) then
                 Right(())
             else
@@ -41,7 +41,7 @@ class ChainOfResponsibility extends CoRInterface:
             case None => Right(())
             case Some(leadCard) =>
                 val hasSuit = ctx.playerHand.exists(_.suit == leadCard.suit)
-                val playedCard = ctx.playerHand(ctx.index.get)
+                val playedCard = ctx.playerHand(ctx.index.get - 1 )
 
                 if hasSuit && playedCard.suit != leadCard.suit then
                     Left(f"You have at least one card with Suit ${leadCard.suit}! You must follow this Suit!\n")
@@ -49,7 +49,7 @@ class ChainOfResponsibility extends CoRInterface:
                     Right(())
 
     val heartsOnlyIfBrokenOrNoAlternative: CardRule = ctx =>
-        val card = ctx.playerHand(ctx.index.get)
+        val card = ctx.playerHand(ctx.index.get - 1)
 
         if card.getSuit != Suit.Hearts then
             Right(())

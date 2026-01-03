@@ -12,9 +12,6 @@ import de.htwg.se.Hearts.model.gameComponent.gameBase.ChainOfResponsibility
 
 class PlayCardCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
     override def execute: Unit =
-        if(index == None)
-        else
-
             val builder:BuilderInterface = GameBuilder(gameController.game.asInstanceOf[Game])
             builder.setPlayers(gameController.executeStrategy)
             if builder.getTrickSize == builder.getPlayerNumber then
@@ -24,7 +21,7 @@ class PlayCardCommand(gameController:Controller,backup:GameInterface,index:Optio
             val result = cOR.validateMove(
                 builder.getCopy,
                 gameController.getPlayerHand,
-                input.toInt - 1
+                index
             )
 
             result match

@@ -48,7 +48,7 @@ trait PlayerInterface:
 	def addPoints(newPoints: Int): Player
 
 trait CoRInterface:
-	def validateMove(game: GameInterface, playerHand: List[Card], index: Int): Either[String, Card]
+	def validateMove(game: GameInterface, playerHand: List[Card], index: Option[Int]): Either[String, Card]
 
 trait DeckManagerInterface:
 	def createDeck: List[Card]

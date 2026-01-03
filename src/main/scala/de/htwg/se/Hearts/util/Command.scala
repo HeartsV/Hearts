@@ -7,7 +7,3 @@ trait Command:
     def undoStep: Unit
     def doStep: Unit
     def redoStep: Unit
-
-
-
-
