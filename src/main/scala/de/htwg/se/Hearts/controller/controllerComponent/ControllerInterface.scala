@@ -12,7 +12,7 @@ trait ControllerInterface extends Observable:
 
     def add(s:Observer): Unit
     def passStateString: String
-    def processInput(input: String): Game
+    def processInput(input: String): GameInterface
     def cardsPathList(list: List[Card]): List[String]
     def getPlayersWithPoints: List[(String, Int)]
     def rankPlayers(players: List[(String, Int)]): List[(Int, String, Int)]

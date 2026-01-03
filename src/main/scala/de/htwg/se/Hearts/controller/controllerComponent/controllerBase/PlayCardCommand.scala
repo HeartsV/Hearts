@@ -12,7 +12,7 @@ import de.htwg.se.Hearts.model.gameComponent.gameBase.ChainOfResponsibility
 
 
 class PlayCardCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
-    override def execute: Unit =
+    override def doStep: Unit =
             val builder:BuilderInterface = GameBuilder(gameController.game.asInstanceOf[Game])
             builder.setPlayers(gameController.executeStrategy)
             if builder.getTrickSize == builder.getPlayerNumber then

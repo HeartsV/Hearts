@@ -35,6 +35,14 @@ class GameBuilder(var game:Game = Game()) extends BuilderInterface:
 
 	def getPlayerNumber: Int = game.playerNumber.get
 
+	def getPlayers: Vector[Player] = game.players
+	def getCurrentPlayer: Option[Player] = game.getCurrentPlayer
+	def getCurrentPlayerIndex: Option[Int] = game.currentPlayerIndex
+	def getFirstCard: Boolean = game.firstCard
+	def getTrickCards: List[Card] = game.trickCards
+	def getCurrentWinnerIndex: Option[Int] = game.currentWinnerIndex
+	def getStartWithHearts: Boolean = game.startWithHearts
+
 	def getGame: GameInterface =
 		 val newGame = game
 		 reset

@@ -13,12 +13,12 @@ import de.htwg.se.Hearts.model.gameComponent.Suit
 import de.htwg.se.Hearts.model.gameComponent.Rank
 
 trait State(controller: Controller):
-    def processInput(input: String): Game
+    def processInput(input: String): GameInterface
     def getStateString: String
 
 class MainScreenState(controller: Controller) extends State(controller: Controller):
-    def processInput(input: String): Game =
-        val builder = GameBuilder(controller.game)
+    def processInput(input: String): GameInterface =
+        val builder:BuilderInterface = GameBuilder(controller.game.asInstanceOf[Game])
         input.toLowerCase.trim match
         case "new" | "n" =>
             controller.changeState(GetPlayerNumberState(controller))
@@ -35,10 +35,10 @@ class MainScreenState(controller: Controller) extends State(controller: Controll
     def getStateString: String = "MainScreenState"
 
 class RulesScreenState(controller: Controller) extends State(controller: Controller):
-    def processInput(input: String): Game =
+    def processInput(input: String): GameInterface =
         input.trim match
         case "back" | "b" =>
-            if controller.game.players.equals(Vector.empty) then controller.changeState(MainScreenState(controller))
+            if controller.game.getPlayers.equals(Vector.empty) then controller.changeState(MainScreenState(controller))
             else controller.changeState(GamePlayState(controller))
             controller.game
         case _ =>
@@ -47,8 +47,8 @@ class RulesScreenState(controller: Controller) extends State(controller: Control
     def getStateString: String = "RulesScreenState"
 
 class GetPlayerNumberState(controller: Controller) extends State(controller: Controller):
-    def processInput(input: String): Game =
-        val builder = GameBuilder(controller.game)
+    def processInput(input: String): GameInterface =
+        val builder:BuilderInterface = GameBuilder(controller.game.asInstanceOf[Game])
         if input.toIntOption.exists(intInput => intInput >= 3 && intInput <= 4) then
             controller.changeState(GetPlayerNamesState(controller))
             builder.setPlayerNumber(input.toInt)
@@ -59,16 +59,16 @@ class GetPlayerNumberState(controller: Controller) extends State(controller: Con
     def getStateString: String = "GetPlayerNumberState"
 
 class GetPlayerNamesState(controller: Controller) extends State(controller: Controller):
-    def processInput(input: String): Game =
-        val builder = GameBuilder(controller.game)
+    def processInput(input: String): GameInterface =
+        val builder:BuilderInterface = GameBuilder(controller.game.asInstanceOf[Game])
 
         if !input.trim.equals("") then
-            builder.setPlayers(builder.game.players :+ Player(input))
+            builder.setPlayers(builder.getPlayers :+ Player(input))
         else
-            builder.setPlayers(builder.game.players :+ Player(s"P${builder.game.players.size + 1}"))
+            builder.setPlayers(builder.getPlayers :+ Player(s"P${builder.getPlayers.size + 1}"))
 
-        if builder.game.players.size == builder.game.playerNumber.get then
-            builder.setPlayers(controller.dealNewRound(builder.game))
+        if builder.getPlayers.size == builder.getPlayerNumber then
+            builder.setPlayers(controller.dealNewRound(builder.getCopy))
             controller.changeState(SetMaxScoreState(controller))
 
         builder.getGame
@@ -76,8 +76,8 @@ class GetPlayerNamesState(controller: Controller) extends State(controller: Cont
     def getStateString: String = "GetPlayerNamesState"
 
 class SetMaxScoreState(controller: Controller) extends State(controller: Controller):
-    def processInput(input: String): Game =
-        val builder = GameBuilder(controller.game)
+    def processInput(input: String): GameInterface =
+        val builder:BuilderInterface = GameBuilder(controller.game.asInstanceOf[Game])
 
         if input.toIntOption.exists(intInput => intInput >= 1 && intInput <= 400) then
             controller.changeState(GamePlayState(controller))
@@ -85,7 +85,7 @@ class SetMaxScoreState(controller: Controller) extends State(controller: Control
         else if input.trim.equals("") then
             controller.changeState(GamePlayState(controller))
             builder.setMaxScore(100)
-        builder.setCurrentPlayerIndex(controller.turnService.nextPlayerIndex(builder.game))
+        builder.setCurrentPlayerIndex(controller.turnService.nextPlayerIndex(builder.getCopy))
         builder.getGame
 
     def getStateString: String = "SetMaxScoreState"
@@ -93,15 +93,15 @@ class SetMaxScoreState(controller: Controller) extends State(controller: Control
 class GamePlayState(controller: Controller) extends State(controller: Controller):
     val cOR: CoRInterface = ChainOfResponsibility()
 
-    def processInput(input: String): Game = ???
+    def processInput(input: String): GameInterface = ???
 
 
     def getStateString: String = "GamePlayState"
 
 class ShowScoreState(controller: Controller) extends State(controller: Controller):
-    def processInput(input: String): Game =
-        val builder = GameBuilder(controller.game)
-        builder.setPlayers(controller.dealNewRound(builder.game))
+    def processInput(input: String): GameInterface =
+        val builder:BuilderInterface = GameBuilder(controller.game.asInstanceOf[Game])
+        builder.setPlayers(controller.dealNewRound(builder.getCopy))
         builder.setFirstCard(true)
         builder.setStartWithHearts(false)
 
@@ -111,9 +111,8 @@ class ShowScoreState(controller: Controller) extends State(controller: Controlle
     def getStateString: String = "ShowScoreState"
 
 class GameOverState(controller: Controller) extends State(controller: Controller):
-    def processInput(input: String): Game =
-        val builder = GameBuilder(controller.game)
-
+    def processInput(input: String): GameInterface =
+        val builder:BuilderInterface = GameBuilder(controller.game.asInstanceOf[Game])
         input.toLowerCase().trim match
         case "new" | "n" | "quit" | "q" =>
             builder.reset
@@ -123,9 +122,9 @@ class GameOverState(controller: Controller) extends State(controller: Controller
             builder.getGame
 
         case "again" | "a" =>
-            builder.setPlayers(controller.dealNewRound(builder.game))
+            builder.setPlayers(controller.dealNewRound(builder.getCopy))
             val director = Director()
-            director.resetForNextGame(builder)
+            director.resetForNextGame(builder.asInstanceOf[GameBuilder])
             controller.changeState(GamePlayState(controller))
             builder.getGame
 

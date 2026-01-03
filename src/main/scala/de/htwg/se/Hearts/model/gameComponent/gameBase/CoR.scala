@@ -1,5 +1,6 @@
 package de.htwg.se.Hearts.model.gameComponent.gameBase
 
+import de.htwg.se.Hearts.model.gameComponent.GameInterface
 import de.htwg.se.Hearts.model.gameComponent.CoRInterface
 import de.htwg.se.Hearts.model.gameComponent.Suit
 import de.htwg.se.Hearts.model.gameComponent.Rank
@@ -7,7 +8,7 @@ import de.htwg.se.Hearts.model.gameComponent.Rank
 class ChainOfResponsibility extends CoRInterface:
 
     final case class MoveContext(
-        game: Game,
+        game: GameInterface,
         playerHand: List[Card],
         index: Option[Int]
     )
@@ -27,7 +28,7 @@ class ChainOfResponsibility extends CoRInterface:
             Right(())
 
     val firstTrickMustStartWithTwoOfClubs: CardRule = ctx =>
-        if ctx.game.firstCard then
+        if ctx.game.getFirstCard then
             val card = ctx.playerHand(ctx.index.get - 1)
             if card == Card(Rank.Two, Suit.Clubs) then
                 Right(())
@@ -53,7 +54,7 @@ class ChainOfResponsibility extends CoRInterface:
 
         if card.getSuit != Suit.Hearts then
             Right(())
-        else if ctx.game.startWithHearts || ctx.playerHand.forall(_.suit == Suit.Hearts) || ctx.game.trickCards.nonEmpty then
+        else if ctx.game.getStartWithHearts || ctx.playerHand.forall(_.suit == Suit.Hearts) || ctx.game.getTrickCards.nonEmpty then
             Right(())
         else
             Left("You cannot play \u2665 until they are broken or you have only \u2665s\n")
@@ -66,7 +67,7 @@ class ChainOfResponsibility extends CoRInterface:
             heartsOnlyIfBrokenOrNoAlternative
         )
 
-    def validateMove(game: Game, playerHand: List[Card], index: Option[Int]): Either[String, Card] =
+    def validateMove(game: GameInterface, playerHand: List[Card], index: Option[Int]): Either[String, Card] =
         val ctx = MoveContext(game, playerHand, index)
 
         val result: Either[String, Unit] =
