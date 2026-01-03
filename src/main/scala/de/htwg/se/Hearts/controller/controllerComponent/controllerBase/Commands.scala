@@ -10,79 +10,79 @@ import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 import de.htwg.se.Hearts.model.gameComponent.CoRInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.ChainOfResponsibility
 
-class SetPlayerNumberCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+class SetPlayerNumberCommand(gameController: Controller, backup: GameInterface, index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit = ???
 
-class AddPlayerCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+class AddPlayerCommand(gameController: Controller, backup: GameInterface, index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit = ???
 
-class SetMaxScoreCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+class SetMaxScoreCommand(gameController: Controller, backup: GameInterface, index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit = ???
 
-class SetSortingRankCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+class SetSortingRankCommand(gameController: Controller, backup: GameInterface, index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit = ???
 
-class SetSortingSuitCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+class SetSortingSuitCommand(gameController: Controller, backup: GameInterface, index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit = ???
 
-class NewCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+class NewCommand(gameController: Controller, backup: GameInterface, index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit = ???
 
-class AgainCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+class AgainCommand(gameController: Controller, backup: GameInterface, index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit = ???
 
-class QuitCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+class QuitCommand(gameController: Controller, backup: GameInterface, index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit = ???
 
-class ExitCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+class ExitCommand(gameController: Controller, backup: GameInterface, index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit = ???
 
-class RulesCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+class RulesCommand(gameController: Controller, backup: GameInterface, index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit = ???
 
-class BackCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+class BackCommand(gameController: Controller, backup: GameInterface, index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit = ???
 
 
-class PlayCardCommand(gameController:Controller,backup:GameInterface,index:Option[Int]) extends Command:
+class PlayCardCommand(gameController: Controller, backup: GameInterface, index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
     override def doStep: Unit =
-            val builder:BuilderInterface = GameBuilder(gameController.game.asInstanceOf[Game])
+            val builder: BuilderInterface = GameBuilder(gameController.game.asInstanceOf[Game])
             builder.setPlayers(gameController.executeStrategy)
             if builder.getTrickSize == builder.getPlayerNumber then
                 builder.setTrickCards(List())
