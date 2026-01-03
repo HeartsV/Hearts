@@ -10,24 +10,54 @@ import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 import de.htwg.se.Hearts.model.gameComponent.CoRInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.ChainOfResponsibility
 import de.htwg.se.Hearts.model.gameComponent.gameBase.{Director, GameBuilder}
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
 
 class SetPlayerNumberCommand(gameController: Controller, backup: (GameInterface, State), index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
-    override def doStep: Unit = ???
+    override def doStep: Unit =
+        val builder:BuilderInterface = GameBuilder(gameController.game.asInstanceOf[Game])
+        if index.exists(intInput => intInput >= 3 && intInput <= 4) then
+            gameController.changeState(GetPlayerNamesState(gameController))
+            builder.setPlayerNumber(index.get)
+            gameController.game = builder.getGame
+        else
+            gameController.game = builder.getGame
 
-class AddPlayerCommand(gameController: Controller, backup: (GameInterface, State), index: Option[Int]) extends Command:
+class AddPlayerCommand(gameController: Controller, backup: (GameInterface, State), name: String) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
-    override def doStep: Unit = ???
+    override def doStep: Unit =
+        val builder:BuilderInterface = GameBuilder(gameController.game.asInstanceOf[Game])
+
+        if !name.trim.equals("") then
+            builder.setPlayers(builder.getPlayers :+ Player(name))
+        else
+            builder.setPlayers(builder.getPlayers :+ Player(s"P${builder.getPlayers.size + 1}"))
+
+        if builder.getPlayers.size == builder.getPlayerNumber then
+            builder.setPlayers(gameController.dealNewRound(builder.getCopy))
+            gameController.changeState(SetMaxScoreState(gameController))
+
+        gameController.game = builder.getGame
 
 class SetMaxScoreCommand(gameController: Controller, backup: (GameInterface, State), index: Option[Int]) extends Command:
     override def redoStep = ???
     override def undoStep = ???
 
-    override def doStep: Unit = ???
+    override def doStep: Unit =
+        val builder:BuilderInterface = GameBuilder(gameController.game.asInstanceOf[Game])
+
+        if index.exists(intInput => intInput >= 1 && intInput <= 400) then
+            gameController.changeState(GamePlayState(gameController))
+            builder.setMaxScore(index.get)
+        else
+            gameController.changeState(GamePlayState(gameController))
+            builder.setMaxScore(100)
+        builder.setCurrentPlayerIndex(gameController.turnService.nextPlayerIndex(builder.getCopy))
+        gameController.game = builder.getGame
 
 class SetSortingRankCommand(gameController: Controller, backup: (GameInterface, State), index: Option[Int]) extends Command:
     override def redoStep = ???
@@ -57,7 +87,7 @@ class AgainCommand(gameController: Controller, backup: (GameInterface, State)) e
             val director = Director()
             director.resetForNextGame(builder.asInstanceOf[GameBuilder])
             gameController.changeState(GamePlayState(gameController))
-            builder.getGame
+        gameController.game = builder.getGame
 
 class QuitCommand(gameController: Controller, backup: (GameInterface, State)) extends Command:
     override def redoStep = ???
@@ -72,7 +102,7 @@ class ExitCommand(gameController: Controller, backup: (GameInterface, State)) ex
     override def doStep: Unit =
         val builder:BuilderInterface = GameBuilder(gameController.game.asInstanceOf[Game])
         builder.setKeepProcessRunning(false)
-            builder.getGame
+        gameController.game = builder.getGame
 
 class RulesCommand(gameController: Controller, backup: (GameInterface, State)) extends Command:
     override def redoStep = ???
@@ -87,6 +117,19 @@ class BackCommand(gameController: Controller, backup: (GameInterface, State)) ex
     override def doStep: Unit =
         if gameController.game.getPlayers.equals(Vector.empty) then gameController.changeState(MainScreenState(gameController))
         else gameController.changeState(GamePlayState(gameController))
+
+class ContinueCommand(gameController: Controller, backup: (GameInterface, State)) extends Command:
+    override def redoStep = ???
+    override def undoStep = ???
+
+    override def doStep: Unit =
+        val builder:BuilderInterface = GameBuilder(gameController.game.asInstanceOf[Game])
+        builder.setPlayers(gameController.dealNewRound(builder.getCopy))
+        builder.setFirstCard(true)
+        builder.setStartWithHearts(false)
+
+        gameController.changeState(GamePlayState(gameController))
+        gameController.game = builder.getGame
 
 
 class PlayCardCommand(gameController: Controller, backup: (GameInterface, State), index: Option[Int]) extends Command:
@@ -146,5 +189,5 @@ class PlayCardCommand(gameController: Controller, backup: (GameInterface, State)
 
                         builder.setPlayers(gameController.scoringService.addPointsToPlayers(builder.getCopy))
 
-            builder.getGame
+            gameController.game = builder.getGame
 
