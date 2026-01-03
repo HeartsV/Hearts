@@ -38,7 +38,7 @@ class Controller(var game: GameInterface) extends Observable with ControllerInte
 
     def getGame():GameInterface = game
 
-    def setGame(backup: Game): Unit = game = backup
+    def setGame(newGame: GameInterface): Unit = game = newGame
 
     def pngUrl(c: Card): String = s"/cards/${c.pngName}"
     def cardsPathList(list: List[Card]): List[String] = list.map(pngUrl)
@@ -66,7 +66,7 @@ class Controller(var game: GameInterface) extends Observable with ControllerInte
 
     def setStrategy(strategy: Strategy): Unit =
         this.sortingStrategy = strategy
-        val builder:BuilderInterface = GameBuilder(game)
+
     def executeStrategy: Vector[Player] =
         game.getPlayers.map(p => p.copy(hand = sortingStrategy.execute(p)))
 
