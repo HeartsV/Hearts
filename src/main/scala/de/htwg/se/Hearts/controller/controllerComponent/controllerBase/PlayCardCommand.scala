@@ -2,7 +2,8 @@ package de.htwg.se.Hearts.controller.controllerComponent.controllerBase
 import de.htwg.se.Hearts.model.gameComponent.GameInterface
 import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.GameBuilder
-
+import de.htwg.se.Hearts.model.gameComponent.Suit
+import de.htwg.se.Hearts.model.gameComponent.Rank
 import de.htwg.se.Hearts.util._
 import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
@@ -30,9 +31,9 @@ class PlayCardCommand(gameController:Controller,backup:GameInterface,index:Optio
                     val sortedHand = gameController.getPlayerHand
 
                     builder.setPlayers(
-                        builder.game.players.updated(
-                            builder.game.currentPlayerIndex.get,
-                            builder.game.getCurrentPlayer.get.removeCard(cardToPlay)
+                        builder.getPlayers.updated(
+                            builder.getCurrentPlayerIndex.get,
+                            builder.getCurrentPlayer.get.removeCard(cardToPlay)
                         )
                     )
 
@@ -40,32 +41,28 @@ class PlayCardCommand(gameController:Controller,backup:GameInterface,index:Optio
 
                     builder.setCurrentWinnerAndHighestCard(
                         gameController.turnService.updateCurrentWinner(
-                            (builder.game.currentPlayerIndex.get, cardToPlay),
-                            builder.game
+                            (builder.getCurrentPlayerIndex.get, cardToPlay),
+                            builder.getCopy
                         )
                     )
 
-                    if builder.game.firstCard then builder.setFirstCard(false)
+                    if builder.getFirstCard then builder.setFirstCard(false)
 
-                    if (cardToPlay.suit == Suit.Hearts || (cardToPlay.getRank == Rank.Queen && cardToPlay.getSuit == Suit.Spades) && !builder.game.startWithHearts)
+                    if (cardToPlay.suit == Suit.Hearts || (cardToPlay.getRank == Rank.Queen && cardToPlay.getSuit == Suit.Spades) && !builder.getStartWithHearts)
                         builder.setStartWithHearts(true)
-                    if builder.game.trickCards.size == builder.game.playerNumber.get then
+                    if builder.getTrickSize == builder.getPlayerNumber then
                         builder.updatePlayer(
-                            builder.game.currentWinnerIndex.get,
-                            builder.game.players(builder.game.currentWinnerIndex.get).addWonCards(builder.game.trickCards)
+                            builder.getCurrentWinnerIndex.get,
+                            builder.getPlayers(builder.getCurrentWinnerIndex.get).addWonCards(builder.getTrickCards)
                         )
 
                     builder.setLastPlayedCard(result)
-                    builder.setCurrentPlayerIndex(gameController.turnService.nextPlayerIndex(builder.game))
+                    builder.setCurrentPlayerIndex(gameController.turnService.nextPlayerIndex(builder.getCopy))
 
-                    if builder.game.players.forall(_.hand.size == 0) then
+                    if builder.getPlayers.forall(_.hand.size == 0) then
                         if !gameController.checkGameOver then gameController.changeState(ShowScoreState(gameController))
                         else gameController.changeState(GameOverState(gameController))
 
-                        builder.setPlayers(gameController.scoringService.addPointsToPlayers(builder.game))
+                        builder.setPlayers(gameController.scoringService.addPointsToPlayers(builder.getCopy))
 
-            builder.getGame
-
-        else
-            builder.setLastPlayedCard(Left("No allowed input!"))
             builder.getGame

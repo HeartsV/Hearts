@@ -24,15 +24,24 @@ trait BuilderInterface:
     def setKeepProcessRunning(kpr: Boolean): Unit
     def setFirstCard(fc: Boolean): Unit
     def setPlayers(players: Vector[Player]): Unit
+    def updatePlayer(index: Int, updatedPlayer: Player): Unit
     def setMaxScore(maxScore: Int): Unit
     def setCurrentPlayerIndex(cpi: Int): Unit
     def setTrickCards(trick: List[Card]): Unit
+    def addCard(card: Card): Unit
     def setCurrentWinnerAndHighestCard(newWinner: (Option[Int], Option[Card])): Unit
     def setLastPlayedCard(card: Either[String, Card]): Unit
     def getGame: GameInterface
     def getCopy: GameInterface
     def getTrickSize: Int
     def getPlayerNumber: Int
+    def getPlayers: Vector[Player]
+    def getCurrentPlayer: Option[Player]
+    def getCurrentPlayerIndex: Option[Int]
+    def getFirstCard: Boolean
+    def getTrickCards: List[Card]
+    def getCurrentWinnerIndex: Option[Int]
+    def getStartWithHearts: Boolean
 
 trait CardInterface:
 	override def toString: String
