@@ -17,18 +17,19 @@ trait GameInterface():
     def getLastCardPlayed: Either[String, Card]
     def getCurrentPlayerIndex: Option[Int]
 
-trait BuilderInterface(game:Game):
-	def reset: Unit
-	def setPlayerNumber(playerNumber: Int): Unit
-	def setStartWithHearts(swh: Boolean): Unit
-	def setKeepProcessRunning(kpr: Boolean): Unit
-	def setFirstCard(fc: Boolean): Unit
-	def setPlayers(players: Vector[Player]): Unit
-	def setMaxScore(maxScore: Int): Unit
-	def setCurrentPlayerIndex(cpi: Int): Unit
-	def setTrickCards(trick: List[Card]): Unit
-	def setCurrentWinnerAndHighestCard(newWinner: (Option[Int], Option[Card])): Unit
-	def setLastPlayedCard(card: Either[String, Card]): Unit
+trait BuilderInterface:
+    def reset: Unit
+    def setPlayerNumber(playerNumber: Int): Unit
+    def setStartWithHearts(swh: Boolean): Unit
+    def setKeepProcessRunning(kpr: Boolean): Unit
+    def setFirstCard(fc: Boolean): Unit
+    def setPlayers(players: Vector[Player]): Unit
+    def setMaxScore(maxScore: Int): Unit
+    def setCurrentPlayerIndex(cpi: Int): Unit
+    def setTrickCards(trick: List[Card]): Unit
+    def setCurrentWinnerAndHighestCard(newWinner: (Option[Int], Option[Card])): Unit
+    def setLastPlayedCard(card: Either[String, Card]): Unit
+    def getGame: Game
 
 trait CardInterface:
 	override def toString: String

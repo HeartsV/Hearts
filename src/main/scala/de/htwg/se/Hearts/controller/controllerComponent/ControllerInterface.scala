@@ -6,6 +6,7 @@ import de.htwg.se.Hearts.controller.controllerComponent.controllerBase.Strategy
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
+import de.htwg.se.Hearts.model.gameComponent.GameInterface
 
 trait ControllerInterface extends Observable:
 
@@ -22,10 +23,10 @@ trait ControllerInterface extends Observable:
     def getSortingStrategy: Strategy
     def getKeepProcessRunning: Boolean
     def getPlayerHand: List[Card]
-    def dealNewRound(game: Game): Vector[Player]
+    def dealNewRound(game: GameInterface): Vector[Player]
     def getLastCardPlayed: Either[String,Card]
-    def setGame(game: Game):Unit
-    def getGame:Game
+    def setGame(game: GameInterface):Unit
+    def getGame:GameInterface
 
 
 

@@ -10,7 +10,7 @@ class Director:
 		builder.setFirstCard(true)
 		builder.setStartWithHearts(false)
 
-class GameBuilder(var game:Game = Game()) extends BuilderInterface(game:Game):
+class GameBuilder(var game:Game = Game()) extends BuilderInterface:
 	def reset: Unit = game = Game()
 	def setPlayerNumber(playerNumber: Int): Unit = game = game.copy(playerNumber = Some(playerNumber))
 	def setStartWithHearts(swh: Boolean): Unit = game = game.copy(startWithHearts = swh)
