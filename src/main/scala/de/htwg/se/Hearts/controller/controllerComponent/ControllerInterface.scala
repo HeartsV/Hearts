@@ -29,6 +29,7 @@ trait ControllerInterface extends Observable:
     def setGame(game: GameInterface):Unit
     def getGame: GameInterface
     def getState: State
+    def changeState(newState:State): Unit
 
 
 

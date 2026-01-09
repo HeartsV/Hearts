@@ -119,6 +119,20 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 	def runGame: Unit =
 		update
 		while (gameController.getKeepProcessRunning)
+			readLine
+			gameController.passStateString match
+				
+			case "MainScreenState" => 
+			case "RulesScreenState" => 
+			case "GetPlayerNumberState" => 
+			case "GetPlayerNamesState" => 
+			case "SetMaxScoreState" => 
+			case "GamePlayState" => 
+			case "ShowScoreState" => 
+			case "GameOverState" => 
+
+
+
 			/*gameController.processInput(readLine)
 			case "suit" | "s" =>
 

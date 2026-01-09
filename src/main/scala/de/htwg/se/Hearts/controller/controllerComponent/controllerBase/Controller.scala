@@ -30,6 +30,8 @@ class Controller(var game: GameInterface) extends Observable with ControllerInte
     val leaderboardService: LeaderBoardInterface = LeaderBoard()
 
     def processInput(next: Command): Unit =
+        next.setup(this)
+        next.storeBackup(game,state)
         next.doStep
         notifyObservers
 

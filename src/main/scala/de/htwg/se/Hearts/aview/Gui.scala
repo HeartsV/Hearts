@@ -14,7 +14,7 @@ import scalafx.scene.layout.*
 import scalafx.geometry.Insets
 import scalafx.Includes.*
 import scalafx.scene.shape.StrokeLineCap.Butt
-import de.htwg.se.Hearts.controller.controllerComponent.controllerBase.NewCommand
+import de.htwg.se.Hearts.controller.controllerComponent.controllerBase._
 
 class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 
@@ -40,28 +40,31 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 		}
 
 	lazy val newGameButton = new Button("New Game"):
-		onAction = _ => gameController.processInput(NewCommand(gameController,(gameController.getGame, gameController.getState)))
+		onAction = _ => gameController.processInput(NewCommand())
 	lazy val rulesButton = new Button("Rules"):
-		onAction = _ => gameController.processInput("rules")
+		onAction = _ => gameController.processInput(RulesCommand())
 	lazy val exitButton = new Button("Exit"):
 		onAction = _ =>
-			gameController.processInput("exit")
+			gameController.processInput(ExitCommand())
 			Platform.exit()
 	lazy val againButton = new Button("Play again with same settings"):
-		onAction = _ => gameController.processInput("a")
+		onAction = _ => gameController.processInput(AgainCommand())
 	lazy val quitButton = new Button("Quit to Main Menu"):
-		onAction = _ => gameController.processInput("q")
-	lazy val textField = new TextField():
-		onAction = _ =>
-			gameController.processInput(text())
-			text = ""
+		onAction = _ => gameController.processInput(QuitCommand())
+	lazy val continueButton = new Button("Continue"):
+		onAction = _ => gameController.processInput(ContinueCommand())
 	lazy val backButton = new Button("Back"):
-		onAction = _ => gameController.processInput("b")
+		onAction = _ => gameController.processInput(BackCommand())
 	lazy val suitSortButton = new Button("Sort by: suit"):
-		onAction = _ => gameController.processInput("suit")
+		onAction = _ => gameController.processInput(SetSortingSuitCommand())
 	lazy val rankSortButton = new Button("Sort by: rank"):
-		onAction = _ => gameController.processInput("rank")
+		onAction = _ => gameController.processInput(SetSortingRankCommand())
 	lazy val scoreBox = new VBox()
+	
+
+
+
+	
 
 	def renderTrick(imageUrls: List[String]): HBox =
 		val trickBox = new HBox()
@@ -75,11 +78,10 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 
 	def renderHand(imageUrls: List[String]): HBox =
 		val handBox = new HBox()
-
 		imageUrls.zipWithIndex.foreach {
 			case (url, index) =>
 				val iv = new ImageView(new Image(url)) {
-					onMouseClicked = _ => gameController.processInput("" + (index + 1))
+					onMouseClicked = _ => gameController.processInput(PlayCardCommand(index = Some(index + 1))) 
 				}
 				handBox.children.add(iv)
 		}
@@ -118,6 +120,11 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 		rootBorderPane.bottom = backButton
 
 	def showPlayerNumberState(): Unit =
+		
+		val textField = new TextField():
+			onAction = _ =>
+				gameController.processInput(SetPlayerNumberCommand(index = text().toIntOption))
+				text = ""
 
 		val centerBox = new VBox:
 			children = Seq(
@@ -131,6 +138,11 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 
 
 	def showPlayerNamesState(): Unit =
+		
+		val textField = new TextField():
+			onAction = _ =>
+				gameController.processInput(AddPlayerCommand(name = text()))
+				text = ""
 
 		val centerBox = new VBox:
 			children = Seq(
@@ -143,6 +155,11 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 		rootBorderPane.bottom = null
 
 	def showMaxScoreState(): Unit =
+
+		val textField = new TextField():
+			onAction = _ =>
+				gameController.processInput(SetMaxScoreCommand(index = text().toIntOption))
+				text = ""
 
 		val centerBox = new VBox:
 			children = Seq(
@@ -198,9 +215,8 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 
 		rootBorderPane.top = Label("Scoreboard:")
 		rootBorderPane.center = scoreBox
-		rootBorderPane.bottom =
-			new Button("Continue"):
-				onAction = _ => gameController.processInput("a")
+		rootBorderPane.bottom = continueButton
+			
 
 	def showGameOverState(): Unit =
 		renderScoreBoard
