@@ -15,3 +15,5 @@ class CommandHistory:
     def redoPop:Option[Command] =
         if redoStack.nonEmpty then Some(redoStack.pop)
         else None
+
+    def clearRedoStack: Unit = redoStack.clear()
