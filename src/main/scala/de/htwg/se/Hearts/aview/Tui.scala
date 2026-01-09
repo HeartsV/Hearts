@@ -1,10 +1,11 @@
 package de.htwg.se.Hearts.aview
 
 import de.htwg.se.Hearts.controller.controllerComponent.ControllerInterface
-import de.htwg.se.Hearts.controller._
+import de.htwg.se.Hearts.controller.controllerComponent.controllerBase._
 import de.htwg.se.Hearts.util._
 
 import scala.io.StdIn.readLine
+import de.htwg.se.Hearts.controller.controllerComponent.controllerBase.BackCommand
 
 class Tui(gameController: ControllerInterface)  extends Observer:
 
@@ -23,7 +24,7 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 		"Hearts" + "\n\n" +
 		"Please enter:" + "\n" +
 		"- n or new for a new Game" + "\n" +
-		"- r or rules for the rules" + "\n" +
+		"- ru or rules for the rules" + "\n" +
 		"- e or exit to end the program" + "\n"
 
 	def getRulesScreenStateString: String =
@@ -119,27 +120,53 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 	def runGame: Unit =
 		update
 		while (gameController.getKeepProcessRunning)
-			readLine
+			val input = readLine
 			gameController.passStateString match
-				
-			case "MainScreenState" => 
-			case "RulesScreenState" => 
-			case "GetPlayerNumberState" => 
-			case "GetPlayerNamesState" => 
-			case "SetMaxScoreState" => 
-			case "GamePlayState" => 
-			case "ShowScoreState" => 
-			case "GameOverState" => 
+				case "MainScreenState" => input match
+					case "new" | "n" =>
+						gameController.processInput(NewCommand())
+					case "rules" | "ru" =>
+						gameController.processInput(RulesCommand())
+					case "exit" | "e" =>
+						gameController.processInput(ExitCommand())
+					case _ => update
 
+				case "RulesScreenState" =>
+					input match
+						case "back" | "b" =>
+							gameController.processInput(BackCommand())
+						case _ => update
 
+				case "GetPlayerNumberState" =>
+					gameController.processInput(SetPlayerNumberCommand(index = input.toIntOption))
 
-			/*gameController.processInput(readLine)
-			case "suit" | "s" =>
+				case "GetPlayerNamesState" =>
+					gameController.processInput(AddPlayerCommand(name = input))
 
-            case "rank" | "r" =>
+				case "SetMaxScoreState" =>
+					gameController.processInput(SetMaxScoreCommand(index = input.toIntOption))
 
-            case "rules" | "ru" =>
+				case "GamePlayState" =>
+					input match
+						case "suit" | "s" =>
+							gameController.processInput(SetSortingSuitCommand())
+						case "rank" | "r" =>
+							gameController.processInput(SetSortingRankCommand())
+						case _ =>
+							gameController.processInput(PlayCardCommand(index = input.toIntOption))
 
-            case "exit" | "e" =>
+				case "ShowScoreState" =>
+					input match
+						case _ =>
+							gameController.processInput(ContinueCommand())
 
-			case "back" | "b" =>*/
+				case "GameOverState" =>
+					input match
+						case "new" | "n"=>
+							gameController.processInput(NewCommand())
+						case "again" | "a" =>
+							gameController.processInput(AgainCommand())
+						case "quit" | "q" =>
+							gameController.processInput(QuitCommand())
+						case "exit" | "e" =>
+							gameController.processInput(ExitCommand())
