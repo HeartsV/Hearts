@@ -33,7 +33,9 @@ class Controller(var game: GameInterface) extends Observable with ControllerInte
     def processInput(next: Command): Unit =
         next.setup(this)
         next.storeBackup(game,state)
-        if next.execute then history.push(next)
+        if next.execute then
+            history.push(next)
+            history.clearRedoStack
         notifyObservers
 
     def undo:Unit =
