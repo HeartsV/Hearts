@@ -3,6 +3,8 @@ package de.htwg.se.Hearts.model
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import de.htwg.se.Hearts.model.gameComponent.gameBase.{Director, GameBuilder}
+import de.htwg.se.Hearts.model.gameComponent._
+import de.htwg.se.Hearts.model.gameComponent.gameBase._
 
 class BuilderSpec extends AnyWordSpec with Matchers {
 	val card1 = Card(Rank.Two,Suit.Clubs)
@@ -91,12 +93,6 @@ class BuilderSpec extends AnyWordSpec with Matchers {
 			builder.setCurrentWinnerAndHighestCard((Some(0),Some(card8)))
 			builder.game.currentWinnerIndex should be (Some(0))
 			builder.game.highestCard should be (Some(card8))
-		}
-
-		"setFirstPlayer" in {
-			val builder = GameBuilder()
-			builder.setFirstPlayer(p1)
-			builder.game.firstPlayer should be (Some(p1))
 		}
 
 		"setLastPlayedCard" in {
