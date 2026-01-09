@@ -74,7 +74,7 @@ class ChainOfResponsibility extends CoRInterface:
             validationChain.foldLeft[Either[String, Unit]](Right(())) { (previousResult, rule) =>
                 previousResult.flatMap(_ => rule(ctx))
             }
-        result.map(_ => ctx.playerHand(index.get))
+        result.map(_ => ctx.playerHand(index.get - 1))
 
 
 
