@@ -61,6 +61,7 @@ class ChainOfResponsibility extends CoRInterface:
 
     val validationChain: List[CardRule] =
         List(
+            indexNotNone,
             indexMustBeInBounds,
             firstTrickMustStartWithTwoOfClubs,
             mustFollowSuitIfPossible,

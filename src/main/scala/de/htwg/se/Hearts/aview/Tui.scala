@@ -159,6 +159,7 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 					input match
 						case _ =>
 							gameController.processInput(ContinueCommand())
+						case _ => update
 
 				case "GameOverState" =>
 					input match
@@ -170,3 +171,4 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 							gameController.processInput(QuitCommand())
 						case "exit" | "e" =>
 							gameController.processInput(ExitCommand())
+						case _ => update
