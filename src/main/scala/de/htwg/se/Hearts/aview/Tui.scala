@@ -72,6 +72,7 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 		"and each opponent scores 26 points instead. This is called Shooting the Moon." + "\n\n" +
 		"The game ends when a player reaches 100 points (or another agreed limit)." + "\n" +
 		"The player with the lowest score wins." + "\n\n" +
+		"While playing you can enter redo to redo last step and undo to undo last step" + "\n" +
 		"Enter 'back' or 'b' to return to the main menu." + "\n"
 
 	def getPlayerNumberStateString: String = "please input a Number of Players between 3 and 4" + "\n"
@@ -138,13 +139,31 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 						case _ => update
 
 				case "GetPlayerNumberState" =>
-					gameController.processInput(SetPlayerNumberCommand(index = input.toIntOption))
+					input match
+						case "undo" =>
+							gameController.processInput(UndoCommand())
+						case "redo" =>
+							gameController.processInput(RedoCommand())
+						case _ =>
+							gameController.processInput(SetPlayerNumberCommand(index = input.toIntOption))
 
 				case "GetPlayerNamesState" =>
-					gameController.processInput(AddPlayerCommand(name = input))
+					input match
+						case "undo" =>
+							gameController.processInput(UndoCommand())
+						case "redo" =>
+							gameController.processInput(RedoCommand())
+						case _ =>
+							gameController.processInput(AddPlayerCommand(name = input))
 
 				case "SetMaxScoreState" =>
-					gameController.processInput(SetMaxScoreCommand(index = input.toIntOption))
+					input match
+						case "undo" =>
+							gameController.processInput(UndoCommand())
+						case "redo" =>
+							gameController.processInput(RedoCommand())
+						case _ =>
+							gameController.processInput(SetMaxScoreCommand(index = input.toIntOption))
 
 				case "GamePlayState" =>
 					input match
@@ -152,14 +171,21 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 							gameController.processInput(SetSortingSuitCommand())
 						case "rank" | "r" =>
 							gameController.processInput(SetSortingRankCommand())
+						case "undo" =>
+							gameController.processInput(UndoCommand())
+						case "redo" =>
+							gameController.processInput(RedoCommand())
 						case _ =>
 							gameController.processInput(PlayCardCommand(index = input.toIntOption))
 
 				case "ShowScoreState" =>
 					input match
+						case "undo" =>
+							gameController.processInput(UndoCommand())
+						case "redo" =>
+							gameController.processInput(RedoCommand())
 						case _ =>
 							gameController.processInput(ContinueCommand())
-						case _ => update
 
 				case "GameOverState" =>
 					input match
@@ -171,4 +197,9 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 							gameController.processInput(QuitCommand())
 						case "exit" | "e" =>
 							gameController.processInput(ExitCommand())
+						case "undo" =>
+							gameController.processInput(UndoCommand())
+						case "redo" =>
+							gameController.processInput(RedoCommand())
 						case _ => update
+
