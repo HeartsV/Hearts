@@ -7,6 +7,11 @@ class CommandHistory:
     val undoStack: Stack[Command]= Stack()
     val redoStack: Stack[Command]= Stack()
     def push(c:Command): Unit = undoStack.push(c)
-    def pop: Command = undoStack.pop
+    def pop: Option[Command] =
+        if undoStack.nonEmpty then Some(undoStack.pop)
+        else None
+
     def redoPush(c:Command): Unit = redoStack.push(c)
-    def redoPop:Command = redoStack.pop
+    def redoPop:Option[Command] =
+        if redoStack.nonEmpty then Some(redoStack.pop)
+        else None

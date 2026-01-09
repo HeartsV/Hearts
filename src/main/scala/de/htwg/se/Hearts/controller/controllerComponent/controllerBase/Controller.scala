@@ -38,11 +38,15 @@ class Controller(var game: GameInterface) extends Observable with ControllerInte
 
     def undo:Unit =
         val command = history.pop
-        if(command != null)
-            command.undoStep
-            history.redoPush(command)
+        if(command != None)
+            command.get.undoStep
+            history.redoPush(command.get)
 
-    def redo:Unit = ???
+    def redo:Unit =
+        val command = history.redoPop
+        if(command != None)
+            command.get.execute
+            history.push(command.get)
 
 
     def changeState(newState: State): Unit = state = newState

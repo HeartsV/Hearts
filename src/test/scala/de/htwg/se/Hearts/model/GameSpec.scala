@@ -7,6 +7,7 @@ import de.htwg.se.Hearts.model._
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
+import de.htwg.se.Hearts.model.gameComponent._
 
 class GameSpec extends AnyWordSpec with Matchers {
     "A Game" should {

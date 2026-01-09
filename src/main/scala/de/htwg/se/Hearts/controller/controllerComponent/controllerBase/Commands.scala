@@ -13,6 +13,16 @@ import de.htwg.se.Hearts.model.gameComponent.gameBase.ChainOfResponsibility
 import de.htwg.se.Hearts.model.gameComponent.gameBase.{Director, GameBuilder}
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
 
+class RedoCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
+    override def setup(newController:Controller):Unit = gameController = Some(newController)
+    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def redoStep = ???
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
+    override def execute: Boolean =
+        gameController.get.redo
+        false
 
 
 class UndoCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:

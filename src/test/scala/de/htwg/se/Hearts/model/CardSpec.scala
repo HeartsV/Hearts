@@ -3,6 +3,7 @@ package de.htwg.se.Hearts.model
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
+import de.htwg.se.Hearts.model.gameComponent._
 
 class CardSpec extends AnyWordSpec with Matchers {
 
