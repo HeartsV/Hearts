@@ -41,8 +41,8 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 
 	lazy val undoButton = new Button("Undo"):
 		onAction = _ => gameController.processInput(UndoCommand())
-	//lazy val redoButton = new Button("Redo"):
-		//onAction = _ => gameController.processInput(RedoCommand())
+	lazy val redoButton = new Button("Redo"):
+		onAction = _ => gameController.processInput(RedoCommand())
 
 	lazy val newGameButton = new Button("New Game"):
 		onAction = _ => gameController.processInput(NewCommand())
@@ -139,7 +139,7 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 
 		rootBorderPane.top = Label("Setup")
 		rootBorderPane.center = centerBox
-		rootBorderPane.bottom = null
+		rootBorderPane.bottom = redoButton
 
 
 	def showPlayerNamesState(): Unit =
