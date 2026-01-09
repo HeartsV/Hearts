@@ -28,12 +28,19 @@ class Controller(var game: GameInterface) extends Observable with ControllerInte
     val scoringService: ScoringInterface = HeartsScoring()
     val turnService: PlayerTurnInterface = PlayerTurn()
     val leaderboardService: LeaderBoardInterface = LeaderBoard()
+    val history = CommandHistory()
 
     def processInput(next: Command): Unit =
         next.setup(this)
         next.storeBackup(game,state)
-        next.doStep
+        if next.execute then history.push(next)
         notifyObservers
+
+    def undo:Unit =
+        val command = history.pop
+        if(command != null)
+            command.undoStep
+
 
     def changeState(newState: State): Unit = state = newState
 

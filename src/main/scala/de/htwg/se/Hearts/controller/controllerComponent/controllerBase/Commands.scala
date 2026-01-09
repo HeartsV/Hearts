@@ -13,26 +13,44 @@ import de.htwg.se.Hearts.model.gameComponent.gameBase.ChainOfResponsibility
 import de.htwg.se.Hearts.model.gameComponent.gameBase.{Director, GameBuilder}
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
 
+
+
+class UndoCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
+    override def setup(newController:Controller):Unit = gameController = Some(newController)
+    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def redoStep = ???
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
+    override def execute: Boolean =
+        gameController.get.undo
+        false
+
 class SetPlayerNumberCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None, index: Option[Int]) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
     override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
     override def redoStep = ???
-    override def undoStep = ???
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
 
-    override def doStep: Unit =
+    override def execute: Boolean =
         val builder:BuilderInterface = GameBuilder(gameController.get.getGame.asInstanceOf[Game])
         if index.exists(intInput => intInput >= 3 && intInput <= 4) then
             gameController.get.changeState(GetPlayerNamesState(gameController.get))
             builder.setPlayerNumber(index.get)
         gameController.get.game = builder.getGame
+        true
 
 class AddPlayerCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None, name: String) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
     override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
     override def redoStep = ???
-    override def undoStep = ???
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
 
-    override def doStep: Unit =
+    override def execute: Boolean =
         val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
 
         if !name.trim.equals("") then
@@ -45,14 +63,17 @@ class AddPlayerCommand(var gameController: Option[Controller] = None, var backup
             gameController.get.changeState(SetMaxScoreState(gameController.get))
 
         gameController.get.game = builder.getGame
+        true
 
 class SetMaxScoreCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None, index: Option[Int]) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
     override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
     override def redoStep = ???
-    override def undoStep = ???
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
 
-    override def doStep: Unit =
+    override def execute: Boolean =
         val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
 
         if index.exists(intInput => intInput >= 1 && intInput <= 400) then
@@ -63,99 +84,129 @@ class SetMaxScoreCommand(var gameController: Option[Controller] = None, var back
             builder.setMaxScore(100)
         builder.setCurrentPlayerIndex(gameController.get.turnService.nextPlayerIndex(builder.getCopy))
         gameController.get.game = builder.getGame
+        true
 
 class SetSortingRankCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
     override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
     override def redoStep = ???
-    override def undoStep = ???
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
 
-    override def doStep: Unit =
+    override def execute: Boolean =
         val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
         builder.setPlayers(gameController.get.executeStrategy)
         gameController.get.setStrategy(SortByRankStrategy())
         builder.setLastPlayedCard(Left("Cards sorted by rank"))
         gameController.get.game = builder.getGame
+        false
 
 class SetSortingSuitCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
     override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
     override def redoStep = ???
-    override def undoStep = ???
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
 
-    override def doStep: Unit =
+    override def execute: Boolean =
         val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
         gameController.get.setStrategy(SortBySuitStrategy())
         builder.setPlayers(gameController.get.executeStrategy)
         builder.setLastPlayedCard(Left("Cards sorted by suit"))
         gameController.get.game = builder.getGame
+        false
 
 class NewCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
     override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
     override def redoStep = ???
-    override def undoStep = ???
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
 
-    override def doStep: Unit = gameController.get.changeState(GetPlayerNumberState(gameController.get))
+    override def execute: Boolean =
+        gameController.get.changeState(GetPlayerNumberState(gameController.get))
+        true
 
 class AgainCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
     override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
     override def redoStep = ???
-    override def undoStep = ???
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
 
-    override def doStep: Unit =
+    override def execute: Boolean =
         val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
         builder.setPlayers(gameController.get.dealNewRound(builder.getCopy))
             val director = Director()
             director.resetForNextGame(builder.asInstanceOf[GameBuilder])
             gameController.get.changeState(GamePlayState(gameController.get))
         gameController.get.game = builder.getGame
+        true
 
 class QuitCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
     override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
     override def redoStep = ???
-    override def undoStep = ???
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
 
-    override def doStep: Unit = gameController.get.changeState(MainScreenState(gameController.get))
+    override def execute: Boolean =
+        gameController.get.changeState(MainScreenState(gameController.get))
+        true
 
 class ExitCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
     override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
     override def redoStep = ???
-    override def undoStep = ???
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
 
-    override def doStep: Unit =
+    override def execute: Boolean =
         val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
         builder.setKeepProcessRunning(false)
         gameController.get.game = builder.getGame
+        true
 
 class RulesCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
     override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
     override def redoStep = ???
-    override def undoStep = ???
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
 
-    override def doStep: Unit = gameController.get.changeState(RulesScreenState(gameController.get))
+    override def execute: Boolean =
+        gameController.get.changeState(RulesScreenState(gameController.get))
+        false
 
 class BackCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
     override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
     override def redoStep = ???
-    override def undoStep = ???
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
 
-    override def doStep: Unit =
+    override def execute: Boolean =
         if gameController.get.game.getPlayers.equals(Vector.empty) then gameController.get.changeState(MainScreenState(gameController.get))
         else gameController.get.changeState(GamePlayState(gameController.get))
+        false
 
 class ContinueCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
     override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
     override def redoStep = ???
-    override def undoStep = ???
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
 
-    override def doStep: Unit =
+    override def execute: Boolean =
         val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
         builder.setPlayers(gameController.get.dealNewRound(builder.getCopy))
         builder.setFirstCard(true)
@@ -163,15 +214,18 @@ class ContinueCommand(var gameController: Option[Controller] = None, var backup:
 
         gameController.get.changeState(GamePlayState(gameController.get))
         gameController.get.game = builder.getGame
+        true
 
 
 class PlayCardCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None, index: Option[Int]) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
     override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
     override def redoStep = ???
-    override def undoStep = ???
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
 
-    override def doStep: Unit =
+    override def execute: Boolean =
             val builder: BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
             builder.setPlayers(gameController.get.executeStrategy)
             if builder.getTrickSize == builder.getPlayerNumber then
@@ -225,4 +279,6 @@ class PlayCardCommand(var gameController: Option[Controller] = None, var backup:
                         builder.setPlayers(gameController.get.scoringService.addPointsToPlayers(builder.getCopy))
 
             gameController.get.game = builder.getGame
+            true
+
 

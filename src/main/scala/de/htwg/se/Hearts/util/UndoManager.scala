@@ -1,30 +1,12 @@
 package de.htwg.se.Hearts.util
 
-class UndoManager {
-    private var undoStack: List[Command]= Nil
-    private var redoStack: List[Command]= Nil
-    def doStep(command: Command) = {
-        undoStack = command::undoStack
-        command.doStep
-    }
-    def undoStep  = {
-        undoStack match {
-            case  Nil =>
-            case head::stack => {
-                head.undoStep
-                undoStack=stack
-                redoStack= head::redoStack
-            }
-        }
-    }
-    def redoStep = {
-        redoStack match {
-            case Nil =>
-            case head::stack => {
-                head.redoStep
-                redoStack=stack
-                undoStack=head::undoStack
-            }
-        }
-    }
-    }
+import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.Stack
+
+class CommandHistory {
+    private val undoStack: Stack[Command]= Stack()
+    private val redoStack: Stack[Command]= Stack()
+    def push(c:Command): Unit = undoStack.push(c)
+    def pop: Command = undoStack.pop
+
+}

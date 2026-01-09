@@ -8,5 +8,5 @@ trait Command:
     def setup(gameController:Controller):Unit
     def storeBackup (game:GameInterface,state:State): Unit
     def undoStep: Unit
-    def doStep: Unit
+    def execute: Boolean
     def redoStep: Unit

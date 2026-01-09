@@ -39,6 +39,11 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 				case "GameOverState" => showGameOverState()
 		}
 
+	lazy val undoButton = new Button("Undo"):
+		onAction = _ => gameController.processInput(UndoCommand())
+	//lazy val redoButton = new Button("Redo"):
+		//onAction = _ => gameController.processInput(RedoCommand())
+
 	lazy val newGameButton = new Button("New Game"):
 		onAction = _ => gameController.processInput(NewCommand())
 	lazy val rulesButton = new Button("Rules"):
@@ -60,11 +65,11 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 	lazy val rankSortButton = new Button("Sort by: rank"):
 		onAction = _ => gameController.processInput(SetSortingRankCommand())
 	lazy val scoreBox = new VBox()
-	
 
 
 
-	
+
+
 
 	def renderTrick(imageUrls: List[String]): HBox =
 		val trickBox = new HBox()
@@ -81,7 +86,7 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 		imageUrls.zipWithIndex.foreach {
 			case (url, index) =>
 				val iv = new ImageView(new Image(url)) {
-					onMouseClicked = _ => gameController.processInput(PlayCardCommand(index = Some(index + 1))) 
+					onMouseClicked = _ => gameController.processInput(PlayCardCommand(index = Some(index + 1)))
 				}
 				handBox.children.add(iv)
 		}
@@ -120,7 +125,7 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 		rootBorderPane.bottom = backButton
 
 	def showPlayerNumberState(): Unit =
-		
+
 		val textField = new TextField():
 			onAction = _ =>
 				gameController.processInput(SetPlayerNumberCommand(index = text().toIntOption))
@@ -138,7 +143,7 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 
 
 	def showPlayerNamesState(): Unit =
-		
+
 		val textField = new TextField():
 			onAction = _ =>
 				gameController.processInput(AddPlayerCommand(name = text()))
@@ -152,7 +157,7 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 
 		rootBorderPane.top = Label("Setup")
 		rootBorderPane.center = centerBox
-		rootBorderPane.bottom = null
+		rootBorderPane.bottom = undoButton
 
 	def showMaxScoreState(): Unit =
 
@@ -216,7 +221,7 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 		rootBorderPane.top = Label("Scoreboard:")
 		rootBorderPane.center = scoreBox
 		rootBorderPane.bottom = continueButton
-			
+
 
 	def showGameOverState(): Unit =
 		renderScoreBoard
