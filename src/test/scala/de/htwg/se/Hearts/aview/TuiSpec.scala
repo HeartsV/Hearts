@@ -103,6 +103,7 @@ class TuiSpec extends AnyWordSpec with Matchers {
                 "and each opponent scores 26 points instead. This is called Shooting the Moon." + "\n\n" +
                 "The game ends when a player reaches 100 points (or another agreed limit)." + "\n" +
                 "The player with the lowest score wins." + "\n\n" +
+                "While playing you can enter redo to redo last step and undo to undo last step" + "\n" +
                 "Enter 'back' or 'b' to return to the main menu." + "\n"
             tui.getRulesScreenStateString should be (expected)
         }
