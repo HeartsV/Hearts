@@ -30,7 +30,7 @@ class BuilderSpec extends AnyWordSpec with Matchers {
 
 		"setPlayerNumber of game" in {
 			val builder = GameBuilder()
-			builder.setPlayerNumber(3)
+			builder.setPlayerNumber(Some(3))
 			builder.game.playerNumber should be (Some(3))
 		}
 
@@ -66,13 +66,13 @@ class BuilderSpec extends AnyWordSpec with Matchers {
 
 		"setMaxScore" in {
 			val builder = GameBuilder()
-			builder.setMaxScore(100)
-			builder.game.maxScore should be (Some(100))
+			builder.setMaxScore(Some(1))
+			builder.game.maxScore should be (Some(1))
 		}
 
 		"setCurrentPlayerIndex" in {
 			val builder = GameBuilder()
-			builder.setCurrentPlayerIndex(0)
+			builder.setCurrentPlayerIndex(Some(0))
 			builder.game.currentPlayerIndex should be (Some(0))
 		}
 
