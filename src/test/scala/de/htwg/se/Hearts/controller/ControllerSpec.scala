@@ -23,7 +23,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         val p3 = Player("Charlie",List(card6, card7))
         val game2PlayersNoHandCards = Game(players = Vector(Player("A"), Player("B")), playerNumber = Some(2))
         val game3Players = Game(playerNumber = Some(3),players = Vector(p1,p2,p3),currentPlayerIndex = Some(0))
-        val gameFirstCard = Game(playerNumber = Some(2),players = Vector(p1,p2),currentPlayerIndex = Some(0))
+        val gameFirstCard = Game(playerNumber = Some(2),players = Vector(p1,p2),currentPlayerIndex = Some(0), maxScore = Some(10))
         val gameSecondPlayer = Game(playerNumber = Some(2),players = Vector(p1,p2), currentPlayerIndex = Some(1), firstCard = false)
         val gameNoHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,currentPlayerIndex = Some(0))
         val gameHearts = Game(playerNumber = Some(2),players = Vector(p1,p2),firstCard = false,startWithHearts = true, currentPlayerIndex = Some(0))
@@ -38,6 +38,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         val gameController = Controller(gameFirstCard)
         val state = GamePlayState(gameController)
         val controllerWithFullTrick = Controller(gameWithFullTrick)
+
+        /*"process the input correctly" in {
+            ???
+        }*/
 
         "change state" in {
             gameController.changeState(state)
@@ -76,6 +80,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             gameController.getCurrentPlayerName should be ("Alice")
         }
 
+        "check if game is over" in {
+            gameController.checkGameOver should be (false)
+        }
+
         "get keepProcessRunning correctly" in {
             gameController.getKeepProcessRunning should be (true)
         }
@@ -102,6 +110,11 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
         "get/pass StateString correctly" in {
             contollerTrick.passStateString should be ("MainScreenState")
+        }
+
+        "set sorting correctly" in {
+            gameController.setStrategy(SortBySuitStrategy())
+            gameController.sortingStrategy.getClass should be (SortBySuitStrategy().getClass)
         }
     }
 }
