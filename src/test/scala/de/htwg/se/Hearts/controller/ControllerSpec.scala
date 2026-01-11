@@ -43,9 +43,27 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             ???
         }*/
 
+        "undo last step" in {
+
+        }
+
+        "redo last step" in {
+
+        }
+
         "change state" in {
             gameController.changeState(state)
             gameController.state should be (state)
+        }
+
+        "get Game" in {
+            gameController.getGame should be (gameFirstCard.asInstanceOf[GameInterface])
+        }
+
+        "set Game" in {
+            gameController.setGame(gameWithFullTrick)
+            gameController.game should be (gameWithFullTrick)
+            gameController.setGame(gameFirstCard)
         }
 
         "return current winner" in {
@@ -116,5 +134,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             gameController.setStrategy(SortBySuitStrategy())
             gameController.sortingStrategy.getClass should be (SortBySuitStrategy().getClass)
         }
+
+        
     }
 }

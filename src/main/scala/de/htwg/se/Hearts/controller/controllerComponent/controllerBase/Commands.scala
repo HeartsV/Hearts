@@ -107,7 +107,6 @@ class SetSortingRankCommand(var gameController: Option[Controller] = None, var b
 
     override def execute: Boolean =
         val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
-        builder.setPlayers(gameController.get.executeStrategy)
         gameController.get.setStrategy(SortByRankStrategy())
         builder.setLastPlayedCard(Left("Cards sorted by rank"))
         gameController.get.game = builder.getGame
@@ -124,7 +123,6 @@ class SetSortingSuitCommand(var gameController: Option[Controller] = None, var b
     override def execute: Boolean =
         val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
         gameController.get.setStrategy(SortBySuitStrategy())
-        builder.setPlayers(gameController.get.executeStrategy)
         builder.setLastPlayedCard(Left("Cards sorted by suit"))
         gameController.get.game = builder.getGame
         false

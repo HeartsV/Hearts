@@ -84,9 +84,6 @@ class Controller(var game: GameInterface) extends Observable with ControllerInte
     def setStrategy(strategy: Strategy): Unit =
         this.sortingStrategy = strategy
 
-    def executeStrategy: Vector[Player] =
-        game.getPlayers.map(p => p.copy(hand = sortingStrategy.execute(p)))
-
     def dealNewRound(game: GameInterface): Vector[Player] =
         deckmanger.deal(deckmanger.shuffle(deckmanger.createDeck), game)
 
