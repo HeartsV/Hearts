@@ -241,7 +241,6 @@ class PlayCardCommand(var gameController: Option[Controller] = None, var backup:
             val builder = GameBuilder()
             val director: DirectorInterface = Director(builder)
             director.copyGameState(gameController.get.getGame)
-            builder.setPlayers(gameController.get.executeStrategy)
             if builder.getTrickSize == builder.getPlayerNumber then
                 builder.setTrickCards(List())
                 builder.setCurrentWinnerAndHighestCard(None, None)
