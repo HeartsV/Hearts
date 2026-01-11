@@ -83,12 +83,13 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 
 	def getGameplayStateString: String =
 		val lastCard = gameController.getLastCardPlayed match
-			case Left(error) => error
+			case Left("No Card") => ""
+			case Left(error) => error + "\n"
 			case Right(card) => card.toString + " played" + "\n"
 
 		"Trick:" + "\n" +
 		completeTrickString + "\n" +
-		lastCard + "\n" +
+		lastCard + 
 		gameController.getCurrentPlayerName +" please select card to play:" + "\n" +
 		handToString + "\n"
 

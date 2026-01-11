@@ -52,7 +52,7 @@ class TuiSpec extends AnyWordSpec with Matchers {
             val expected ="Hearts" + "\n\n" +
                 "Please enter:" + "\n" +
                 "- n or new for a new Game" + "\n" +
-                "- r or rules for the rules" + "\n" +
+                "- ru or rules for the rules" + "\n" +
                 "- e or exit to end the program" + "\n"
                 tui.getMainScreenStateString should be (expected)
         }
