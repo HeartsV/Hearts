@@ -31,7 +31,6 @@ class SetMaxScoreState(controller: Controller) extends State(controller: Control
     def getStateString: String = "SetMaxScoreState"
 
 class GamePlayState(controller: Controller) extends State(controller: Controller):
-    val cOR: CoRInterface = ChainOfResponsibility()
     def getStateString: String = "GamePlayState"
 
 class ShowScoreState(controller: Controller) extends State(controller: Controller):
