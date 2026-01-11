@@ -12,6 +12,7 @@ import de.htwg.se.Hearts.model.gameComponent.CoRInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.ChainOfResponsibility
 import de.htwg.se.Hearts.model.gameComponent.gameBase.{Director, GameBuilder}
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
+import de.htwg.se.Hearts.model.gameComponent.DirectorInterface
 
 class RedoCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
@@ -230,13 +231,15 @@ class ContinueCommand(var gameController: Option[Controller] = None, var backup:
 class PlayCardCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None, index: Option[Int]) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
     override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
-    
+
     override def undoStep =
         gameController.get.game = backup.get._1
         gameController.get.state = backup.get._2
 
     override def execute: Boolean =
-            val builder: BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
+            val builder: BuilderInterface = GameBuilder()
+            val director: DirectorInterface = Director()
+            
             builder.setPlayers(gameController.get.executeStrategy)
             if builder.getTrickSize == builder.getPlayerNumber then
                 builder.setTrickCards(List())
@@ -251,42 +254,23 @@ class PlayCardCommand(var gameController: Option[Controller] = None, var backup:
             result match
             case Left(_) => builder.setLastPlayedCard(result)
             case Right(cardToPlay) =>
-                    val sortedHand = gameController.get.getPlayerHand
 
-                    builder.setPlayers(
-                        builder.getPlayers.updated(
-                            builder.getCurrentPlayerIndex.get,
-                            builder.getCurrentPlayer.get.removeCard(cardToPlay)
-                        )
+
+
+                if builder.getTrickSize == builder.getPlayerNumber then
+                    builder.updatePlayer(
+                        builder.getCurrentWinnerIndex.get,
+                        builder.getPlayers(builder.getCurrentWinnerIndex.get).addWonCards(builder.getTrickCards)
                     )
 
-                    builder.addCard(cardToPlay)
+                builder.setLastPlayedCard(result)
+                builder.setCurrentPlayerIndex(gameController.get.turnService.nextPlayerIndex(builder.getCopy))
 
-                    builder.setCurrentWinnerAndHighestCard(
-                        gameController.get.turnService.updateCurrentWinner(
-                            (builder.getCurrentPlayerIndex.get, cardToPlay),
-                            builder.getCopy
-                        )
-                    )
+                if builder.getPlayers.forall(_.hand.size == 0) then
+                    if !gameController.get.checkGameOver then gameController.get.changeState(ShowScoreState(gameController.get))
+                    else gameController.get.changeState(GameOverState(gameController.get))
 
-                    if builder.getFirstCard then builder.setFirstCard(false)
-
-                    if (cardToPlay.suit == Suit.Hearts || (cardToPlay.getRank == Rank.Queen && cardToPlay.getSuit == Suit.Spades) && !builder.getStartWithHearts)
-                        builder.setStartWithHearts(true)
-                    if builder.getTrickSize == builder.getPlayerNumber then
-                        builder.updatePlayer(
-                            builder.getCurrentWinnerIndex.get,
-                            builder.getPlayers(builder.getCurrentWinnerIndex.get).addWonCards(builder.getTrickCards)
-                        )
-
-                    builder.setLastPlayedCard(result)
-                    builder.setCurrentPlayerIndex(gameController.get.turnService.nextPlayerIndex(builder.getCopy))
-
-                    if builder.getPlayers.forall(_.hand.size == 0) then
-                        if !gameController.get.checkGameOver then gameController.get.changeState(ShowScoreState(gameController.get))
-                        else gameController.get.changeState(GameOverState(gameController.get))
-
-                        builder.setPlayers(gameController.get.scoringService.addPointsToPlayers(builder.getCopy))
+                    builder.setPlayers(gameController.get.scoringService.addPointsToPlayers(builder.getCopy))
 
             gameController.get.game = builder.getGame
             true

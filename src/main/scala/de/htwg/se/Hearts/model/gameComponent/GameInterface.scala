@@ -2,6 +2,10 @@ package de.htwg.se.Hearts.model.gameComponent
 
 import de.htwg.se.Hearts.model.gameComponent.gameBase._
 
+trait DirectorInterface():
+    def resetForNextGame(builder: GameBuilder): Unit
+    def copyGameState(builder: GameBuilder, gameState: GameInterface): Unit
+    def moveCard(builder: GameBuilder, playedCard:Card): Unit
 
 trait GameInterface():
     def getPlayerNumber: Option[Int]
@@ -19,14 +23,14 @@ trait GameInterface():
 
 trait BuilderInterface:
     def reset: Unit
-    def setPlayerNumber(playerNumber: Int): Unit
+    def setPlayerNumber(playerNumber: Option[Int]): Unit
     def setStartWithHearts(swh: Boolean): Unit
     def setKeepProcessRunning(kpr: Boolean): Unit
     def setFirstCard(fc: Boolean): Unit
     def setPlayers(players: Vector[Player]): Unit
     def updatePlayer(index: Int, updatedPlayer: Player): Unit
-    def setMaxScore(maxScore: Int): Unit
-    def setCurrentPlayerIndex(cpi: Int): Unit
+    def setMaxScore(maxScore: Option[Int]): Unit
+    def setCurrentPlayerIndex(cpi: Option[Int]): Unit
     def setTrickCards(trick: List[Card]): Unit
     def addCard(card: Card): Unit
     def setCurrentWinnerAndHighestCard(newWinner: (Option[Int], Option[Card])): Unit

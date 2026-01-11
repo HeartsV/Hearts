@@ -1,26 +1,54 @@
 package de.htwg.se.Hearts.model.gameComponent.gameBase
 
 import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
-import de.htwg.se.Hearts.model.gameComponent.GameInterface
+import de.htwg.se.Hearts.model.gameComponent._
 
-class Director:
+class Director extends DirectorInterface:
 
 	def resetForNextGame(builder: GameBuilder): Unit =
 		builder.setPlayers(builder.game.getPlayers.map(_.copy(points = 0)))
 		builder.setFirstCard(true)
 		builder.setStartWithHearts(false)
 
+	def copyGameState(builder: GameBuilder, gameState: GameInterface): Unit =
+		builder.setPlayerNumber(gameState.getPlayerNumber)
+		builder.setStartWithHearts(gameState.getStartWithHearts)
+		builder.setKeepProcessRunning(gameState.getKeepProcessRunning)
+		builder.setFirstCard(gameState.getFirstCard)
+		builder.setPlayers(gameState.getPlayers)
+		builder.setMaxScore(gameState.getMaxScore)
+		builder.setCurrentPlayerIndex(gameState.getCurrentPlayerIndex)
+		builder.setTrickCards(gameState.getTrickCards)
+		builder.setCurrentWinnerAndHighestCard(gameState.getCurrentWinnerIndex,gameState.getHighestCard)
+		builder.setLastPlayedCard(gameState.getLastCardPlayed)
+
+
+	def moveCard(builder: GameBuilder, playedCard:Card): Unit =
+		builder.setPlayers(
+			builder.getPlayers.updated(
+				builder.getCurrentPlayerIndex.get,
+				builder.getCurrentPlayer.get.removeCard(playedCard)
+			)
+		)
+		builder.addCard(playedCard)
+		if builder.getFirstCard then builder.setFirstCard(false)
+		if (playedCard.suit == Suit.Hearts || playedCard == Card(Rank.Queen, Suit.Spades))
+			builder.setStartWithHearts(true)
+		if (builder.game.highestCard.exists(highest => highest.suit == playedCard.suit && highest.rank > playedCard.rank)){}
+		else
+			builder.setCurrentWinnerAndHighestCard((builder.getCurrentPlayerIndex, Some(playedCard)))
+
 class GameBuilder(var game:Game = Game()) extends BuilderInterface:
 	def reset: Unit = game = Game()
-	def setPlayerNumber(playerNumber: Int): Unit = game = game.copy(playerNumber = Some(playerNumber))
+	def setPlayerNumber(playerNumber: Option[Int]): Unit = game = game.copy(playerNumber = playerNumber)
 	def setStartWithHearts(swh: Boolean): Unit = game = game.copy(startWithHearts = swh)
 	def setKeepProcessRunning(kpr: Boolean): Unit = game = game.copy(keepProcessRunning = kpr)
 	def setFirstCard(fc: Boolean): Unit = game = game.copy(firstCard = fc)
 	def setPlayers(players: Vector[Player]): Unit = game = game.copy(players = players)
 
 	def updatePlayer(index: Int, updatedPlayer: Player): Unit = game = game.copy(players = game.players.updated(index, updatedPlayer))
-	def setMaxScore(score: Int): Unit = game = game.copy(maxScore = Some(score))
-	def setCurrentPlayerIndex(cpi: Int): Unit = game = game.copy(currentPlayerIndex = Some(cpi))
+	def setMaxScore(score: Option[Int]): Unit = game = game.copy(maxScore = score)
+	def setCurrentPlayerIndex(cpi: Option[Int]): Unit = game = game.copy(currentPlayerIndex = cpi)
 	def setTrickCards(trick: List[Card]): Unit = game = game.copy(trickCards = trick)
 
 	def addCard(card: Card): Unit = game = game.copy(trickCards = game.trickCards :+ card)
