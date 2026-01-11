@@ -61,5 +61,13 @@ class CardSpec extends AnyWordSpec with Matchers {
 		"create the correct cardname of png" in {
 			card1.pngName should be ("2_of_clubs.png")
 		}
+
+		"get the correct Suit" in {
+			card1.getSuit should be (Suit.Clubs)
+		}
+
+		"get the correct Rank" in {
+			card1.getRank should be (Rank.Two)
+		}
 	}
 }
