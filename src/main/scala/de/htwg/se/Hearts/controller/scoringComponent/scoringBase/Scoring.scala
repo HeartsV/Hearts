@@ -23,12 +23,15 @@ class HeartsScoring extends ScoringInterface:
 
     /** If someone took all point cards (26), everyone else gets 26 and that player gets 0. */
     override def applyShootingTheMoon(points: Map[Player, Int]): Map[Player, Int] =
-        points.find((_, pts) => pts == 26) match
-        case Some((moonShooter, _)) =>
-            points.map { case (p, _) =>
-            if p == moonShooter then p -> 0 else p -> 26
+        val nonZero = points.filter { case (_, p) => p > 0 }
+        if (nonZero.size == 1 && points.exists { case (_, p) => p == 0 })
+            val (moonPlayer, moonPoints) = nonZero.head
+            points.map {
+                case (p, _) if p == moonPlayer  => p -> 0
+                case (p, _)                     => p -> moonPoints
             }
-        case None => points
+        else
+            points
 
     override def addRoundPoints(players: Vector[Player]): Vector[Player] =
         val raw = rawPointsPerPlayer(players)

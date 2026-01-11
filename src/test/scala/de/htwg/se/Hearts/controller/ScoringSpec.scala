@@ -37,8 +37,10 @@ class ScoringSpec extends AnyWordSpec with Matchers{
 		}
 
 		"applyShootingTheMoon correctly" in {
-			val scor = HeartsScoring()
-			scor.applyShootingTheMoon(Map((p1, 1),(p2, 0))) should be (Map((p1, 0),(p2, 1)))
-		}
+            val scor = HeartsScoring()
+            scor.applyShootingTheMoon(Map((p1, 1),(p2, 0))) should be (Map((p1, 0),(p2, 1)))
+            scor.applyShootingTheMoon(Map((p1, 1),(p2, 1))) should be (Map((p1, 1),(p2, 1)))
+        }
+        
 	}
 }
