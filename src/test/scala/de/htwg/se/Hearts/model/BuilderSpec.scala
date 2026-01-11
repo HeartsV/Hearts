@@ -111,8 +111,8 @@ class BuilderSpec extends AnyWordSpec with Matchers {
 	"A Director" should {
 		"resetForNextGame" in {
 			val builder = GameBuilder(gameHearts)
-			val director = Director()
-			director.resetForNextGame(builder)
+			val director = Director(builder)
+			director.resetForNextGame
 			builder.game.startWithHearts should be (false)
 			builder.game.firstCard should be (true)
 			builder.game.players(0).points should be (0)

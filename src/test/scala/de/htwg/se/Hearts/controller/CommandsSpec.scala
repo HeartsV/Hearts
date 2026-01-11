@@ -61,6 +61,6 @@ class CommandsSpec extends AnyWordSpec with Matchers {
 
 	}
 	"A PlayCardCommand" should {
-		
+
 	}
 }
