@@ -27,6 +27,7 @@ class CoRSpec extends AnyWordSpec with Matchers {
         val cOR = ChainOfResponsibility()
 
         "check if card allowed for first card in game" in {
+            cOR.validateMove(gameFirstCard, p1.hand, None) should be (Left("Index was not a number!\n"))
             cOR.validateMove(gameFirstCard, p1.hand, Some(3)) should be (Left("Index: 3 was out of bounds!\n"))
             cOR.validateMove(gameFirstCard, p1.hand, Some(2)) should be (Left("First trick must start with 2 \u2663!\n"))
             cOR.validateMove(gameFirstCard, p1.hand, Some(1)) should be (Right(card1))
