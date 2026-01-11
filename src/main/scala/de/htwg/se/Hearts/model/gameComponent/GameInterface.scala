@@ -3,9 +3,9 @@ package de.htwg.se.Hearts.model.gameComponent
 import de.htwg.se.Hearts.model.gameComponent.gameBase._
 
 trait DirectorInterface():
-    def resetForNextGame(builder: GameBuilder): Unit
-    def copyGameState(builder: GameBuilder, gameState: GameInterface): Unit
-    def moveCard(builder: GameBuilder, playedCard:Card): Unit
+    def resetForNextGame: Unit
+    def copyGameState(gameState: GameInterface): Unit
+    def moveCard(playedCard:Card): Unit
 
 trait GameInterface():
     def getPlayerNumber: Option[Int]

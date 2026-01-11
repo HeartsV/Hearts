@@ -49,7 +49,7 @@ class SetPlayerNumberCommand(var gameController: Option[Controller] = None, var 
         val builder:BuilderInterface = GameBuilder(gameController.get.getGame.asInstanceOf[Game])
         if index.exists(intInput => intInput >= 3 && intInput <= 4) then
             gameController.get.changeState(GetPlayerNamesState(gameController.get))
-            builder.setPlayerNumber(index.get)
+            builder.setPlayerNumber(Some(index.get))
         gameController.get.game = builder.getGame
         true
 
@@ -89,11 +89,11 @@ class SetMaxScoreCommand(var gameController: Option[Controller] = None, var back
 
         if index.exists(intInput => intInput >= 1 && intInput <= 400) then
             gameController.get.changeState(GamePlayState(gameController.get))
-            builder.setMaxScore(index.get)
+            builder.setMaxScore(Some(index.get))
         else
             gameController.get.changeState(GamePlayState(gameController.get))
-            builder.setMaxScore(100)
-        builder.setCurrentPlayerIndex(gameController.get.turnService.nextPlayerIndex(builder.getCopy))
+            builder.setMaxScore(Some(100))
+        builder.setCurrentPlayerIndex(Some(gameController.get.turnService.nextPlayerIndex(builder.getCopy)))
         gameController.get.game = builder.getGame
         true
 
@@ -152,8 +152,9 @@ class AgainCommand(var gameController: Option[Controller] = None, var backup: Op
     override def execute: Boolean =
         val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
         builder.setPlayers(gameController.get.dealNewRound(builder.getCopy))
-            val director = Director()
-            director.resetForNextGame(builder.asInstanceOf[GameBuilder])
+            val director = Director(builder.asInstanceOf[GameBuilder])
+            director.copyGameState(gameController.get.getGame)
+            director.resetForNextGame
             gameController.get.changeState(GamePlayState(gameController.get))
         gameController.get.game = builder.getGame
         true
@@ -237,9 +238,9 @@ class PlayCardCommand(var gameController: Option[Controller] = None, var backup:
         gameController.get.state = backup.get._2
 
     override def execute: Boolean =
-            val builder: BuilderInterface = GameBuilder()
-            val director: DirectorInterface = Director()
-            
+            val builder = GameBuilder()
+            val director: DirectorInterface = Director(builder)
+            director.copyGameState(gameController.get.getGame)
             builder.setPlayers(gameController.get.executeStrategy)
             if builder.getTrickSize == builder.getPlayerNumber then
                 builder.setTrickCards(List())
@@ -250,10 +251,10 @@ class PlayCardCommand(var gameController: Option[Controller] = None, var backup:
                 gameController.get.getPlayerHand,
                 index
             )
-
             result match
             case Left(_) => builder.setLastPlayedCard(result)
             case Right(cardToPlay) =>
+                director.moveCard(cardToPlay)
 
 
 
@@ -264,7 +265,7 @@ class PlayCardCommand(var gameController: Option[Controller] = None, var backup:
                     )
 
                 builder.setLastPlayedCard(result)
-                builder.setCurrentPlayerIndex(gameController.get.turnService.nextPlayerIndex(builder.getCopy))
+                builder.setCurrentPlayerIndex(Some(gameController.get.turnService.nextPlayerIndex(builder.getCopy)))
 
                 if builder.getPlayers.forall(_.hand.size == 0) then
                     if !gameController.get.checkGameOver then gameController.get.changeState(ShowScoreState(gameController.get))

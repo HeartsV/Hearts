@@ -3,14 +3,14 @@ package de.htwg.se.Hearts.model.gameComponent.gameBase
 import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
 import de.htwg.se.Hearts.model.gameComponent._
 
-class Director extends DirectorInterface:
+class Director(builder: GameBuilder) extends DirectorInterface:
 
-	def resetForNextGame(builder: GameBuilder): Unit =
+	def resetForNextGame: Unit =
 		builder.setPlayers(builder.game.getPlayers.map(_.copy(points = 0)))
 		builder.setFirstCard(true)
 		builder.setStartWithHearts(false)
 
-	def copyGameState(builder: GameBuilder, gameState: GameInterface): Unit =
+	def copyGameState(gameState: GameInterface): Unit =
 		builder.setPlayerNumber(gameState.getPlayerNumber)
 		builder.setStartWithHearts(gameState.getStartWithHearts)
 		builder.setKeepProcessRunning(gameState.getKeepProcessRunning)
@@ -23,7 +23,7 @@ class Director extends DirectorInterface:
 		builder.setLastPlayedCard(gameState.getLastCardPlayed)
 
 
-	def moveCard(builder: GameBuilder, playedCard:Card): Unit =
+	def moveCard(playedCard:Card): Unit =
 		builder.setPlayers(
 			builder.getPlayers.updated(
 				builder.getCurrentPlayerIndex.get,
