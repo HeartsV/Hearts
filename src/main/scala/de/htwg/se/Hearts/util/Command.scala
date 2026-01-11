@@ -9,4 +9,3 @@ trait Command:
     def storeBackup (game:GameInterface,state:State): Unit
     def undoStep: Unit
     def execute: Boolean
-    def redoStep: Unit
