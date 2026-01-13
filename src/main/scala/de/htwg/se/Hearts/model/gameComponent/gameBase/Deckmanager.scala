@@ -22,7 +22,7 @@ class DeckManager extends DeckManagerInterface:
         util.Random().shuffle(deck)
 
 
-    private def filterOneCardOut(deck: List[Card], game: GameInterface): List[Card] =
+    override def filterOneCardOut(deck: List[Card], game: GameInterface): List[Card] =
         if game.getPlayerNumber.contains(3) then
             if deck.head == Card(Rank.Two, Suit.Clubs) then deck.filterNot(_ == deck(1))
             else deck.tail

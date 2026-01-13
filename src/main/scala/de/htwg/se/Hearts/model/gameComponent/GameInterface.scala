@@ -48,25 +48,26 @@ trait BuilderInterface:
     def getStartWithHearts: Boolean
 
 trait CardInterface:
-	override def toString: String
-	def compare(that: Card): Int
-	def pngName: String
-	def getRank: Rank
-	def getSuit: Suit
+    override def toString: String
+    def compare(that: Card): Int
+    def pngName: String
+    def getRank: Rank
+    def getSuit: Suit
 
 trait PlayerInterface:
-	def removeCard(card: Card): Player
-	def addAllCards(cards: List[Card]): Player
-	def addWonCards(cards: List[Card]): Player
-	def addPoints(newPoints: Int): Player
+    def removeCard(card: Card): Player
+    def addAllCards(cards: List[Card]): Player
+    def addWonCards(cards: List[Card]): Player
+    def addPoints(newPoints: Int): Player
 
 trait CoRInterface:
-	def validateMove(game: GameInterface, playerHand: List[Card], index: Option[Int]): Either[String, Card]
+    def validateMove(game: GameInterface, playerHand: List[Card], index: Option[Int]): Either[String, Card]
 
 trait DeckManagerInterface:
-	def createDeck: List[Card]
-	def shuffle(deck: List[Card]): List[Card]
-	def deal(deck: List[Card], game: GameInterface): Vector[Player]
+    def createDeck: List[Card]
+    def shuffle(deck: List[Card]): List[Card]
+    def filterOneCardOut(deck: List[Card], game: GameInterface): List[Card]
+    def deal(deck: List[Card], game: GameInterface): Vector[Player]
 
 enum Suit extends Ordered[Suit]:
 
