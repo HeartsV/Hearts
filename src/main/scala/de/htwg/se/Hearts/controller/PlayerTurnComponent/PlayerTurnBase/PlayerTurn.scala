@@ -14,8 +14,7 @@ class PlayerTurn extends PlayerTurnInterface:
         game.getPlayers.indexWhere(_.hand.contains(
             Card(Rank.Two, Suit.Clubs)
         ))
-        else if game.getPlayerNumber.get == game.getTrickCards.size then
-        game.getCurrentWinnerIndex.get
+        else if game.getPlayerNumber.get == game.getTrickCards.size then game.getCurrentWinnerIndex.get
         else if game.getCurrentPlayerIndex.get + 1 == game.getPlayerNumber.get then 0
         else game.getCurrentPlayerIndex.get + 1
 
@@ -25,8 +24,7 @@ class PlayerTurn extends PlayerTurnInterface:
         case Some(currentHighest) =>
             val leadSuit = game.getTrickCards.headOption.map(_.suit)
             val challenger = newWinner._2
-            val sameSuitAsLead =
-            leadSuit.contains(challenger.suit) && leadSuit.contains(currentHighest.suit)
+            val sameSuitAsLead = leadSuit.contains(challenger.suit) && leadSuit.contains(currentHighest.suit)
 
             if sameSuitAsLead && challenger.rank.compare(currentHighest.rank) > 0 then
             (Some(newWinner._1), Some(challenger))

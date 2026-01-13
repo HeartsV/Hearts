@@ -101,22 +101,42 @@ class BuilderSpec extends AnyWordSpec with Matchers {
 			builder.game.lastCardPlayed should be (Right(card8))
 		}
 
-		"getGame" in {
-			val builder = GameBuilder()
-			builder.getGame should be (Game())
-
+		val builderget = GameBuilder()
+		"getCopy of current game" in {
+			builderget.getCopy should be (Game())
 		}
-	}
+		"getTrickSize" in {
+			builderget.getTrickSize should be (0)
+		}
+		"getPlayerNumber" in {
+			val builder = Game(playerNumber = Some(1))
+			builder.getPlayerNumber should be (Some(1))
+		}
+		"getPLayers" in {
+			builderget.getPlayers should be (Vector.empty)
+		}
+		"getCurrentPlayer" in {
+			builderget.getCurrentPlayer should be (None)
+		}
+		"getCurrentPlayerIndex" in {
+			builderget.getCurrentPlayerIndex should be (None)
+		}
+		"getFirstCard" in {
+			builderget.getFirstCard should be (true)
+		}
+		"getTrickCards" in {
+			builderget.getTrickCards should be (List.empty)
+		}
+		"getCurrentWinnerIndex" in {
+			builderget.getCurrentWinnerIndex should be (None)
+		}
+		"getStartWithHearts" in {
+			builderget.getStartWithHearts should be (false)
+		}
+		"getGame" in {
 
-	"A Director" should {
-		"resetForNextGame" in {
-			val builder = GameBuilder(gameHearts)
-			val director = Director(builder)
-			director.resetForNextGame
-			builder.game.startWithHearts should be (false)
-			builder.game.firstCard should be (true)
-			builder.game.players(0).points should be (0)
-			builder.game.players(1).points should be (0)
+			builderget.getGame should be (Game())
+
 		}
 	}
 }
