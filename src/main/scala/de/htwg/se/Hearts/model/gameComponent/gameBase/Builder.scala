@@ -34,9 +34,9 @@ class Director(builder: GameBuilder) extends DirectorInterface:
 		if builder.getFirstCard then builder.setFirstCard(false)
 		if (playedCard.suit == Suit.Hearts || playedCard == Card(Rank.Queen, Suit.Spades))
 			builder.setStartWithHearts(true)
-		if (builder.game.highestCard.exists(highest => highest.suit == playedCard.suit && highest.rank > playedCard.rank)){}
-		else
-			builder.setCurrentWinnerAndHighestCard((builder.getCurrentPlayerIndex, Some(playedCard)))
+		if (builder.game.highestCard.forall(highest => playedCard.suit == highest.suit && playedCard.rank > highest.rank)) {
+			builder.setCurrentWinnerAndHighestCard(builder.getCurrentPlayerIndex, Some(playedCard))
+}
 
 class GameBuilder(var game:Game = Game()) extends BuilderInterface:
 	def reset: Unit = game = Game()
