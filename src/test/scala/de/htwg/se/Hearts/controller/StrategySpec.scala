@@ -16,7 +16,7 @@ class StrategySpec extends AnyWordSpec with Matchers {
 		val card3 = Card(Rank.Ace,Suit.Clubs)
 		val card4 = Card(Rank.Ace,Suit.Diamonds)
 		val card5 = Card(Rank.Jack,Suit.Hearts)
-		val card6 = Card(Rank.Jack,Suit.Hearts)
+		val card6 = Card(Rank.Jack,Suit.Clubs)
 		val card7 = Card(Rank.Ten,Suit.Clubs)
 		val card8 = Card(Rank.Ten,Suit.Diamonds)
 		val p1 = Player("Alice", List(card1, card2, card3, card4), List(card5))
