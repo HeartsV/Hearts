@@ -3,8 +3,12 @@ package de.htwg.se.Hearts.controller
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import de.htwg.se.Hearts.controller.controllerComponent.controllerBase._
+import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 
 class CommandsSpec extends AnyWordSpec with Matchers {
+	val game = Game()
+	val gameCo = Controller(game)
+
 	"A redoCommand" should {
 		"" in {}
 	}
@@ -14,7 +18,15 @@ class CommandsSpec extends AnyWordSpec with Matchers {
 	}
 
 	"A SetPlayerNumberCommand" should {
-
+		"set the number of players"in {
+		val command = SetPlayerNumberCommand(index = Some (3))
+		command.setup(gameCo)
+		command.storeBackup
+		gameCo.processInput(command)
+		gameCo.game.getPlayerNumber should be (Some(3))
+		gameCo.undo
+		gameCo.game.getPlayerNumber should be (None)
+		}
 	}
 
 	"A AddPlayerCommand" should {

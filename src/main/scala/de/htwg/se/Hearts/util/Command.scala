@@ -6,6 +6,6 @@ import de.htwg.se.Hearts.model.gameComponent.GameInterface
 
 trait Command:
     def setup(gameController:Controller):Unit
-    def storeBackup (game:GameInterface,state:State): Unit
+    def storeBackup: Unit
     def undoStep: Unit
     def execute: Boolean

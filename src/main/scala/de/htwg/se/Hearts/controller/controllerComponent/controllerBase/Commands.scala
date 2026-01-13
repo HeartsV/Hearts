@@ -16,7 +16,7 @@ import de.htwg.se.Hearts.model.gameComponent.DirectorInterface
 
 class RedoCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
-    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
 
     override def undoStep =
         gameController.get.game = backup.get._1
@@ -28,7 +28,7 @@ class RedoCommand(var gameController: Option[Controller] = None, var backup: Opt
 
 class UndoCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
-    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
 
     override def undoStep =
         gameController.get.game = backup.get._1
@@ -39,7 +39,7 @@ class UndoCommand(var gameController: Option[Controller] = None, var backup: Opt
 
 class SetPlayerNumberCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None, index: Option[Int]) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
-    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
 
     override def undoStep =
         gameController.get.game = backup.get._1
@@ -55,7 +55,7 @@ class SetPlayerNumberCommand(var gameController: Option[Controller] = None, var 
 
 class AddPlayerCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None, name: String) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
-    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
 
     override def undoStep =
         gameController.get.game = backup.get._1
@@ -78,7 +78,7 @@ class AddPlayerCommand(var gameController: Option[Controller] = None, var backup
 
 class SetMaxScoreCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None, index: Option[Int]) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
-    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
 
     override def undoStep =
         gameController.get.game = backup.get._1
@@ -99,7 +99,7 @@ class SetMaxScoreCommand(var gameController: Option[Controller] = None, var back
 
 class SetSortingRankCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
-    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
 
     override def undoStep =
         gameController.get.game = backup.get._1
@@ -114,7 +114,7 @@ class SetSortingRankCommand(var gameController: Option[Controller] = None, var b
 
 class SetSortingSuitCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
-    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
 
     override def undoStep =
         gameController.get.game = backup.get._1
@@ -129,7 +129,7 @@ class SetSortingSuitCommand(var gameController: Option[Controller] = None, var b
 
 class NewCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
-    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
 
     override def undoStep =
         gameController.get.game = backup.get._1
@@ -141,7 +141,7 @@ class NewCommand(var gameController: Option[Controller] = None, var backup: Opti
 
 class AgainCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
-    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
 
     override def undoStep =
         gameController.get.game = backup.get._1
@@ -159,7 +159,7 @@ class AgainCommand(var gameController: Option[Controller] = None, var backup: Op
 
 class QuitCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
-    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
 
     override def undoStep =
         gameController.get.game = backup.get._1
@@ -171,7 +171,7 @@ class QuitCommand(var gameController: Option[Controller] = None, var backup: Opt
 
 class ExitCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
-    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
 
     override def undoStep =
         gameController.get.game = backup.get._1
@@ -185,7 +185,7 @@ class ExitCommand(var gameController: Option[Controller] = None, var backup: Opt
 
 class RulesCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
-    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
 
     override def undoStep =
         gameController.get.game = backup.get._1
@@ -197,7 +197,7 @@ class RulesCommand(var gameController: Option[Controller] = None, var backup: Op
 
 class BackCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
-    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
 
     override def undoStep =
         gameController.get.game = backup.get._1
@@ -210,7 +210,7 @@ class BackCommand(var gameController: Option[Controller] = None, var backup: Opt
 
 class ContinueCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
-    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
 
     override def undoStep =
         gameController.get.game = backup.get._1
@@ -229,7 +229,7 @@ class ContinueCommand(var gameController: Option[Controller] = None, var backup:
 
 class PlayCardCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None, index: Option[Int]) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
-    override def storeBackup (game:GameInterface,state:State): Unit = backup = Some((gameController.get.game,gameController.get.state))
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
 
     override def undoStep =
         gameController.get.game = backup.get._1

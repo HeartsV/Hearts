@@ -32,7 +32,7 @@ class Controller(var game: GameInterface) extends Observable with ControllerInte
 
     def processInput(next: Command): Unit =
         next.setup(this)
-        next.storeBackup(game,state)
+        next.storeBackup
         if next.execute then
             history.push(next)
             history.clearRedoStack
