@@ -11,6 +11,20 @@ import de.htwg.se.Hearts.model.gameComponent.Rank
 import de.htwg.se.Hearts.model.gameComponent.Suit
 
 class DirectorSpec extends AnyWordSpec with Matchers {
+    /*
+    Das war im BuilderSpec drin, deswegen habe ich es mal raus und hier rüber aber es kann glaub ganz weg!
+    "A Director" should {
+		"resetForNextGame" in {
+			val builder = GameBuilder(gameHearts)
+			val director = Director(builder)
+			director.resetForNextGame
+			builder.game.startWithHearts should be (false)
+			builder.game.firstCard should be (true)
+			builder.game.players(0).points should be (0)
+			builder.game.players(1).points should be (0)
+	}
+    */
+
     "A Director" should {
         val card = Card(Rank.Two,Suit.Clubs)
         val card1 = Card(Rank.Two,Suit.Hearts)
