@@ -109,8 +109,8 @@ class BuilderSpec extends AnyWordSpec with Matchers {
 			builderget.getTrickSize should be (0)
 		}
 		"getPlayerNumber" in {
-			val builder = Game(playerNumber = Some(1))
-			builder.getPlayerNumber should be (Some(1))
+			val builder = GameBuilder(Game(playerNumber = Some(1)))
+			builder.getPlayerNumber should be (1)
 		}
 		"getPLayers" in {
 			builderget.getPlayers should be (Vector.empty)
