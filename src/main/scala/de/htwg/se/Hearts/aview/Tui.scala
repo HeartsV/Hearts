@@ -174,7 +174,6 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 					case "undo"        => Some(UndoCommand())
 					case "redo"        => Some(RedoCommand())
 					case _             => None
-
 			case _ => None
 
 
@@ -182,9 +181,7 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 		update
 		while (gameController.getKeepProcessRunning)
 			val input = readLine
-			commandFor(gameController.passStateString, input)
-				.foreach(gameController.processInput)
-
+			commandFor(gameController.passStateString, input).foreach(gameController.processInput)
 			/*
 			gameController.passStateString match
 				case "MainScreenState" => input match
