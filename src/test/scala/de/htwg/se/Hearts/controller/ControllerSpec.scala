@@ -41,7 +41,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
         /*"process the input correctly" in {
             ???
-        }*/
+        }
 
         "undo last step" in {
 
@@ -49,7 +49,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
         "redo last step" in {
 
-        }
+        }*/
 
         "change state" in {
             gameController.changeState(state)
@@ -135,6 +135,20 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             gameController.sortingStrategy.getClass should be (SortBySuitStrategy().getClass)
         }
 
-        
+        "get the state correctly" in {
+            controllerWithFullTrick.getState.getClass should be (MainScreenState(gameController).getClass)
+        }
+
+        "addPointsToPlayer" in {
+			val Vector(o1, o2, o3) = controllerWithFullTrick.addPointsToPlayers
+
+			o1.points shouldBe (p1.points)
+			o2.points shouldBe (p2.points + 1)
+			o3.points shouldBe (p3.points + 1)
+			o1.wonCards shouldBe Nil
+			o2.wonCards shouldBe Nil
+			o3.wonCards shouldBe Nil
+		}
+
     }
 }

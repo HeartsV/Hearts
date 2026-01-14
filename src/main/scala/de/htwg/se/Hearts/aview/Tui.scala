@@ -89,7 +89,7 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 
 		"Trick:" + "\n" +
 		completeTrickString + "\n" +
-		lastCard + 
+		lastCard +
 		gameController.getCurrentPlayerName +" please select card to play:" + "\n" +
 		handToString + "\n"
 
@@ -119,10 +119,73 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 			case "ShowScoreState" => print(getShowScoreStateString)
 			case "GameOverState" => print(getGameOverStateString)
 
+	def commandFor(state: String, input: String): Option[Command] =
+		state match
+			case "MainScreenState" =>
+				input match
+					case "new" | "n"   => Some(NewCommand())
+					case "rules" | "ru"=> Some(RulesCommand())
+					case "exit" | "e"  => Some(ExitCommand())
+					case _             => None
+
+			case "RulesScreenState" =>
+				input match
+					case "back" | "b"  => Some(BackCommand())
+					case _             => None
+
+			case "GetPlayerNumberState" =>
+				input match
+					case "undo" => Some(UndoCommand())
+					case "redo" => Some(RedoCommand())
+					case _      => Some(SetPlayerNumberCommand(index = input.toIntOption))
+
+			case "GetPlayerNamesState" =>
+				input match
+					case "undo" => Some(UndoCommand())
+					case "redo" => Some(RedoCommand())
+					case _      => Some(AddPlayerCommand(name = input))
+
+			case "SetMaxScoreState" =>
+				input match
+					case "undo" => Some(UndoCommand())
+					case "redo" => Some(RedoCommand())
+					case _      => Some(SetMaxScoreCommand(index = input.toIntOption))
+
+			case "GamePlayState" =>
+				input match
+					case "suit" | "s" => Some(SetSortingSuitCommand())
+					case "rank" | "r" => Some(SetSortingRankCommand())
+					case "undo"       => Some(UndoCommand())
+					case "redo"       => Some(RedoCommand())
+					case _            => Some(PlayCardCommand(index = input.toIntOption))
+
+			case "ShowScoreState" =>
+				input match
+					case "undo" => Some(UndoCommand())
+					case "redo" => Some(RedoCommand())
+					case _      => Some(ContinueCommand())
+
+			case "GameOverState" =>
+				input match
+					case "new" | "n"   => Some(NewCommand())
+					case "again" | "a" => Some(AgainCommand())
+					case "quit" | "q"  => Some(QuitCommand())
+					case "exit" | "e"  => Some(ExitCommand())
+					case "undo"        => Some(UndoCommand())
+					case "redo"        => Some(RedoCommand())
+					case _             => None
+
+			case _ => None
+
+
 	def runGame: Unit =
 		update
 		while (gameController.getKeepProcessRunning)
 			val input = readLine
+			commandFor(gameController.passStateString, input)
+				.foreach(gameController.processInput)
+
+			/*
 			gameController.passStateString match
 				case "MainScreenState" => input match
 					case "new" | "n" =>
@@ -202,5 +265,5 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 							gameController.processInput(UndoCommand())
 						case "redo" =>
 							gameController.processInput(RedoCommand())
-						case _ => update
+						case _ => update*/
 

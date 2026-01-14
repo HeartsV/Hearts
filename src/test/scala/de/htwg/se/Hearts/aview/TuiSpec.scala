@@ -5,9 +5,10 @@ import org.scalatest.matchers.should.Matchers
 import _root_.de.htwg.se.Hearts.aview.Tui
 import de.htwg.se.Hearts.controller.controllerComponent.controllerBase._
 import de.htwg.se.Hearts.model.gameComponent._
+import org.scalatest.OptionValues.convertOptionToValuable
 
 
-class TuiSpec extends AnyWordSpec with Matchers {
+class TuiSpec extends AnyWordSpec with Matchers:
 	"A Tui" should {
 
         val card1 = Card(Rank.Two,Suit.Clubs)
@@ -25,6 +26,10 @@ class TuiSpec extends AnyWordSpec with Matchers {
         val pl1 = Player("Alice",List(card1,card2),List(card5), points = 1)
         val pl2 = Player("Dave",List(card3,card4))
         val game = Game(players = Vector(p1, p2, p3, p4), playerNumber = Some(4), currentPlayerIndex = Some(0))
+        val gameLCPRight = Game(players = Vector(p1, p2, p3, p4), playerNumber = Some(4), currentPlayerIndex = Some(0), lastCardPlayed = Right(card1))
+        val gameLCPLeftError = Game(players = Vector(p1, p2, p3, p4), playerNumber = Some(4), currentPlayerIndex = Some(0), lastCardPlayed = Left("Cards sorted by rank"))
+        val controllerLCPRight = Controller(gameLCPRight)
+        val controllerLCPLeft = Controller(gameLCPLeftError)
         val gameFirstCard = Game(playerNumber = Some(2),players = Vector(pl1,pl2),currentPlayerIndex = Some(0))
         val gameWithTrick = Game(playerNumber = Some(2),players = Vector(pl1,pl2),firstCard = false, currentPlayerIndex = Some(0),
                                 trickCards = List(card7), highestCard = Some(card7),currentWinnerIndex = Some(0))
@@ -34,6 +39,8 @@ class TuiSpec extends AnyWordSpec with Matchers {
         val tui = Tui(gameController)
         val tuiFullTrick = Tui(contollerTrick)
         val tui2 = Tui(gameCo)
+        val tuiRight = Tui(controllerLCPRight)
+        val tuiLeft = Tui(controllerLCPLeft)
 
         "output the correct strings for played Cards" in {
             tuiFullTrick.trickToString should be ("| 10\u2663 |")
@@ -137,6 +144,213 @@ class TuiSpec extends AnyWordSpec with Matchers {
                 "- q or quit to go back to Mainmenu" + "\n" +
                 "- e or exit to end the program" + "\n")
         }
-    }
 
-}
+        "get the correct gameplaystatestring in error and right case" in {
+            tuiLeft.getGameplayStateString should include ("Cards sorted by rank" + "\n")
+            tuiRight.getGameplayStateString should include ("2 ♣ played" + "\n")
+        }
+
+        "commandFor" should {
+
+            "return NewCommand for MainScreenState + 'new'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("MainScreenState", "new")
+                cmd.value shouldBe a [NewCommand]
+            }
+
+            "return NewCommand for MainScreenState + 'n'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("MainScreenState", "n")
+                cmd.value shouldBe a [NewCommand]
+            }
+
+            "return RulesCommand for MainScreenState + 'ru'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("MainScreenState", "ru")
+                cmd.value shouldBe a [RulesCommand]
+            }
+
+            "return ExitCommand for MainScreenState + 'e'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("MainScreenState", "e")
+                cmd.value shouldBe a [ExitCommand]
+            }
+
+            "return None for MainScreenState + unknown input" in {
+                val tui = new Tui(gameCo)
+                tui.commandFor("MainScreenState", "xyz") shouldBe None
+            }
+
+            "return BackCommand for RulesScreenState + 'back'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("RulesScreenState", "back")
+                cmd.value shouldBe a [BackCommand]
+            }
+
+            "return BackCommand for RulesScreenState + 'b'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("RulesScreenState", "b")
+                cmd.value shouldBe a [BackCommand]
+            }
+
+            "return None for RulesScreenState + unknown input" in {
+                val tui = new Tui(gameCo)
+                tui.commandFor("RulesScreenState", "xyz") shouldBe None
+            }
+
+            "return UndoCommand for GetPlayerNumberState + 'undo'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GetPlayerNumberState", "undo")
+                cmd.value shouldBe a [UndoCommand]
+            }
+
+            "return RedoCommand for GetPlayerNumberState + 'redo'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GetPlayerNumberState", "redo")
+                cmd.value shouldBe a [RedoCommand]
+            }
+
+            "return SetPlayerNumberCommand for GetPlayerNumberState + number input" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GetPlayerNumberState", "4")
+                cmd.value shouldBe a [SetPlayerNumberCommand]
+            }
+
+            "return UndoCommand for GetPlayerNamesState + 'undo'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GetPlayerNamesState", "undo")
+                cmd.value shouldBe a [UndoCommand]
+            }
+
+            "return RedoCommand for GetPlayerNamesState + 'redo'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GetPlayerNamesState", "redo")
+                cmd.value shouldBe a [RedoCommand]
+            }
+
+            "return AddPlayerCommand for GetPlayerNamesState + any name" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GetPlayerNamesState", "Alice")
+                cmd.value shouldBe a [AddPlayerCommand]
+            }
+
+            "return UndoCommand for SetMaxScoreState + 'undo'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("SetMaxScoreState", "undo")
+                cmd.value shouldBe a [UndoCommand]
+            }
+
+            "return RedoCommand for SetMaxScoreState + 'redo'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("SetMaxScoreState", "redo")
+                cmd.value shouldBe a [RedoCommand]
+            }
+
+            "return SetMaxScoreCommand for SetMaxScoreState + score input" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("SetMaxScoreState", "100")
+                cmd.value shouldBe a [SetMaxScoreCommand]
+            }
+
+            "return SetSortingSuitCommand for GamePlayState + 's'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GamePlayState", "s")
+                cmd.value shouldBe a [SetSortingSuitCommand]
+            }
+
+            "return SetSortingRankCommand for GamePlayState + 'r'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GamePlayState", "r")
+                cmd.value shouldBe a [SetSortingRankCommand]
+            }
+
+            "return UndoCommand for GamePlayState + 'undo'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GamePlayState", "undo")
+                cmd.value shouldBe a [UndoCommand]
+            }
+
+            "return RedoCommand for GamePlayState + 'redo'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GamePlayState", "redo")
+                cmd.value shouldBe a [RedoCommand]
+            }
+
+            "return PlayCardCommand for GamePlayState + card index input" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GamePlayState", "2")
+                cmd.value shouldBe a [PlayCardCommand]
+            }
+
+            "return UndoCommand for ShowScoreState + 'undo'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("ShowScoreState", "undo")
+                cmd.value shouldBe a [UndoCommand]
+            }
+
+            "return RedoCommand for ShowScoreState + 'redo'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("ShowScoreState", "redo")
+                cmd.value shouldBe a [RedoCommand]
+            }
+
+            "return ContinueCommand for ShowScoreState + any input" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("ShowScoreState", "whatever")
+                cmd.value shouldBe a [ContinueCommand]
+            }
+
+            "return NewCommand for GameOverState + 'new'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GameOverState", "new")
+                cmd.value shouldBe a [NewCommand]
+            }
+
+            "return NewCommand for GameOverState + 'n'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GameOverState", "n")
+                cmd.value shouldBe a [NewCommand]
+            }
+
+            "return AgainCommand for GameOverState + 'a'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GameOverState", "a")
+                cmd.value shouldBe a [AgainCommand]
+            }
+
+            "return QuitCommand for GameOverState + 'q'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GameOverState", "q")
+                cmd.value shouldBe a [QuitCommand]
+            }
+
+            "return ExitCommand for GameOverState + 'e'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GameOverState", "e")
+                cmd.value shouldBe a [ExitCommand]
+            }
+
+            "return UndoCommand for GameOverState + 'undo'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GameOverState", "undo")
+                cmd.value shouldBe a [UndoCommand]
+            }
+
+            "return RedoCommand for GameOverState + 'redo'" in {
+                val tui = new Tui(gameCo)
+                val cmd = tui.commandFor("GameOverState", "redo")
+                cmd.value shouldBe a [RedoCommand]
+            }
+
+            "return None for GameOverState + unknown input" in {
+                val tui = new Tui(gameCo)
+                tui.commandFor("GameOverState", "xyz") shouldBe None
+            }
+
+            "return None for unknown state" in {
+                val tui = new Tui(gameCo)
+                tui.commandFor("SomeWeirdState", "new") shouldBe None
+            }
+        }
+
+    }
