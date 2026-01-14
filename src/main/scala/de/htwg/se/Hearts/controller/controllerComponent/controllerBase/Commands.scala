@@ -148,12 +148,12 @@ class AgainCommand(var gameController: Option[Controller] = None, var backup: Op
         gameController.get.state = backup.get._2
 
     override def execute: Boolean =
-        val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
+        val builder:BuilderInterface = GameBuilder()
+        val director = Director(builder.asInstanceOf[GameBuilder])
+        director.copyGameState(gameController.get.getGame)
+        director.resetForNextGame
         builder.setPlayers(gameController.get.dealNewRound(builder.getCopy))
-            val director = Director(builder.asInstanceOf[GameBuilder])
-            director.copyGameState(gameController.get.getGame)
-            director.resetForNextGame
-            gameController.get.changeState(GamePlayState(gameController.get))
+        gameController.get.changeState(GamePlayState(gameController.get))
         gameController.get.game = builder.getGame
         true
 
