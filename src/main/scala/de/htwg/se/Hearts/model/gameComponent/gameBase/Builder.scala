@@ -3,10 +3,12 @@ package de.htwg.se.Hearts.model.gameComponent.gameBase
 import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
 import de.htwg.se.Hearts.model.gameComponent._
 
-class Director(builder: GameBuilder) extends DirectorInterface:
+class Director() extends DirectorInterface():
 
+	val builder = GameBuilder()
+	def getBuilder: BuilderInterface = builder
 	def resetForNextGame: Unit =
-		builder.setPlayers(builder.game.getPlayers.map(_.copy(points = 0)))
+		builder.setPlayers(builder.getPlayers.map(_.copy(points = 0)))
 		builder.setFirstCard(true)
 		builder.setStartWithHearts(false)
 		builder.setTrickCards(List.empty)
@@ -37,11 +39,12 @@ class Director(builder: GameBuilder) extends DirectorInterface:
 		if builder.getFirstCard then builder.setFirstCard(false)
 		if (playedCard.suit == Suit.Hearts || playedCard == Card(Rank.Queen, Suit.Spades))
 			builder.setStartWithHearts(true)
-		if (builder.game.highestCard.forall(highest => playedCard.suit == highest.suit && playedCard.rank > highest.rank)) {
+		if (builder.getHighestCard.forall(highest => playedCard.suit == highest.suit && playedCard.rank > highest.rank)) {
 			builder.setCurrentWinnerAndHighestCard(builder.getCurrentPlayerIndex, Some(playedCard))
 }
 
-class GameBuilder(var game:Game = Game()) extends BuilderInterface:
+class GameBuilder() extends BuilderInterface:
+	var game:Game = Game()
 	def reset: Unit = game = Game()
 	def setPlayerNumber(playerNumber: Option[Int]): Unit = game = game.copy(playerNumber = playerNumber)
 	def setStartWithHearts(swh: Boolean): Unit = game = game.copy(startWithHearts = swh)
@@ -65,6 +68,7 @@ class GameBuilder(var game:Game = Game()) extends BuilderInterface:
 	def getTrickCards: List[Card] = game.trickCards
 	def getCurrentWinnerIndex: Option[Int] = game.currentWinnerIndex
 	def getStartWithHearts: Boolean = game.startWithHearts
+	def getHighestCard: Option[Card] = game.highestCard
 	def getGame: GameInterface =
 		 val newGame = game
 		 reset

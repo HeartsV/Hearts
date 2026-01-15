@@ -4,9 +4,11 @@ import de.htwg.se.Hearts.model.gameComponent.PlayerInterface
 import de.htwg.se.Hearts.model.gameComponent.Rank
 import de.htwg.se.Hearts.model.gameComponent.Suit
 import scala.xml.Elem
+import com.google.inject.Inject
 
-case class Player(name: String, hand:List[Card]= Nil, wonCards: List[Card] = Nil, points: Int = 0) extends PlayerInterface:
+case class Player (name: String, hand:List[Card]= Nil, wonCards: List[Card] = Nil, points: Int = 0) extends PlayerInterface:
 
+    def setName(newName:String): Player = copy(name = newName)
     def removeCard(card: Card): Player = copy(hand = hand.filterNot(_ == card))
 
     def addAllCards(cards: List[Card]): Player = copy(hand = hand ++ cards)
@@ -23,4 +25,4 @@ case class Player(name: String, hand:List[Card]= Nil, wonCards: List[Card] = Nil
             <points>{points}</points>
         </player>
 
-    
+
