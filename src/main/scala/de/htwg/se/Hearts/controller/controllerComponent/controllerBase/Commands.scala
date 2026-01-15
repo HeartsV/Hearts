@@ -154,6 +154,7 @@ class AgainCommand(var gameController: Option[Controller] = None, var backup: Op
         director.resetForNextGame
         builder.setPlayers(gameController.get.dealNewRound(builder.getCopy))
         gameController.get.changeState(GamePlayState(gameController.get))
+        builder.setCurrentPlayerIndex(Some(gameController.get.turnService.nextPlayerIndex(builder.getCopy)))
         gameController.get.game = builder.getGame
         true
 
@@ -219,10 +220,13 @@ class ContinueCommand(var gameController: Option[Controller] = None, var backup:
     override def execute: Boolean =
         val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
         builder.setPlayers(gameController.get.dealNewRound(builder.getCopy))
+        builder.setTrickCards(List.empty)
+        builder.setCurrentWinnerAndHighestCard(None, None)
         builder.setFirstCard(true)
         builder.setStartWithHearts(false)
-
+        builder.setLastPlayedCard(Left(""))
         gameController.get.changeState(GamePlayState(gameController.get))
+        builder.setCurrentPlayerIndex(Some(gameController.get.turnService.nextPlayerIndex(builder.getCopy)))
         gameController.get.game = builder.getGame
         true
 
@@ -243,32 +247,26 @@ class PlayCardCommand(var gameController: Option[Controller] = None, var backup:
                 builder.setTrickCards(List())
                 builder.setCurrentWinnerAndHighestCard(None, None)
             val cOR: CoRInterface = ChainOfResponsibility()
-            val result = cOR.validateMove(
-                builder.getCopy,
-                gameController.get.getPlayerHand,
-                index
-            )
+            val result = cOR.validateMove(builder.getCopy, gameController.get.getPlayerHand, index)
             result match
-            case Left(_) => builder.setLastPlayedCard(result)
-            case Right(cardToPlay) =>
-                director.moveCard(cardToPlay)
+                case Left(_) => builder.setLastPlayedCard(result)
+                case Right(cardToPlay) =>
+                    director.moveCard(cardToPlay)
 
+                    if builder.getTrickSize == builder.getPlayerNumber then
+                        builder.updatePlayer(
+                            builder.getCurrentWinnerIndex.get,
+                            builder.getPlayers(builder.getCurrentWinnerIndex.get).addWonCards(builder.getTrickCards)
+                        )
 
+                    builder.setLastPlayedCard(result)
+                    builder.setCurrentPlayerIndex(Some(gameController.get.turnService.nextPlayerIndex(builder.getCopy)))
 
-                if builder.getTrickSize == builder.getPlayerNumber then
-                    builder.updatePlayer(
-                        builder.getCurrentWinnerIndex.get,
-                        builder.getPlayers(builder.getCurrentWinnerIndex.get).addWonCards(builder.getTrickCards)
-                    )
+                    if builder.getPlayers.forall(_.hand.size == 0) then
+                        builder.setPlayers(gameController.get.scoringService.addPointsToPlayers(builder.getCopy))
+                        if !gameController.get.checkGameOver(builder.getCopy) then gameController.get.changeState(ShowScoreState(gameController.get))
+                        else gameController.get.changeState(GameOverState(gameController.get))
 
-                builder.setLastPlayedCard(result)
-                builder.setCurrentPlayerIndex(Some(gameController.get.turnService.nextPlayerIndex(builder.getCopy)))
-
-                if builder.getPlayers.forall(_.hand.size == 0) then
-                    if !gameController.get.checkGameOver then gameController.get.changeState(ShowScoreState(gameController.get))
-                    else gameController.get.changeState(GameOverState(gameController.get))
-
-                    builder.setPlayers(gameController.get.scoringService.addPointsToPlayers(builder.getCopy))
 
             gameController.get.game = builder.getGame
             true

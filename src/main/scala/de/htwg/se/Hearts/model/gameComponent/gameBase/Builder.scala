@@ -9,6 +9,9 @@ class Director(builder: GameBuilder) extends DirectorInterface:
 		builder.setPlayers(builder.game.getPlayers.map(_.copy(points = 0)))
 		builder.setFirstCard(true)
 		builder.setStartWithHearts(false)
+		builder.setTrickCards(List.empty)
+		builder.setCurrentWinnerAndHighestCard(None, None)
+		builder.setLastPlayedCard(Left("No Card"))
 
 	def copyGameState(gameState: GameInterface): Unit =
 		builder.setPlayerNumber(gameState.getPlayerNumber)
