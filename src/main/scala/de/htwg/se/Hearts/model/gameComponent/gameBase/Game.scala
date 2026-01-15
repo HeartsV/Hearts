@@ -2,6 +2,9 @@ package de.htwg.se.Hearts.model.gameComponent.gameBase
 
 import de.htwg.se.Hearts.model.gameComponent.GameInterface
 import com.google.inject.Inject
+import de.htwg.se.Hearts.model.gameComponent.Rank
+import de.htwg.se.Hearts.model.gameComponent.Suit
+import scala.xml.Node
 
 case class Game(
     playerNumber: Option[Int] = None,
@@ -28,5 +31,33 @@ case class Game(
     def getCurrentWinnerIndex: Option[Int] = currentWinnerIndex
     def getLastCardPlayed: Either[String, Card] = lastCardPlayed
     def getCurrentPlayerIndex: Option[Int] = currentPlayerIndex
+
+    def gameFromXML(gameNode: Node): GameInterface =
+        Game(
+            (gameNode \ "playNumber").headOption.map(_.text.toInt),
+            (gameNode \ "startWithHearts").text.toBoolean,
+            (gameNode \ "keepProcessRunning").text.toBoolean,
+            (gameNode \ "firstCard").text.toBoolean,
+            (gameNode \ "players" \ "player").map(n=>playerFromXML(n)).toVector,
+            (gameNode \ "maxScore").headOption.map(_.text.toInt),
+            (gameNode \ "currentPlayerIndex").headOption.map(_.text.toInt),
+            (gameNode \ "trickCards" \ "card").map(n => cardFromXML(n)).toList,
+            (gameNode \ "highestCard" \ "card").headOption.map(cardFromXML),
+            (gameNode \ "currentWinnerIndex").headOption.map(_.text.toInt),
+            if ((gameNode \ "lastCardPlayed" \ "right").nonEmpty)
+            Right(cardFromXML((gameNode \ "lastCardPlayed" \ "right" \ "card").head))
+            else
+            Left((gameNode \ "lastCardPlayed" \ "left").text)
+        )
+
+    def playerFromXML(node: scala.xml.Node): Player =
+        Player(
+            (node \ "name").text,
+            (node \ "hand" \ "card").map(n => cardFromXML(n)).toList,
+            (node \ "wonCards" \ "card").map(n => cardFromXML(n)).toList,
+            (node \ "points").text.toInt
+        )
+
+    def cardFromXML(node: scala.xml.Node): Card = Card(Rank.valueOf((node \ "rank").text),Suit.valueOf((node \ "suit").text))
 
 

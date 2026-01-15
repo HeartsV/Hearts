@@ -1,6 +1,8 @@
 package de.htwg.se.Hearts.model.gameComponent
 
 import de.htwg.se.Hearts.model.gameComponent.gameBase._
+import scala.xml.Elem
+import scala.xml.Node
 
 trait DirectorInterface():
     def resetForNextGame: Unit
@@ -20,6 +22,7 @@ trait GameInterface():
     def getCurrentWinnerIndex: Option[Int]
     def getLastCardPlayed: Either[String, Card]
     def getCurrentPlayerIndex: Option[Int]
+    def gameFromXml(node: Node): GameInterface
 
 trait BuilderInterface:
     def reset: Unit
@@ -53,12 +56,15 @@ trait CardInterface:
     def pngName: String
     def getRank: Rank
     def getSuit: Suit
+    def cardToXML: Elem
+
 
 trait PlayerInterface:
     def removeCard(card: Card): Player
     def addAllCards(cards: List[Card]): Player
     def addWonCards(cards: List[Card]): Player
     def addPoints(newPoints: Int): Player
+    def playerToXML: Elem
 
 trait CoRInterface:
     def validateMove(game: GameInterface, playerHand: List[Card], index: Option[Int]): Either[String, Card]

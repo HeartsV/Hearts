@@ -4,6 +4,7 @@ import scala.math.Ordered
 import de.htwg.se.Hearts.model.gameComponent.CardInterface
 import de.htwg.se.Hearts.model.gameComponent.Suit
 import de.htwg.se.Hearts.model.gameComponent.Rank
+import scala.xml.Elem
 
 case class Card(rank: Rank, suit: Suit) extends CardInterface:
     override def toString: String = s"${rank.toString.padTo(2, ' ')}${suit.toString}"
@@ -11,6 +12,14 @@ case class Card(rank: Rank, suit: Suit) extends CardInterface:
     def pngName: String = s"${this.rank.toString}_of_${this.suit.fileName}.png"
     def getRank: Rank = rank
     def getSuit: Suit = suit
+    def cardToXML: Elem =
+        <card>
+            <rank>{rank.toString}</rank>
+            <suit>{suit.toString}</suit>
+        </card>
+
+    
+
 
 
 
