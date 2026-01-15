@@ -93,7 +93,7 @@ class SetMaxScoreCommand(var gameController: Option[Controller] = None, var back
         else
             gameController.get.changeState(GamePlayState(gameController.get))
             builder.setMaxScore(Some(100))
-        builder.setCurrentPlayerIndex(Some(gameController.get.turnService.nextPlayerIndex(builder.getCopy)))
+        builder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(builder.getCopy)))
         gameController.get.game = builder.getGame
         true
 
@@ -154,7 +154,7 @@ class AgainCommand(var gameController: Option[Controller] = None, var backup: Op
         director.resetForNextGame
         builder.setPlayers(gameController.get.dealNewRound(builder.getCopy))
         gameController.get.changeState(GamePlayState(gameController.get))
-        builder.setCurrentPlayerIndex(Some(gameController.get.turnService.nextPlayerIndex(builder.getCopy)))
+        builder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(builder.getCopy)))
         gameController.get.game = builder.getGame
         true
 
@@ -226,7 +226,7 @@ class ContinueCommand(var gameController: Option[Controller] = None, var backup:
         builder.setStartWithHearts(false)
         builder.setLastPlayedCard(Left(""))
         gameController.get.changeState(GamePlayState(gameController.get))
-        builder.setCurrentPlayerIndex(Some(gameController.get.turnService.nextPlayerIndex(builder.getCopy)))
+        builder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(builder.getCopy)))
         gameController.get.game = builder.getGame
         true
 
@@ -260,10 +260,10 @@ class PlayCardCommand(var gameController: Option[Controller] = None, var backup:
                         )
 
                     builder.setLastPlayedCard(result)
-                    builder.setCurrentPlayerIndex(Some(gameController.get.turnService.nextPlayerIndex(builder.getCopy)))
+                    builder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(builder.getCopy)))
 
                     if builder.getPlayers.forall(_.hand.size == 0) then
-                        builder.setPlayers(gameController.get.scoringService.addPointsToPlayers(builder.getCopy))
+                        builder.setPlayers(gameController.get.getAddPointsToPlayers(builder.getCopy))
                         if !gameController.get.checkGameOver(builder.getCopy) then gameController.get.changeState(ShowScoreState(gameController.get))
                         else gameController.get.changeState(GameOverState(gameController.get))
 

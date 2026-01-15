@@ -18,16 +18,20 @@ import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
 import de.htwg.se.Hearts.model.gameComponent.GameInterface
 import java.lang.Thread.Builder
 import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
+import com.google.inject.Inject
+import com.google.inject.{Injector, Guice}
+import de.htwg.se.Hearts.HeartsModule
 
-class Controller(var game: GameInterface) extends Observable with ControllerInterface:
+class Controller (var game: GameInterface) extends Observable with ControllerInterface:
 
     var state: State = MainScreenState(this)
     var sortingStrategy: Strategy = SortByRankStrategy()
+    val injector: Injector = Guice.createInjector(HeartsModule())
+    val turnService = injector.getInstance(classOf[PlayerTurnInterface])
+    val deckmanger = injector.getInstance(classOf[DeckManagerInterface])
+    val scoringService = injector.getInstance(classOf[ScoringInterface])
+    val leaderboardService =  injector.getInstance(classOf[LeaderBoardInterface])
 
-    val deckmanger: DeckManagerInterface = DeckManager()
-    val scoringService: ScoringInterface = HeartsScoring()
-    val turnService: PlayerTurnInterface = PlayerTurn()
-    val leaderboardService: LeaderBoardInterface = LeaderBoard()
     val history = CommandHistory()
 
     def processInput(next: Command): Unit =
@@ -70,11 +74,10 @@ class Controller(var game: GameInterface) extends Observable with ControllerInte
     def passCurrentPlayer: Player = game.getCurrentPlayer.get
     def passStateString: String = state.getStateString
     def setStrategy(strategy: Strategy): Unit = this.sortingStrategy = strategy
-    def dealNewRound(game: GameInterface): Vector[Player] = deckmanger.deal(deckmanger.shuffle(deckmanger.createDeck), game)
-    //def updateCurrentPlayer: Int = turnService.nextPlayerIndex(game)
-    def updateCurrentWinner(newWinner: (Int, Card), builderGame: Game): (Option[Int], Option[Card]) =
-        turnService.updateCurrentWinner(newWinner, builderGame)
+    def dealNewRound(bgame: GameInterface): Vector[Player] = deckmanger.deal(deckmanger.shuffle(deckmanger.createDeck), bgame)
     def addPointsToPlayers: Vector[Player] = scoringService.addPointsToPlayers(game)
     def getLastCardPlayed: Either[String,Card] = game.getLastCardPlayed
     def getState: State = state
+    def getNextPlayerIndex(bgame: GameInterface): Int = turnService.nextPlayerIndex(bgame)
+    def getAddPointsToPlayers(bgame: GameInterface): Vector[Player] = scoringService.addPointsToPlayers(bgame)
 
