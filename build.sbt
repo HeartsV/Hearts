@@ -24,7 +24,7 @@ lazy val root = project
       "org.scalatest" %% "scalatest" % "3.2.19" % "test",
       "net.codingwell" %% "scala-guice" % "7.0.0",
       "com.google.inject" % "guice" % "7.0.0",
-      "com.typesafe.play" %% "play-json" % "3.0.6",
+      "com.typesafe.play" %% "play-json" % "2.10.6",
       "org.scala-lang.modules" %% "scala-xml" % "2.4.0"
     )
   )

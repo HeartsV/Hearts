@@ -1,9 +1,11 @@
 package de.htwg.se.Hearts.model.gameComponent.gameBase
 
 import de.htwg.se.Hearts.model.gameComponent.PlayerInterface
+import com.google.inject.Inject
 
-case class Player(name: String, hand:List[Card]= Nil, wonCards: List[Card] = Nil, points: Int = 0) extends PlayerInterface:
+case class Player (name: String, hand:List[Card]= Nil, wonCards: List[Card] = Nil, points: Int = 0) extends PlayerInterface:
 
+    def setName(newName:String): Player = copy(name = newName)
     def removeCard(card: Card): Player = copy(hand = hand.filterNot(_ == card))
 
     def addAllCards(cards: List[Card]): Player = copy(hand = hand ++ cards)

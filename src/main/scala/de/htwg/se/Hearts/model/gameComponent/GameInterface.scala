@@ -6,6 +6,7 @@ trait DirectorInterface():
     def resetForNextGame: Unit
     def copyGameState(gameState: GameInterface): Unit
     def moveCard(playedCard:Card): Unit
+    def getBuilder: BuilderInterface
 
 trait GameInterface():
     def getPlayerNumber: Option[Int]
@@ -21,7 +22,7 @@ trait GameInterface():
     def getLastCardPlayed: Either[String, Card]
     def getCurrentPlayerIndex: Option[Int]
 
-trait BuilderInterface:
+trait BuilderInterface():
     def reset: Unit
     def setPlayerNumber(playerNumber: Option[Int]): Unit
     def setStartWithHearts(swh: Boolean): Unit
@@ -46,6 +47,7 @@ trait BuilderInterface:
     def getTrickCards: List[Card]
     def getCurrentWinnerIndex: Option[Int]
     def getStartWithHearts: Boolean
+    def getHighestCard: Option[Card]
 
 trait CardInterface:
     override def toString: String
@@ -55,6 +57,7 @@ trait CardInterface:
     def getSuit: Suit
 
 trait PlayerInterface:
+    def setName(name: String): Player
     def removeCard(card: Card): Player
     def addAllCards(cards: List[Card]): Player
     def addWonCards(cards: List[Card]): Player

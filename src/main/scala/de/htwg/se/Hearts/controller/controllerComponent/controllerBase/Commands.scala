@@ -1,18 +1,14 @@
 package de.htwg.se.Hearts.controller.controllerComponent.controllerBase
 import de.htwg.se.Hearts.model.gameComponent.GameInterface
 import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
-import de.htwg.se.Hearts.model.gameComponent.gameBase.GameBuilder
 import de.htwg.se.Hearts.model.gameComponent.Suit
 import de.htwg.se.Hearts.model.gameComponent.Rank
 import de.htwg.se.Hearts.util._
 import de.htwg.se.Hearts.controller.controllerComponent.ControllerInterface
 import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
-import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 import de.htwg.se.Hearts.model.gameComponent.CoRInterface
-import de.htwg.se.Hearts.model.gameComponent.gameBase.ChainOfResponsibility
-import de.htwg.se.Hearts.model.gameComponent.gameBase.{Director, GameBuilder}
-import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
 import de.htwg.se.Hearts.model.gameComponent.DirectorInterface
+import de.htwg.se.Hearts.model.gameComponent.PlayerInterface
 
 class RedoCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
@@ -46,11 +42,13 @@ class SetPlayerNumberCommand(var gameController: Option[Controller] = None, var 
         gameController.get.state = backup.get._2
 
     override def execute: Boolean =
-        val builder:BuilderInterface = GameBuilder(gameController.get.getGame.asInstanceOf[Game])
+        val director = injector.getInstance(classOf[DirectorInterface])
+        director.copyGameState(gameController.get.game)
+        //val builder:BuilderInterface = GameBuilder(gameController.get.getGame.asInstanceOf[Game])
         if index.exists(intInput => intInput >= 3 && intInput <= 4) then
             gameController.get.changeState(GetPlayerNamesState(gameController.get))
-            builder.setPlayerNumber(Some(index.get))
-        gameController.get.game = builder.getGame
+            director.getBuilder.setPlayerNumber(Some(index.get))
+        gameController.get.game = director.getBuilder.getGame
         true
 
 class AddPlayerCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None, name: String) extends Command:
@@ -62,18 +60,21 @@ class AddPlayerCommand(var gameController: Option[Controller] = None, var backup
         gameController.get.state = backup.get._2
 
     override def execute: Boolean =
-        val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
+        val director = injector.getInstance(classOf[DirectorInterface])
+        director.copyGameState(gameController.get.game)
 
         if !name.trim.equals("") then
-            builder.setPlayers(builder.getPlayers :+ Player(name))
+            val player = injector.getInstance(classOf[PlayerInterface])
+            director.getBuilder.setPlayers(director.getBuilder.getPlayers :+ player.setName(name))
         else
-            builder.setPlayers(builder.getPlayers :+ Player(s"P${builder.getPlayers.size + 1}"))
+            val player = injector.getInstance(classOf[PlayerInterface])
+            director.getBuilder.setPlayers(director.getBuilder.getPlayers :+ player.setName(s"P${director.getBuilder.getPlayers.size + 1}"))
 
-        if builder.getPlayers.size == builder.getPlayerNumber then
-            builder.setPlayers(gameController.get.dealNewRound(builder.getCopy))
+        if director.getBuilder.getPlayers.size == director.getBuilder.getPlayerNumber then
+            director.getBuilder.setPlayers(gameController.get.dealNewRound(director.getBuilder.getCopy))
             gameController.get.changeState(SetMaxScoreState(gameController.get))
 
-        gameController.get.game = builder.getGame
+        gameController.get.game = director.getBuilder.getGame
         true
 
 class SetMaxScoreCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None, index: Option[Int]) extends Command:
@@ -85,16 +86,17 @@ class SetMaxScoreCommand(var gameController: Option[Controller] = None, var back
         gameController.get.state = backup.get._2
 
     override def execute: Boolean =
-        val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
+        val director = injector.getInstance(classOf[DirectorInterface])
+        director.copyGameState(gameController.get.game)
 
         if index.exists(intInput => intInput >= 1 && intInput <= 400) then
             gameController.get.changeState(GamePlayState(gameController.get))
-            builder.setMaxScore(Some(index.get))
+            director.getBuilder.setMaxScore(Some(index.get))
         else
             gameController.get.changeState(GamePlayState(gameController.get))
-            builder.setMaxScore(Some(100))
-        builder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(builder.getCopy)))
-        gameController.get.game = builder.getGame
+            director.getBuilder.setMaxScore(Some(100))
+        director.getBuilder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(director.getBuilder.getCopy)))
+        gameController.get.game = director.getBuilder.getGame
         true
 
 class SetSortingRankCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
@@ -106,10 +108,11 @@ class SetSortingRankCommand(var gameController: Option[Controller] = None, var b
         gameController.get.state = backup.get._2
 
     override def execute: Boolean =
-        val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
+        val director = injector.getInstance(classOf[DirectorInterface])
+        director.copyGameState(gameController.get.game)
         gameController.get.setStrategy(SortByRankStrategy())
-        builder.setLastPlayedCard(Left("Cards sorted by rank"))
-        gameController.get.game = builder.getGame
+        director.getBuilder.setLastPlayedCard(Left("Cards sorted by rank"))
+        gameController.get.game = director.getBuilder.getGame
         false
 
 class SetSortingSuitCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
@@ -121,10 +124,11 @@ class SetSortingSuitCommand(var gameController: Option[Controller] = None, var b
         gameController.get.state = backup.get._2
 
     override def execute: Boolean =
-        val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
+        val director = injector.getInstance(classOf[DirectorInterface])
+        director.copyGameState(gameController.get.game)
         gameController.get.setStrategy(SortBySuitStrategy())
-        builder.setLastPlayedCard(Left("Cards sorted by suit"))
-        gameController.get.game = builder.getGame
+        director.getBuilder.setLastPlayedCard(Left("Cards sorted by suit"))
+        gameController.get.game = director.getBuilder.getGame
         false
 
 class NewCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
@@ -148,14 +152,13 @@ class AgainCommand(var gameController: Option[Controller] = None, var backup: Op
         gameController.get.state = backup.get._2
 
     override def execute: Boolean =
-        val builder:BuilderInterface = GameBuilder()
-        val director = Director(builder.asInstanceOf[GameBuilder])
+        val director = injector.getInstance(classOf[DirectorInterface])
         director.copyGameState(gameController.get.getGame)
         director.resetForNextGame
-        builder.setPlayers(gameController.get.dealNewRound(builder.getCopy))
+        director.getBuilder.setPlayers(gameController.get.dealNewRound(director.getBuilder.getCopy))
         gameController.get.changeState(GamePlayState(gameController.get))
-        builder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(builder.getCopy)))
-        gameController.get.game = builder.getGame
+        director.getBuilder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(director.getBuilder.getCopy)))
+        gameController.get.game = director.getBuilder.getGame
         true
 
 class QuitCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
@@ -179,9 +182,10 @@ class ExitCommand(var gameController: Option[Controller] = None, var backup: Opt
         gameController.get.state = backup.get._2
 
     override def execute: Boolean =
-        val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
-        builder.setKeepProcessRunning(false)
-        gameController.get.game = builder.getGame
+        val director = injector.getInstance(classOf[DirectorInterface])
+        director.copyGameState(gameController.get.game)
+        director.getBuilder.setKeepProcessRunning(false)
+        gameController.get.game = director.getBuilder.getGame
         true
 
 class RulesCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
@@ -218,16 +222,17 @@ class ContinueCommand(var gameController: Option[Controller] = None, var backup:
         gameController.get.state = backup.get._2
 
     override def execute: Boolean =
-        val builder:BuilderInterface = GameBuilder(gameController.get.game.asInstanceOf[Game])
-        builder.setPlayers(gameController.get.dealNewRound(builder.getCopy))
-        builder.setTrickCards(List.empty)
-        builder.setCurrentWinnerAndHighestCard(None, None)
-        builder.setFirstCard(true)
-        builder.setStartWithHearts(false)
-        builder.setLastPlayedCard(Left(""))
+        val director = injector.getInstance(classOf[DirectorInterface])
+        director.copyGameState(gameController.get.game)
+        director.getBuilder.setPlayers(gameController.get.dealNewRound(director.getBuilder.getCopy))
+        director.getBuilder.setTrickCards(List.empty)
+        director.getBuilder.setCurrentWinnerAndHighestCard(None, None)
+        director.getBuilder.setFirstCard(true)
+        director.getBuilder.setStartWithHearts(false)
+        director.getBuilder.setLastPlayedCard(Left(""))
         gameController.get.changeState(GamePlayState(gameController.get))
-        builder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(builder.getCopy)))
-        gameController.get.game = builder.getGame
+        director.getBuilder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(director.getBuilder.getCopy)))
+        gameController.get.game = director.getBuilder.getGame
         true
 
 
@@ -240,35 +245,34 @@ class PlayCardCommand(var gameController: Option[Controller] = None, var backup:
         gameController.get.state = backup.get._2
 
     override def execute: Boolean =
-            val builder = GameBuilder()
-            val director: DirectorInterface = Director(builder)
+            val director = injector.getInstance(classOf[DirectorInterface])
             director.copyGameState(gameController.get.getGame)
-            if builder.getTrickSize == builder.getPlayerNumber then
-                builder.setTrickCards(List())
-                builder.setCurrentWinnerAndHighestCard(None, None)
-            val cOR: CoRInterface = ChainOfResponsibility()
-            val result = cOR.validateMove(builder.getCopy, gameController.get.getPlayerHand, index)
+            if director.getBuilder.getTrickSize == director.getBuilder.getPlayerNumber then
+                director.getBuilder.setTrickCards(List())
+                director.getBuilder.setCurrentWinnerAndHighestCard(None, None)
+            val cOR: CoRInterface = injector.getInstance((classOf[CoRInterface]))
+            val result = cOR.validateMove(director.getBuilder.getCopy, gameController.get.getPlayerHand, index)
             result match
-                case Left(_) => builder.setLastPlayedCard(result)
+                case Left(_) => director.getBuilder.setLastPlayedCard(result)
                 case Right(cardToPlay) =>
                     director.moveCard(cardToPlay)
 
-                    if builder.getTrickSize == builder.getPlayerNumber then
-                        builder.updatePlayer(
-                            builder.getCurrentWinnerIndex.get,
-                            builder.getPlayers(builder.getCurrentWinnerIndex.get).addWonCards(builder.getTrickCards)
+                    if director.getBuilder.getTrickSize == director.getBuilder.getPlayerNumber then
+                        director.getBuilder.updatePlayer(
+                            director.getBuilder.getCurrentWinnerIndex.get,
+                            director.getBuilder.getPlayers(director.getBuilder.getCurrentWinnerIndex.get).addWonCards(director.getBuilder.getTrickCards)
                         )
 
-                    builder.setLastPlayedCard(result)
-                    builder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(builder.getCopy)))
+                    director.getBuilder.setLastPlayedCard(result)
+                    director.getBuilder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(director.getBuilder.getCopy)))
 
-                    if builder.getPlayers.forall(_.hand.size == 0) then
-                        builder.setPlayers(gameController.get.getAddPointsToPlayers(builder.getCopy))
-                        if !gameController.get.checkGameOver(builder.getCopy) then gameController.get.changeState(ShowScoreState(gameController.get))
+                    if director.getBuilder.getPlayers.forall(_.hand.size == 0) then
+                        director.getBuilder.setPlayers(gameController.get.getAddPointsToPlayers(director.getBuilder.getCopy))
+                        if !gameController.get.checkGameOver(director.getBuilder.getCopy) then gameController.get.changeState(ShowScoreState(gameController.get))
                         else gameController.get.changeState(GameOverState(gameController.get))
 
 
-            gameController.get.game = builder.getGame
+            gameController.get.game = director.getBuilder.getGame
             true
 
 
