@@ -19,8 +19,6 @@ import de.htwg.se.Hearts.controller.leaderBoardComponent.leaderBoardBase.LeaderB
 class HeartsModule extends AbstractModule with ScalaModule {
 
 	override def configure(): Unit =
-		bind(classOf[GameInterface]).to(classOf[Game])
-		bind(classOf[ControllerInterface]).to(classOf[Controller])
 		bind(classOf[DeckManagerInterface]).to(classOf[DeckManager])
 		bind(classOf[ScoringInterface]).to(classOf[HeartsScoring])
 		bind(classOf[PlayerTurnInterface]).to(classOf[PlayerTurn])

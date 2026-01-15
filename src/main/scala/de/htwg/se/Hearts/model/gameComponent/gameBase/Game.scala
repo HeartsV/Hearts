@@ -1,6 +1,7 @@
 package de.htwg.se.Hearts.model.gameComponent.gameBase
 
 import de.htwg.se.Hearts.model.gameComponent.GameInterface
+import com.google.inject.Inject
 
 case class Game(
     playerNumber: Option[Int] = None,

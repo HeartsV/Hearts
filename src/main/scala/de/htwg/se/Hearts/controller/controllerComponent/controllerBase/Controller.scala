@@ -22,7 +22,7 @@ import com.google.inject.Inject
 import com.google.inject.{Injector, Guice}
 import de.htwg.se.Hearts.HeartsModule
 
-class Controller (var game: GameInterface) extends Observable with ControllerInterface:
+class Controller(var game: GameInterface) extends Observable with ControllerInterface:
 
     var state: State = MainScreenState(this)
     var sortingStrategy: Strategy = SortByRankStrategy()
