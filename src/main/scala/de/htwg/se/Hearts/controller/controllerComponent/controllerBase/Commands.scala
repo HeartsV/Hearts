@@ -9,6 +9,7 @@ import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
 import de.htwg.se.Hearts.model.gameComponent.CoRInterface
 import de.htwg.se.Hearts.model.gameComponent.DirectorInterface
 import de.htwg.se.Hearts.model.gameComponent.PlayerInterface
+import de.htwg.se.Hearts.model.fileIOComponent.fileXMLImpl.fileIO
 
 class RedoCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
@@ -234,6 +235,32 @@ class ContinueCommand(var gameController: Option[Controller] = None, var backup:
         director.getBuilder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(director.getBuilder.getCopy)))
         gameController.get.game = director.getBuilder.getGame
         true
+
+class SaveCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
+
+    override def setup(newController:Controller):Unit = gameController = Some(newController)
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
+
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
+
+    override def execute: Boolean =
+        fileIO().save(gameController.get.getGame, gameController.get.getState)
+        false
+
+class LoadCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
+
+    override def setup(newController:Controller):Unit = gameController = Some(newController)
+    override def storeBackup: Unit = backup = Some((gameController.get.game,gameController.get.state))
+
+    override def undoStep =
+        gameController.get.game = backup.get._1
+        gameController.get.state = backup.get._2
+
+    override def execute: Boolean =
+        gameController.get.setGame(fileIO().load(gameController.get))
+        false
 
 
 class PlayCardCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None, index: Option[Int]) extends Command:

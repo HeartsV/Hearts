@@ -14,11 +14,11 @@ case class Card(rank: Rank, suit: Suit) extends CardInterface:
     def getSuit: Suit = suit
     def cardToXML: Elem =
         <card>
-            <rank>{rank.toString}</rank>
-            <suit>{suit.toString}</suit>
+            <rank>{rank.stringForXML}</rank>
+            <suit>{suit.fileNameForXML}</suit>
         </card>
 
-    
+
 
 
 

@@ -126,6 +126,7 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 					case "new" | "n"   => Some(NewCommand())
 					case "rules" | "ru"=> Some(RulesCommand())
 					case "exit" | "e"  => Some(ExitCommand())
+					case "load" 	   => Some(LoadCommand())
 					case _             => None
 
 			case "RulesScreenState" =>
@@ -157,6 +158,7 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 					case "rank" | "r" => Some(SetSortingRankCommand())
 					case "undo"       => Some(UndoCommand())
 					case "redo"       => Some(RedoCommand())
+					case "save" 	  => Some(SaveCommand())
 					case _            => Some(PlayCardCommand(index = input.toIntOption))
 
 			case "ShowScoreState" =>

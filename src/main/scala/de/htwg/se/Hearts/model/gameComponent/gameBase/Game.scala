@@ -32,23 +32,45 @@ case class Game(
     def getLastCardPlayed: Either[String, Card] = lastCardPlayed
     def getCurrentPlayerIndex: Option[Int] = currentPlayerIndex
 
+
     def gameFromXML(gameNode: Node): GameInterface =
-        Game(
-            (gameNode \ "playNumber").headOption.map(_.text.toInt),
-            (gameNode \ "startWithHearts").text.toBoolean,
-            (gameNode \ "keepProcessRunning").text.toBoolean,
-            (gameNode \ "firstCard").text.toBoolean,
-            (gameNode \ "players" \ "player").map(n=>playerFromXML(n)).toVector,
-            (gameNode \ "maxScore").headOption.map(_.text.toInt),
-            (gameNode \ "currentPlayerIndex").headOption.map(_.text.toInt),
-            (gameNode \ "trickCards" \ "card").map(n => cardFromXML(n)).toList,
-            (gameNode \ "highestCard" \ "card").headOption.map(cardFromXML),
-            (gameNode \ "currentWinnerIndex").headOption.map(_.text.toInt),
+
+        def optInt(label: String): Option[Int] = (gameNode \ label).headOption.map(_.text.trim).filter(_.nonEmpty).map(_.toInt)
+
+        def reqBool(label: String, default: Boolean): Boolean =
+            (gameNode \ label).headOption.map(_.text.trim).filter(_.nonEmpty) match
+            case Some(v) => v.toBoolean
+            case None    => default
+
+        val players: Vector[Player] = (gameNode \ "players" \ "player").map(playerFromXML).toVector
+
+        val trickCards: List[Card] = (gameNode \ "trickCards" \ "card").map(cardFromXML).toList
+
+        val highestCard: Option[Card] = (gameNode \ "highestCard" \ "card").headOption.map(cardFromXML)
+
+        val lastCardPlayed: Either[String, Card] =
             if ((gameNode \ "lastCardPlayed" \ "right").nonEmpty)
             Right(cardFromXML((gameNode \ "lastCardPlayed" \ "right" \ "card").head))
-            else
-            Left((gameNode \ "lastCardPlayed" \ "left").text)
+            else {
+            val msg = (gameNode \ "lastCardPlayed" \ "left").text.trim
+            Left(if (msg.nonEmpty) msg else "No Card")
+            }
+
+        Game(
+            playerNumber        = optInt("playNumber"),
+            startWithHearts     = reqBool("startWithHearts", default = false),
+            keepProcessRunning  = reqBool("keepProcessRunning", default = true),
+            firstCard           = reqBool("firstCard", default = true),
+            players             = players,
+            maxScore            = optInt("maxScore"),
+            currentPlayerIndex  = optInt("currentPlayerIndex"),
+            trickCards          = trickCards,
+            highestCard         = highestCard,
+            currentWinnerIndex  = optInt("currentWinnerIndex"),
+            lastCardPlayed      = lastCardPlayed
         )
+
+
 
     def playerFromXML(node: scala.xml.Node): Player =
         Player(

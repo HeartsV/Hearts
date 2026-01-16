@@ -23,7 +23,7 @@ trait GameInterface():
     def getCurrentWinnerIndex: Option[Int]
     def getLastCardPlayed: Either[String, Card]
     def getCurrentPlayerIndex: Option[Int]
-    def gameFromXml(node: Node): GameInterface
+    def gameFromXML(gameNode: Node): GameInterface
 
 trait BuilderInterface():
     def reset: Unit
@@ -88,6 +88,12 @@ enum Suit extends Ordered[Suit]:
         case Diamonds   => "diamonds"
         case Clubs      => "clubs"
 
+    def fileNameForXML: String = this match
+        case Hearts     => "Hearts"
+        case Spades     => "Spades"
+        case Diamonds   => "Diamonds"
+        case Clubs      => "Clubs"
+
     def compare(that: Suit): Int =
         this.ordinal.compare(that.asInstanceOf[Suit].ordinal)
 
@@ -131,3 +137,20 @@ enum Rank(val value: Int) extends Ordered[Rank]:
             case Queen => "Q"
             case King  => "K"
             case Ace   => "A"
+            
+    def stringForXML: String =
+        this match
+            case Two   => "Two"
+            case Three => "Three"
+            case Four  => "Four"
+            case Five  => "Five"
+            case Six   => "Six"
+            case Seven => "Seven"
+            case Eight => "Eight"
+            case Nine  => "Nine"
+            case Ten   => "Ten"
+            case Jack  => "Jack"
+            case Queen => "Queen"
+            case King  => "King"
+            case Ace   => "Ace"
+
