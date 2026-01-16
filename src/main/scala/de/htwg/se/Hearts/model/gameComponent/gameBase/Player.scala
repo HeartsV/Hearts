@@ -1,6 +1,9 @@
 package de.htwg.se.Hearts.model.gameComponent.gameBase
 
 import de.htwg.se.Hearts.model.gameComponent.PlayerInterface
+import de.htwg.se.Hearts.model.gameComponent.Rank
+import de.htwg.se.Hearts.model.gameComponent.Suit
+import scala.xml.Elem
 import com.google.inject.Inject
 import de.htwg.se.Hearts.model.gameComponent.CardInterface
 
@@ -20,3 +23,13 @@ case class Player (name: String, hand:List[CardInterface]= Nil, wonCards: List[C
     def addPoints(newPoints: Int): Player = copy(points = points + newPoints, wonCards = List())
 
     def resetPoints(): PlayerInterface = copy(points = 0)
+
+    def playerToXML: Elem =
+        <player>
+            <name>{name}</name>
+            <hand>{hand.map(c => c.cardToXML)}</hand>
+            <wonCards>{wonCards.map(c => c.cardToXML)}</wonCards>
+            <points>{points}</points>
+        </player>
+
+
