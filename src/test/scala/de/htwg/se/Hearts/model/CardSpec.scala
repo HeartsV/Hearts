@@ -33,6 +33,22 @@ class CardSpec extends AnyWordSpec with Matchers {
 			Deck(12).toString should include ("A")
 		}
 
+		"toNumber" in {
+			Deck(0).rank.stringForXML should include ("Two")
+			Deck(1).rank.stringForXML should include ("Three")
+			Deck(2).rank.stringForXML should include ("Four")
+			Deck(3).rank.stringForXML should include ("Five")
+			Deck(4).rank.stringForXML should include ("Six")
+			Deck(5).rank.stringForXML should include ("Seven")
+			Deck(6).rank.stringForXML should include ("Eight")
+			Deck(7).rank.stringForXML should include ("Nine")
+			Deck(8).rank.stringForXML should include ("Ten")
+			Deck(9).rank.stringForXML should include ("Jack")
+			Deck(10).rank.stringForXML should include ("Queen")
+			Deck(11).rank.stringForXML should include ("King")
+			Deck(12).rank.stringForXML should include ("Ace")
+		}
+
 		"be able to compare Cards by rank" in{
 			Deck(0).compare(Deck(1)) should be < 0
 			Deck(1).compare(Deck(0)) should be > 0
@@ -56,6 +72,13 @@ class CardSpec extends AnyWordSpec with Matchers {
 			Deck(13).suit.fileName should be ("spades")
 			Deck(26).suit.fileName should be ("diamonds")
 			Deck(39).suit.fileName should be ("clubs")
+		}
+
+		"filenameForXML" in {
+			Deck(0).suit.fileNameForXML should be ("Hearts")
+			Deck(13).suit.fileNameForXML should be ("Spades")
+			Deck(26).suit.fileNameForXML should be ("Diamonds")
+			Deck(39).suit.fileNameForXML should be ("Clubs")
 		}
 
 		"create the correct cardname of png" in {

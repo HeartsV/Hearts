@@ -14,6 +14,19 @@ import de.htwg.se.Hearts.model.gameComponent.Rank
 
 trait State(controller: Controller):
     def getStateString: String
+    def stateFromXml(node: scala.xml.NodeSeq, controller: Controller): Unit =
+        val stateString = node.text.trim
+        controller.state = stateString match
+            case "MainScreenState"       => new MainScreenState(controller)
+            case "RulesScreenState"      => new RulesScreenState(controller)
+            case "GetPlayerNumberState"  => new GetPlayerNumberState(controller)
+            case "GetPlayerNamesState"   => new GetPlayerNamesState(controller)
+            case "SetMaxScoreState"      => new SetMaxScoreState(controller)
+            case "GamePlayState"         => new GamePlayState(controller)
+            case "ShowScoreState"        => new ShowScoreState(controller)
+            case "GameOverState"         => new GameOverState(controller)
+            case other =>
+                throw new RuntimeException(s"Unknown state in XML: $other")
 
 class MainScreenState(controller: Controller) extends State(controller: Controller):
     def getStateString: String = "MainScreenState"
