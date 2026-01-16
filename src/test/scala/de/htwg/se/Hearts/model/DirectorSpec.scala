@@ -31,43 +31,42 @@ class DirectorSpec extends AnyWordSpec with Matchers {
         val card2 = Card(Rank.Ace,Suit.Clubs)
         val game = Game(playerNumber = Some(3),players = Vector(Player("Alice",List(card,card1,card2),List(),10)),currentPlayerIndex = Some(0))
         val gamePlayed = Game(Some(3),true,true,false,Vector(Player("Alice",List(card,card1),List(),10)),Some(100),Some(0))
-        val builder = GameBuilder()
-        val director = Director(builder)
+        val director = Director()
 
         "copy the game" in {
             director.copyGameState(game)
-            builder.game.playerNumber should be (Some(3))
-            builder.reset
+            director.getBuilder.getPlayerNumber should be (3)
+            director.getBuilder.reset
         }
 
         "reset for the next game" in {
             director.copyGameState(gamePlayed)
             director.resetForNextGame
-            builder.game.players(0).points should be (0)
-            builder.game.firstCard should be (true)
-            builder.reset
+            director.getBuilder.getPlayers(0).getPoints should be (0)
+            director.getBuilder.getFirstCard should be (true)
+            director.getBuilder.reset
         }
 
         "move cards form hand to Trick" in {
             director.copyGameState(game)
             director.moveCard(card)
-            builder.game.startWithHearts should be (false)
-            builder.game.trickCards should be (List(card))
-            builder.game.firstCard should be (false)
-            builder.game.players(0).hand should be (List(card1,card2))
-            builder.game.highestCard should be (Some(card))
+            director.getBuilder.getStartWithHearts should be (false)
+            director.getBuilder.getTrickCards should be (List(card))
+            director.getBuilder.getFirstCard should be (false)
+            director.getBuilder.getPlayers(0).getHand should be (List(card1,card2))
+            director.getBuilder.getHighestCard should be (Some(card))
             director.moveCard(card1)
-            builder.game.startWithHearts should be (true)
-            builder.game.trickCards should be (List(card,card1))
-            builder.game.firstCard should be (false)
-            builder.game.players(0).hand should be (List(card2))
-            builder.game.highestCard should be (Some(card))
+            director.getBuilder.getStartWithHearts should be (true)
+            director.getBuilder.getTrickCards should be (List(card,card1))
+            director.getBuilder.getFirstCard should be (false)
+            director.getBuilder.getPlayers(0).getHand should be (List(card2))
+            director.getBuilder.getHighestCard should be (Some(card))
             director.moveCard(card2)
-            builder.game.startWithHearts should be (true)
-            builder.game.trickCards should be (List(card,card1,card2))
-            builder.game.firstCard should be (false)
-            builder.game.players(0).hand should be (List())
-            builder.game.highestCard should be (Some(card2))
+            director.getBuilder.getStartWithHearts should be (true)
+            director.getBuilder.getTrickCards should be (List(card,card1,card2))
+            director.getBuilder.getFirstCard should be (false)
+            director.getBuilder.getPlayers(0).getHand should be (List())
+            director.getBuilder.getHighestCard should be (Some(card2))
         }
     }
 }

@@ -43,16 +43,16 @@ class ScoringSpec extends AnyWordSpec with Matchers{
 		"addRoundPoints to players from parameter" in {
 			val Vector(r1, r2) = scor.addRoundPoints(Vector(p1, p2))
 			val Vector(o1, o2, o3) = scor.addRoundPoints(Vector(p1, p2, p3))
-			r1.points shouldBe p1.points
-			r2.points shouldBe (p2.points + 1)
-			o1.points shouldBe (p1.points + 1)
-			o2.points shouldBe p2.points
-			o3.points shouldBe (p3.points + 1)
-			r1.wonCards shouldBe Nil
-			r2.wonCards shouldBe Nil
-			o1.wonCards shouldBe Nil
-			o2.wonCards shouldBe Nil
-			o3.wonCards shouldBe Nil
+			r1.getPoints shouldBe p1.points
+			r2.getPoints shouldBe (p2.points + 1)
+			o1.getPoints shouldBe (p1.points + 1)
+			o2.getPoints shouldBe p2.points
+			o3.getPoints shouldBe (p3.points + 1)
+			r1.getWonCards shouldBe Nil
+			r2.getWonCards shouldBe Nil
+			o1.getWonCards shouldBe Nil
+			o2.getWonCards shouldBe Nil
+			o3.getWonCards shouldBe Nil
 
 		}
 	}
@@ -60,12 +60,12 @@ class ScoringSpec extends AnyWordSpec with Matchers{
 		"addPointsToPlayer" in {
 			val Vector(o1, o2, o3) = scor.addPointsToPlayers(game)
 
-						o1.points shouldBe (p1.points + 1)
-			o2.points shouldBe p2.points
-			o3.points shouldBe (p3.points + 1)
-			o1.wonCards shouldBe Nil
-			o2.wonCards shouldBe Nil
-			o3.wonCards shouldBe Nil
+			o1.getPoints shouldBe (p1.points + 1)
+			o2.getPoints shouldBe p2.points
+			o3.getPoints shouldBe (p3.points + 1)
+			o1.getWonCards shouldBe Nil
+			o2.getWonCards shouldBe Nil
+			o3.getWonCards shouldBe Nil
 		}
 	}
 }

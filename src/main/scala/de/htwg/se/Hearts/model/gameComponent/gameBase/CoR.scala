@@ -4,12 +4,13 @@ import de.htwg.se.Hearts.model.gameComponent.GameInterface
 import de.htwg.se.Hearts.model.gameComponent.CoRInterface
 import de.htwg.se.Hearts.model.gameComponent.Suit
 import de.htwg.se.Hearts.model.gameComponent.Rank
+import de.htwg.se.Hearts.model.gameComponent.CardInterface
 
 class ChainOfResponsibility extends CoRInterface:
 
     final case class MoveContext(
         game: GameInterface,
-        playerHand: List[Card],
+        playerHand: List[CardInterface],
         index: Option[Int]
     )
 
@@ -41,11 +42,11 @@ class ChainOfResponsibility extends CoRInterface:
         ctx.game.getTrickCards.headOption match
             case None => Right(())
             case Some(leadCard) =>
-                val hasSuit = ctx.playerHand.exists(_.suit == leadCard.suit)
+                val hasSuit = ctx.playerHand.exists(_.getSuit == leadCard.getSuit)
                 val playedCard = ctx.playerHand(ctx.index.get - 1 )
 
-                if hasSuit && playedCard.suit != leadCard.suit then
-                    Left(f"You have at least one card with Suit ${leadCard.suit}! You must follow this Suit!\n")
+                if hasSuit && playedCard.getSuit != leadCard.getSuit then
+                    Left(f"You have at least one card with Suit ${leadCard.getSuit}! You must follow this Suit!\n")
                 else
                     Right(())
 
@@ -54,7 +55,7 @@ class ChainOfResponsibility extends CoRInterface:
 
         if card.getSuit != Suit.Hearts then
             Right(())
-        else if ctx.game.getStartWithHearts || ctx.playerHand.forall(_.suit == Suit.Hearts) || ctx.game.getTrickCards.nonEmpty then
+        else if ctx.game.getStartWithHearts || ctx.playerHand.forall(_.getSuit == Suit.Hearts) || ctx.game.getTrickCards.nonEmpty then
             Right(())
         else
             Left("You cannot play \u2665 until they are broken or you have only \u2665s\n")
@@ -68,7 +69,7 @@ class ChainOfResponsibility extends CoRInterface:
             heartsOnlyIfBrokenOrNoAlternative
         )
 
-    def validateMove(game: GameInterface, playerHand: List[Card], index: Option[Int]): Either[String, Card] =
+    def validateMove(game: GameInterface, playerHand: List[CardInterface], index: Option[Int]): Either[String, CardInterface] =
         val ctx = MoveContext(game, playerHand, index)
 
         val result: Either[String, Unit] =

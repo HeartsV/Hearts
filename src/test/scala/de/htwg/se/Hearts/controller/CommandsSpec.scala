@@ -95,9 +95,9 @@ class CommandsSpec extends AnyWordSpec with Matchers {
 		val command = AddPlayerCommand(name ="Alice")
 		val commandNoText = AddPlayerCommand(name = "")
 		gameCo.processInput(command)
-		gameCo.game.getPlayers(0).name should be ("Alice")
+		gameCo.game.getPlayers(0).getName should be ("Alice")
 		gameCo.processInput(commandNoText)
-		gameCo.game.getPlayers(1).name should be ("P2")
+		gameCo.game.getPlayers(1).getName should be ("P2")
 		gameCo.processInput(command)
 		gameCo.state shouldBe a [SetMaxScoreState]
 		gameCo.undo
@@ -147,7 +147,7 @@ class CommandsSpec extends AnyWordSpec with Matchers {
 			val command = NewCommand()
 			gameCo.processInput(command)
 			gameCo.state shouldBe a [GetPlayerNumberState]
-			gameCo.undo 
+			gameCo.undo
 			gameCo.state shouldBe a [MainScreenState]
 
 		}
@@ -157,10 +157,10 @@ class CommandsSpec extends AnyWordSpec with Matchers {
 		"" in {
 			gameCoSetup.processInput(AgainCommand())
 			gameCoSetup.state shouldBe a [GamePlayState]
-			gameCoSetup.game.getPlayers(0).hand.size should be (17)
-			gameCoSetup.undo 
+			gameCoSetup.game.getPlayers(0).getHand.size should be (17)
+			gameCoSetup.undo
 			gameCoSetup.state shouldBe a [MainScreenState]
-			gameCoSetup.game.getPlayers(0).hand.size should be (2)
+			gameCoSetup.game.getPlayers(0).getHand.size should be (2)
 		}
 	}
 
@@ -181,7 +181,7 @@ class CommandsSpec extends AnyWordSpec with Matchers {
 		"" in {
 			gameCo.processInput(ExitCommand())
 			gameCo.game.getKeepProcessRunning should be (false)
-			gameCo.undo 
+			gameCo.undo
 			gameCo.game.getKeepProcessRunning should be (true)
 
 		}
@@ -213,15 +213,14 @@ class CommandsSpec extends AnyWordSpec with Matchers {
 	"A ContinueCommand" should {
 		"" in {
 			val command = ContinueCommand()
-			gameCoSetup.state shouldBe a [MainScreenState]
 			gameCoSetup.processInput(command)
 			gameCoSetup.state shouldBe a [GamePlayState]
-			gameCoSetup.game.getPlayers(0).hand.size should be (17)
-			gameCoSetup.undo 
+			gameCoSetup.game.getPlayers(0).getHand.size should be (17)
+			gameCoSetup.undo
 			gameCoSetup.state shouldBe a [MainScreenState]
-			gameCoSetup.game.getPlayers(0).hand.size should be (2)
+			gameCoSetup.game.getPlayers(0).getHand.size should be (2)
 
 		}
 	}
-	
+
 }

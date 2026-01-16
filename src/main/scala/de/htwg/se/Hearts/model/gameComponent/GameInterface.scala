@@ -5,7 +5,7 @@ import de.htwg.se.Hearts.model.gameComponent.gameBase._
 trait DirectorInterface():
     def resetForNextGame: Unit
     def copyGameState(gameState: GameInterface): Unit
-    def moveCard(playedCard:Card): Unit
+    def moveCard(playedCard:CardInterface): Unit
     def getBuilder: BuilderInterface
 
 trait GameInterface():
@@ -13,13 +13,13 @@ trait GameInterface():
     def getStartWithHearts: Boolean
     def getKeepProcessRunning: Boolean
     def getFirstCard: Boolean
-    def getPlayers: Vector[Player]
+    def getPlayers: Vector[PlayerInterface]
     def getMaxScore: Option[Int]
-    def getCurrentPlayer: Option[Player]
-    def getTrickCards: List[Card]
-    def getHighestCard: Option[Card]
+    def getCurrentPlayer: Option[PlayerInterface]
+    def getTrickCards: List[CardInterface]
+    def getHighestCard: Option[CardInterface]
     def getCurrentWinnerIndex: Option[Int]
-    def getLastCardPlayed: Either[String, Card]
+    def getLastCardPlayed: Either[String, CardInterface]
     def getCurrentPlayerIndex: Option[Int]
 
 trait BuilderInterface():
@@ -28,26 +28,26 @@ trait BuilderInterface():
     def setStartWithHearts(swh: Boolean): Unit
     def setKeepProcessRunning(kpr: Boolean): Unit
     def setFirstCard(fc: Boolean): Unit
-    def setPlayers(players: Vector[Player]): Unit
+    def setPlayers(players: Vector[PlayerInterface]): Unit
     def updatePlayer(index: Int, updatedPlayer: Player): Unit
     def setMaxScore(maxScore: Option[Int]): Unit
     def setCurrentPlayerIndex(cpi: Option[Int]): Unit
-    def setTrickCards(trick: List[Card]): Unit
-    def addCard(card: Card): Unit
-    def setCurrentWinnerAndHighestCard(newWinner: (Option[Int], Option[Card])): Unit
-    def setLastPlayedCard(card: Either[String, Card]): Unit
+    def setTrickCards(trick: List[CardInterface]): Unit
+    def addCard(card: CardInterface): Unit
+    def setCurrentWinnerAndHighestCard(newWinner: (Option[Int], Option[CardInterface])): Unit
+    def setLastPlayedCard(card: Either[String, CardInterface]): Unit
     def getGame: GameInterface
     def getCopy: GameInterface
     def getTrickSize: Int
     def getPlayerNumber: Int
-    def getPlayers: Vector[Player]
-    def getCurrentPlayer: Option[Player]
+    def getPlayers: Vector[PlayerInterface]
+    def getCurrentPlayer: Option[PlayerInterface]
     def getCurrentPlayerIndex: Option[Int]
     def getFirstCard: Boolean
-    def getTrickCards: List[Card]
+    def getTrickCards: List[CardInterface]
     def getCurrentWinnerIndex: Option[Int]
     def getStartWithHearts: Boolean
-    def getHighestCard: Option[Card]
+    def getHighestCard: Option[CardInterface]
 
 trait CardInterface:
     override def toString: String
@@ -57,14 +57,19 @@ trait CardInterface:
     def getSuit: Suit
 
 trait PlayerInterface:
+    def getHand: List[CardInterface]
+    def getPoints: Int
+    def getName: String
+    def getWonCards: List[CardInterface]
     def setName(name: String): Player
-    def removeCard(card: Card): Player
-    def addAllCards(cards: List[Card]): Player
-    def addWonCards(cards: List[Card]): Player
+    def removeCard(card: CardInterface): Player
+    def addAllCards(cards: List[CardInterface]): Player
+    def addWonCards(cards: List[CardInterface]): Player
     def addPoints(newPoints: Int): Player
+    def resetPoints(): PlayerInterface
 
 trait CoRInterface:
-    def validateMove(game: GameInterface, playerHand: List[Card], index: Option[Int]): Either[String, Card]
+    def validateMove(game: GameInterface, playerHand: List[CardInterface], index: Option[Int]): Either[String, CardInterface]
 
 trait DeckManagerInterface:
     def createDeck: List[Card]

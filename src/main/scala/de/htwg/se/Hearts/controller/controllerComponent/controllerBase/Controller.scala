@@ -1,26 +1,18 @@
 package de.htwg.se.Hearts.controller.controllerComponent.controllerBase
 
 import de.htwg.se.Hearts.util._
-import de.htwg.se.Hearts.controller.controllerComponent._
+import de.htwg.se.Hearts.controller.controllerComponent.ControllerInterface
 import de.htwg.se.Hearts.model.gameComponent.DeckManagerInterface
-import de.htwg.se.Hearts.controller.leaderBoardComponent._
-import de.htwg.se.Hearts.controller.playerTurnComponent._
-import de.htwg.se.Hearts.controller.scoringComponent._
-import de.htwg.se.Hearts.model.gameComponent.gameBase.*
-import de.htwg.se.Hearts.controller.leaderBoardComponent.leaderBoardBase._
-import de.htwg.se.Hearts.controller.playerTurnComponent.playerTurnBase._
-import de.htwg.se.Hearts.controller.scoringComponent.scoringBase._
-import de.htwg.se.Hearts.model.gameComponent.gameBase.GameBuilder
-import de.htwg.se.Hearts.model.gameComponent.gameBase.DeckManager
-import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
-import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
-import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
+import de.htwg.se.Hearts.controller.leaderBoardComponent.LeaderBoardInterface
+import de.htwg.se.Hearts.controller.playerTurnComponent.PlayerTurnInterface
+import de.htwg.se.Hearts.controller.scoringComponent.ScoringInterface
 import de.htwg.se.Hearts.model.gameComponent.GameInterface
-import java.lang.Thread.Builder
 import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
 import com.google.inject.Inject
 import com.google.inject.{Injector, Guice}
 import de.htwg.se.Hearts.HeartsModule
+import de.htwg.se.Hearts.model.gameComponent.CardInterface
+import de.htwg.se.Hearts.model.gameComponent.PlayerInterface
 
 class Controller(var game: GameInterface) extends Observable with ControllerInterface:
 
@@ -58,26 +50,26 @@ class Controller(var game: GameInterface) extends Observable with ControllerInte
     def changeState(newState: State): Unit = state = newState
     def getGame:GameInterface = game
     def setGame(newGame: GameInterface): Unit = game = newGame
-    def pngUrl(c: Card): String = s"/cards/${c.pngName}"
-    def cardsPathList(list: List[Card]): List[String] = list.map(pngUrl)
+    def pngUrl(c: CardInterface): String = s"/cards/${c.pngName}"
+    def cardsPathList(list: List[CardInterface]): List[String] = list.map(pngUrl)
     def getPlayersWithPoints: List[(String, Int)] = leaderboardService.playersWithPoints(game.getPlayers)
     def rankPlayers(players: List[(String, Int)]): List[(Int, String, Int)] = leaderboardService.rankPlayers(players)
-    def getCurrentPlayerName: String = game.getCurrentPlayer.get.name
+    def getCurrentPlayerName: String = game.getCurrentPlayer.get.getName
     def checkGameOver(game: GameInterface): Boolean =
-        val maxScorePoints = game.getPlayers.map(p => p -> p.points).toMap
+        val maxScorePoints = game.getPlayers.map(p => p -> p.getPoints).toMap
         maxScorePoints.exists { case (_, point) => point >= game.getMaxScore.get }
     def getKeepProcessRunning: Boolean = game.getKeepProcessRunning
     def getPlayerSize: Int = game.getPlayers.size
-    def getTrickCards: List[Card] = game.getTrickCards
-    def getPlayerHand: List[Card] = sortingStrategy.execute(game.getPlayers(game.getCurrentPlayerIndex.get))
+    def getTrickCards: List[CardInterface] = game.getTrickCards
+    def getPlayerHand: List[CardInterface] = sortingStrategy.execute(game.getPlayers(game.getCurrentPlayerIndex.get))
     def getSortingStrategy: Strategy = sortingStrategy
-    def passCurrentPlayer: Player = game.getCurrentPlayer.get
+    def passCurrentPlayer: PlayerInterface = game.getCurrentPlayer.get
     def passStateString: String = state.getStateString
     def setStrategy(strategy: Strategy): Unit = this.sortingStrategy = strategy
-    def dealNewRound(bgame: GameInterface): Vector[Player] = deckmanger.deal(deckmanger.shuffle(deckmanger.createDeck), bgame)
-    def addPointsToPlayers: Vector[Player] = scoringService.addPointsToPlayers(game)
-    def getLastCardPlayed: Either[String,Card] = game.getLastCardPlayed
+    def dealNewRound(bgame: GameInterface): Vector[PlayerInterface] = deckmanger.deal(deckmanger.shuffle(deckmanger.createDeck), bgame)
+    def addPointsToPlayers: Vector[PlayerInterface] = scoringService.addPointsToPlayers(game)
+    def getLastCardPlayed: Either[String,CardInterface] = game.getLastCardPlayed
     def getState: State = state
     def getNextPlayerIndex(bgame: GameInterface): Int = turnService.nextPlayerIndex(bgame)
-    def getAddPointsToPlayers(bgame: GameInterface): Vector[Player] = scoringService.addPointsToPlayers(bgame)
+    def getAddPointsToPlayers(bgame: GameInterface): Vector[PlayerInterface] = scoringService.addPointsToPlayers(bgame)
 

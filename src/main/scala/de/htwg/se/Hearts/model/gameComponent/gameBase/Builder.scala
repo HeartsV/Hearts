@@ -8,7 +8,7 @@ class Director() extends DirectorInterface():
 	val builder = GameBuilder()
 	def getBuilder: BuilderInterface = builder
 	def resetForNextGame: Unit =
-		builder.setPlayers(builder.getPlayers.map(_.copy(points = 0)))
+		builder.setPlayers(builder.getPlayers.map(_.resetPoints()))
 		builder.setFirstCard(true)
 		builder.setStartWithHearts(false)
 		builder.setTrickCards(List.empty)
@@ -28,7 +28,7 @@ class Director() extends DirectorInterface():
 		builder.setLastPlayedCard(gameState.getLastCardPlayed)
 
 
-	def moveCard(playedCard:Card): Unit =
+	def moveCard(playedCard:CardInterface): Unit =
 		builder.setPlayers(
 			builder.getPlayers.updated(
 				builder.getCurrentPlayerIndex.get,
@@ -37,9 +37,9 @@ class Director() extends DirectorInterface():
 		)
 		builder.addCard(playedCard)
 		if builder.getFirstCard then builder.setFirstCard(false)
-		if (playedCard.suit == Suit.Hearts || playedCard == Card(Rank.Queen, Suit.Spades))
+		if (playedCard.getSuit == Suit.Hearts || playedCard == Card(Rank.Queen, Suit.Spades))
 			builder.setStartWithHearts(true)
-		if (builder.getHighestCard.forall(highest => playedCard.suit == highest.suit && playedCard.rank > highest.rank)) {
+		if (builder.getHighestCard.forall(highest => playedCard.getSuit == highest.getSuit && playedCard.getRank > highest.getRank)) {
 			builder.setCurrentWinnerAndHighestCard(builder.getCurrentPlayerIndex, Some(playedCard))
 }
 
@@ -50,25 +50,25 @@ class GameBuilder() extends BuilderInterface:
 	def setStartWithHearts(swh: Boolean): Unit = game = game.copy(startWithHearts = swh)
 	def setKeepProcessRunning(kpr: Boolean): Unit = game = game.copy(keepProcessRunning = kpr)
 	def setFirstCard(fc: Boolean): Unit = game = game.copy(firstCard = fc)
-	def setPlayers(players: Vector[Player]): Unit = game = game.copy(players = players)
+	def setPlayers(players: Vector[PlayerInterface]): Unit = game = game.copy(players = players)
 	def updatePlayer(index: Int, updatedPlayer: Player): Unit = game = game.copy(players = game.players.updated(index, updatedPlayer))
 	def setMaxScore(score: Option[Int]): Unit = game = game.copy(maxScore = score)
 	def setCurrentPlayerIndex(cpi: Option[Int]): Unit = game = game.copy(currentPlayerIndex = cpi)
-	def setTrickCards(trick: List[Card]): Unit = game = game.copy(trickCards = trick)
-	def addCard(card: Card): Unit = game = game.copy(trickCards = game.trickCards :+ card)
-	def setCurrentWinnerAndHighestCard(newWinner: (Option[Int], Option[Card])): Unit = game = game.copy(currentWinnerIndex = newWinner(0), highestCard = newWinner(1))
-	def setLastPlayedCard(card: Either[String, Card]): Unit = game = game.copy(lastCardPlayed = card)
+	def setTrickCards(trick: List[CardInterface]): Unit = game = game.copy(trickCards = trick)
+	def addCard(card: CardInterface): Unit = game = game.copy(trickCards = game.trickCards :+ card)
+	def setCurrentWinnerAndHighestCard(newWinner: (Option[Int], Option[CardInterface])): Unit = game = game.copy(currentWinnerIndex = newWinner(0), highestCard = newWinner(1))
+	def setLastPlayedCard(card: Either[String, CardInterface]): Unit = game = game.copy(lastCardPlayed = card)
 	def getCopy: GameInterface = game
 	def getTrickSize: Int = game.trickCards.size
 	def getPlayerNumber: Int = game.playerNumber.get
-	def getPlayers: Vector[Player] = game.players
-	def getCurrentPlayer: Option[Player] = game.getCurrentPlayer
+	def getPlayers: Vector[PlayerInterface] = game.players
+	def getCurrentPlayer: Option[PlayerInterface] = game.getCurrentPlayer
 	def getCurrentPlayerIndex: Option[Int] = game.currentPlayerIndex
 	def getFirstCard: Boolean = game.firstCard
-	def getTrickCards: List[Card] = game.trickCards
+	def getTrickCards: List[CardInterface] = game.trickCards
 	def getCurrentWinnerIndex: Option[Int] = game.currentWinnerIndex
 	def getStartWithHearts: Boolean = game.startWithHearts
-	def getHighestCard: Option[Card] = game.highestCard
+	def getHighestCard: Option[CardInterface] = game.highestCard
 	def getGame: GameInterface =
 		 val newGame = game
 		 reset

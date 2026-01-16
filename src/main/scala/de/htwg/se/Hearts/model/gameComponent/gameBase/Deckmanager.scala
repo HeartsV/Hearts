@@ -32,4 +32,4 @@ class DeckManager extends DeckManagerInterface:
         val normalized = filterOneCardOut(deck, game)
         val handSize = normalized.size / game.getPlayerNumber.get
         val hands = normalized.grouped(handSize).toList
-        (game.getPlayers.zip(hands).map { case (p, cards) => p.copy(hand = cards) }).toVector
+        (game.getPlayers.zip(hands).map { case (p, cards) => p.addAllCards(cards) }).toVector

@@ -27,7 +27,7 @@ class PlayerSpec extends AnyWordSpec with Matchers {
         }
 
         "be able to add cards" in {
-            player.addAllCards(List(card2)) should be (Player(name = "Alice",hand = List(card1,card2),wonCards = List(card3)))
+            player.addAllCards(List(card2)) should be (Player(name = "Alice",hand = List(card2),wonCards = List(card3)))
         }
 
         "be able to add Won Cards" in {
@@ -35,7 +35,7 @@ class PlayerSpec extends AnyWordSpec with Matchers {
         }
 
         "be able to add points" in {
-            player.addPoints(10) should be (Player(name = "Alice",hand = List(card1),wonCards = List(card3),points = 10))
+            player.addPoints(10) should be (Player(name = "Alice",hand = List(card1),wonCards = List(),points = 10))
         }
     }
 

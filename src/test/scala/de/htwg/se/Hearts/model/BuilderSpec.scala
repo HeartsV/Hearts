@@ -23,7 +23,8 @@ class BuilderSpec extends AnyWordSpec with Matchers {
 	"A builder" should {
 
 		"reset itself" in {
-			val builder = GameBuilder(gameFirstCard)
+			val builder = GameBuilder()
+			builder.setPlayerNumber(Some(3))
 			builder.reset
 			builder.game should be (Game())
 		}
@@ -59,9 +60,10 @@ class BuilderSpec extends AnyWordSpec with Matchers {
 		}
 
 		"updatePlayer at given index" in {
-			val builder = GameBuilder(gameFirstCard)
-			builder.updatePlayer(0, p2)
-			builder.game.players should be (Vector(p2, p2))
+			val director = Director()
+			director.copyGameState(gameFirstCard)
+			director.getBuilder.updatePlayer(0, p2)
+			director.getBuilder.getPlayers should be (Vector(p2, p2))
 		}
 
 		"setMaxScore" in {
@@ -109,8 +111,9 @@ class BuilderSpec extends AnyWordSpec with Matchers {
 			builderget.getTrickSize should be (0)
 		}
 		"getPlayerNumber" in {
-			val builder = GameBuilder(Game(playerNumber = Some(1)))
-			builder.getPlayerNumber should be (1)
+			val builder = GameBuilder()
+			builder.setPlayerNumber(Some(3))
+			builder.getPlayerNumber should be (3)
 		}
 		"getPLayers" in {
 			builderget.getPlayers should be (Vector.empty)

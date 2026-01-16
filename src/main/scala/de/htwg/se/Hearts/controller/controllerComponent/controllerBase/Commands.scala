@@ -266,7 +266,7 @@ class PlayCardCommand(var gameController: Option[Controller] = None, var backup:
                     director.getBuilder.setLastPlayedCard(result)
                     director.getBuilder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(director.getBuilder.getCopy)))
 
-                    if director.getBuilder.getPlayers.forall(_.hand.size == 0) then
+                    if director.getBuilder.getPlayers.forall(_.getHand.size == 0) then
                         director.getBuilder.setPlayers(gameController.get.getAddPointsToPlayers(director.getBuilder.getCopy))
                         if !gameController.get.checkGameOver(director.getBuilder.getCopy) then gameController.get.changeState(ShowScoreState(gameController.get))
                         else gameController.get.changeState(GameOverState(gameController.get))
