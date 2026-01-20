@@ -13,19 +13,23 @@ import com.google.inject.{Injector, Guice}
 import de.htwg.se.Hearts.HeartsModule
 import de.htwg.se.Hearts.model.gameComponent.CardInterface
 import de.htwg.se.Hearts.model.gameComponent.PlayerInterface
+import de.htwg.se.Hearts.model.fileIOComponent.FileIOInterface
+import de.htwg.se.Hearts.model.gameComponent.DirectorInterface
+
 
 class Controller(var game: GameInterface) extends Observable with ControllerInterface:
 
+    var msg = ""
     var state: State = MainScreenState(this)
     var sortingStrategy: Strategy = SortByRankStrategy()
     val injector: Injector = Guice.createInjector(HeartsModule())
+    val fileIo = injector.getInstance(classOf[FileIOInterface])
     val turnService = injector.getInstance(classOf[PlayerTurnInterface])
     val deckmanger = injector.getInstance(classOf[DeckManagerInterface])
     val scoringService = injector.getInstance(classOf[ScoringInterface])
     val leaderboardService =  injector.getInstance(classOf[LeaderBoardInterface])
 
     val history = CommandHistory()
-
     def processInput(next: Command): Unit =
         next.setup(this)
         next.storeBackup
@@ -68,8 +72,16 @@ class Controller(var game: GameInterface) extends Observable with ControllerInte
     def setStrategy(strategy: Strategy): Unit = this.sortingStrategy = strategy
     def dealNewRound(bgame: GameInterface): Vector[PlayerInterface] = deckmanger.deal(deckmanger.shuffle(deckmanger.createDeck), bgame)
     def addPointsToPlayers: Vector[PlayerInterface] = scoringService.addPointsToPlayers(game)
-    def getLastCardPlayed: Either[String,CardInterface] = game.getLastCardPlayed
+    def getErrorOrLastCardPlayed: Either[String,CardInterface] = game.getErrorOrLastCardPlayed
     def getState: State = state
     def getNextPlayerIndex(bgame: GameInterface): Int = turnService.nextPlayerIndex(bgame)
     def getAddPointsToPlayers(bgame: GameInterface): Vector[PlayerInterface] = scoringService.addPointsToPlayers(bgame)
+    def getFileIO: FileIOInterface = fileIo
+    def errorOrLastCardPlayedToString: String =
+        getErrorOrLastCardPlayed match
+            case Left("No Card") | Left("No Card\n") => "" + "\n"
+            case Left(error) => "\n" + error + "\n"
+            case Right(card) => card.toString + " played" + "\n"
+
+
 

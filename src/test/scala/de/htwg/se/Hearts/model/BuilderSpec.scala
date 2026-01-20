@@ -99,8 +99,8 @@ class BuilderSpec extends AnyWordSpec with Matchers {
 
 		"setLastPlayedCard" in {
 			val builder = GameBuilder()
-			builder.setLastPlayedCard(Right(card8))
-			builder.game.lastCardPlayed should be (Right(card8))
+			builder.setErrorOrLastPlayedCard(Right(card8))
+			builder.game.errorOrlastCardPlayed should be (Right(card8))
 		}
 
 		val builderget = GameBuilder()

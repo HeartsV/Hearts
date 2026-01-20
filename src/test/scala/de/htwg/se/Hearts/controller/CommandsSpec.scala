@@ -1,12 +1,18 @@
 package de.htwg.se.Hearts.controller
 
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import de.htwg.se.Hearts.controller.controllerComponent.controllerBase._
 import de.htwg.se.Hearts.model.gameComponent.gameBase._
 import de.htwg.se.Hearts.model.gameComponent._
+import java.io.File
 
-class CommandsSpec extends AnyWordSpec with Matchers {
+class CommandsSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach{
+	private val saveFile = new File("hearts.json")
+	override def beforeEach(): Unit =
+		if saveFile.exists() then saveFile.delete()
+
 	val card1 = Card(Rank.Two,Suit.Diamonds)
 	val card2 = Card(Rank.Five,Suit.Diamonds)
 	val card3 = Card(Rank.Eight,Suit.Hearts)
@@ -55,7 +61,7 @@ class CommandsSpec extends AnyWordSpec with Matchers {
 			gameCoSetup.processInput(PlayCardCommand(index = Some(1)))
 			gameCoSetup.processInput(PlayCardCommand(index = Some(1)))
 			gameCoSetup.processInput(PlayCardCommand(index = None))
-			gameCoSetup.game.getLastCardPlayed should be (Left("Index was not a number!\n"))
+			gameCoSetup.game.getErrorOrLastCardPlayed should be (Left("Index was not a number!\n"))
 			gameCoSetup.undo
 			gameCoSetup.undo
 			gameCoSetup.game.getTrickCards should be (List(card1,card1))
@@ -223,4 +229,28 @@ class CommandsSpec extends AnyWordSpec with Matchers {
 		}
 	}
 
+	"A LoadCommand" should {
+
+		def deleteFile(saveFile: File): Unit =
+			if (saveFile.exists()) then
+				saveFile.delete()
+
+		"set error message if no save exists" in {
+			import de.htwg.se.Hearts.model.fileIOComponent.fileIOJSONImpl._
+			val saveFile = new File("hearts.json")
+			val saveFile2 = new File("hearts.xml")
+			while FileIO().saveExists do
+				deleteFile(saveFile)
+				deleteFile(saveFile2)
+			val cmd = LoadCommand()
+			cmd.setup(gameCo)
+			cmd.storeBackup
+			cmd.execute
+
+			gameCo.getGame.getErrorOrLastCardPlayed match {
+				case Left(msg) => msg.trim shouldBe "No game saved!"
+				case Right(_)   => fail("Expected Left(message)")
+			}
+		}
+	}
 }

@@ -8,13 +8,15 @@ import scalafx.application.JFXApp3
 import scalafx.application.Platform
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.Scene
-import scalafx.scene.control.*
+import scalafx.scene.control._
 import scalafx.scene.image.{Image, ImageView}
-import scalafx.scene.layout.*
+import scalafx.scene.layout._
 import scalafx.geometry.Insets
-import scalafx.Includes.*
+import scalafx.Includes._
 import scalafx.scene.shape.StrokeLineCap.Butt
 import de.htwg.se.Hearts.controller.controllerComponent.controllerBase._
+import scalafx.scene.control.Alert.AlertType
+import scalafx.scene.control.Alert
 
 class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 
@@ -43,7 +45,10 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 		onAction = _ => gameController.processInput(UndoCommand())
 	lazy val redoButton = new Button("Redo"):
 		onAction = _ => gameController.processInput(RedoCommand())
-
+	lazy val saveButton = new Button("Save"):
+		onAction = _ => gameController.processInput(SaveCommand())
+	lazy val loadButton = new Button("Load"):
+		onAction = _ => gameController.processInput(LoadCommand())
 	lazy val newGameButton = new Button("New Game"):
 		onAction = _ => gameController.processInput(NewCommand())
 	lazy val rulesButton = new Button("Rules"):
@@ -66,9 +71,12 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 		onAction = _ => gameController.processInput(SetSortingRankCommand())
 	lazy val scoreBox = new VBox()
 
-	lazy val undoBox = new HBox:
-		children = Seq(undoButton, redoButton)
 
+	lazy val undoBox = new HBox:
+		children = Seq(undoButton, redoButton, fileIOBox)
+
+	lazy val fileIOBox = new HBox:
+		children = Seq(saveButton, loadButton)
 
 	def renderTrick(imageUrls: List[String]): HBox =
 		val trickBox = new HBox()
@@ -101,10 +109,12 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 			)
 
 	def showMainScreenState(): Unit =
+		val topBox = new VBox:
+			children = Seq(Label(gameController.errorOrLastCardPlayedToString), Label("Hearts"))
+
 		val centerBox = new VBox:
-			children = Seq(Label("Main Menu"), newGameButton, rulesButton, exitButton)
-		rootBorderPane.top = new VBox:
-			children = new Label("Hearts")
+			children = Seq(Label("Main Menu"), loadButton, newGameButton, rulesButton, exitButton)
+		rootBorderPane.top = topBox
 		rootBorderPane.center = centerBox
 		rootBorderPane.bottom = null
 
@@ -165,6 +175,8 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 		rootBorderPane.bottom = backButton
 
 	def showPlayerNumberState(): Unit =
+		val topBox = new VBox:
+			children = Seq(Label(gameController.errorOrLastCardPlayedToString), Label("Setup"))
 
 		val textField = new TextField():
 			onAction = _ =>
@@ -175,12 +187,14 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 		val centerBox = new VBox:
 			children = Seq(Label("please enter a number:"), textField)
 
-		rootBorderPane.top = Label("Setup")
+		rootBorderPane.top = topBox
 		rootBorderPane.center = centerBox
 		rootBorderPane.bottom = undoBox
 
 
 	def showPlayerNamesState(): Unit =
+		val topBox = new VBox:
+			children = Seq(Label(gameController.errorOrLastCardPlayedToString), Label("Setup"))
 
 		val textField = new TextField():
 			onAction = _ =>
@@ -191,11 +205,13 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 		val centerBox = new VBox:
 			children = Seq(Label(f"please input the names of the ${gameController.getPlayerSize + 1}. player"), textField)
 
-		rootBorderPane.top = Label("Setup")
+		rootBorderPane.top = topBox
 		rootBorderPane.center = centerBox
 		rootBorderPane.bottom = undoBox
 
 	def showMaxScoreState(): Unit =
+		val topBox = new VBox:
+			children = Seq(Label(gameController.errorOrLastCardPlayedToString), Label("Setup"))
 
 		val textField = new TextField():
 			onAction = _ => gameController.processInput(SetMaxScoreCommand(index = text().toIntOption))
@@ -208,7 +224,7 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 				textField
 			)
 
-		rootBorderPane.top = Label("Setup")
+		rootBorderPane.top = topBox
 		rootBorderPane.center = centerBox
 		rootBorderPane.bottom = undoBox
 
@@ -238,12 +254,9 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 
 
 		val bottomBox = new VBox:
-			val lastCard = gameController.getLastCardPlayed match
-				case Left(error) => error
-				case Right(card) => card.toString + " played"
 			val pHand = gameController.getCurrentPlayerName
 			children = Seq(
-				Label(lastCard),
+				Label(gameController.errorOrLastCardPlayedToString),
 				Label(pHand + "'s hand:"),
 				renderHand(gameController.cardsPathList(gameController.getPlayerHand))
 			)
@@ -258,12 +271,13 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 		rootBorderPane.top = Label("Scoreboard:")
 		rootBorderPane.center = scoreBox
 		rootBorderPane.bottom = new HBox:
-			children = Seq(continueButton, undoBox)
+			children = Seq(continueButton, Label(gameController.errorOrLastCardPlayedToString), undoBox)
 
 
 	def showGameOverState(): Unit =
 		renderScoreBoard
-
+		val centerBox = new VBox:
+			children = Seq(Label(gameController.errorOrLastCardPlayedToString), scoreBox)
 		val bottomBox = new HBox:
 			children = Seq(
 				newGameButton,
@@ -274,5 +288,5 @@ class Gui(gameController: ControllerInterface) extends JFXApp3 with Observer:
 			)
 
 		rootBorderPane.top = Label("GAME OVER")
-		rootBorderPane.center = scoreBox
+		rootBorderPane.center = centerBox
 		rootBorderPane.bottom = bottomBox

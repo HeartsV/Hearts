@@ -1,6 +1,7 @@
 package de.htwg.se.Hearts.model.gameComponent
 
 import de.htwg.se.Hearts.model.gameComponent.gameBase._
+import play.api.libs.json._
 import scala.xml.Elem
 import scala.xml.Node
 
@@ -21,9 +22,11 @@ trait GameInterface():
     def getTrickCards: List[CardInterface]
     def getHighestCard: Option[CardInterface]
     def getCurrentWinnerIndex: Option[Int]
-    def getLastCardPlayed: Either[String, CardInterface]
+    def getErrorOrLastCardPlayed: Either[String, CardInterface]
     def getCurrentPlayerIndex: Option[Int]
     def gameFromXML(gameNode: Node): GameInterface
+    def optCardToXml(opt: Option[CardInterface]): Elem
+    def eitherCardToXml(e: Either[String, CardInterface]): Elem
 
 trait BuilderInterface():
     def reset: Unit
@@ -38,7 +41,7 @@ trait BuilderInterface():
     def setTrickCards(trick: List[CardInterface]): Unit
     def addCard(card: CardInterface): Unit
     def setCurrentWinnerAndHighestCard(newWinner: (Option[Int], Option[CardInterface])): Unit
-    def setLastPlayedCard(card: Either[String, CardInterface]): Unit
+    def setErrorOrLastPlayedCard(card: Either[String, CardInterface]): Unit
     def getGame: GameInterface
     def getCopy: GameInterface
     def getTrickSize: Int
@@ -59,6 +62,7 @@ trait CardInterface:
     def getRank: Rank
     def getSuit: Suit
     def cardToXML: Elem
+
 
 
 trait PlayerInterface:
@@ -93,7 +97,7 @@ enum Suit extends Ordered[Suit]:
         case Diamonds   => "diamonds"
         case Clubs      => "clubs"
 
-    def fileNameForXML: String = this match
+    def fileNameForSave: String = this match
         case Hearts     => "Hearts"
         case Spades     => "Spades"
         case Diamonds   => "Diamonds"
@@ -142,8 +146,8 @@ enum Rank(val value: Int) extends Ordered[Rank]:
             case Queen => "Q"
             case King  => "K"
             case Ace   => "A"
-            
-    def stringForXML: String =
+
+    def stringForSave: String =
         this match
             case Two   => "Two"
             case Three => "Three"
@@ -158,4 +162,99 @@ enum Rank(val value: Int) extends Ordered[Rank]:
             case Queen => "Queen"
             case King  => "King"
             case Ace   => "Ace"
+
+object CardInterface:
+    given Writes[CardInterface] = Writes { c =>
+        Json.obj(
+            "rank" -> c.getRank.stringForSave,
+            "suit" -> c.getSuit.fileNameForSave
+        )
+    }
+
+    given Reads[CardInterface] = Reads { js =>
+        for
+            rankStr <- (js \ "rank").validate[String]
+            suitStr <- (js \ "suit").validate[String]
+        yield Card(Rank.valueOf(rankStr), Suit.valueOf(suitStr))
+    }
+
+object PlayerInterface:
+    given Writes[PlayerInterface] = Writes { p =>
+        Json.obj(
+            "name"     -> p.getName,
+            "hand"     -> Json.toJson(p.getHand),
+            "wonCards" -> Json.toJson(p.getWonCards),
+            "points"   -> p.getPoints
+        )
+    }
+
+    given Reads[PlayerInterface] = Reads { js =>
+        for
+            name     <- (js \ "name").validate[String]
+            hand     <- (js \ "hand").validate[List[CardInterface]]
+            wonCards <- (js \ "wonCards").validate[List[CardInterface]]
+            points   <- (js \ "points").validate[Int]
+        yield Player(name, hand, wonCards, points)
+    }
+
+object GameInterface:
+
+    given Writes[Either[String, CardInterface]] = Writes {
+        case Left(msg)   => Json.obj("left" -> msg)
+        case Right(card) => Json.obj("right" -> Json.toJson(card))
+    }
+
+    given Reads[Either[String, CardInterface]] = Reads { js =>
+        (js \ "right").validateOpt[CardInterface] match
+        case JsSuccess(Some(c), _) => JsSuccess(Right(c))
+        case _ =>
+            (js \ "left").validateOpt[String] match
+            case JsSuccess(Some(msg), _) => JsSuccess(Left(msg))
+            case _                       => JsSuccess(Left("No Card"))
+    }
+
+    given Writes[GameInterface] = Writes { g =>
+        Json.obj(
+            "playerNumber"       -> g.getPlayerNumber,
+            "startWithHearts"    -> g.getStartWithHearts,
+            "keepProcessRunning" -> g.getKeepProcessRunning,
+            "firstCard"          -> g.getFirstCard,
+            "players"            -> Json.toJson(g.getPlayers),
+            "maxScore"           -> g.getMaxScore,
+            "currentPlayerIndex" -> g.getCurrentPlayerIndex,
+            "trickCards"         -> Json.toJson(g.getTrickCards),
+            "highestCard"        -> g.getHighestCard.map(Json.toJson(_)),
+            "currentWinnerIndex" -> g.getCurrentWinnerIndex,
+            "errorOrlastCardPlayed"     -> Json.toJson(g.getErrorOrLastCardPlayed)
+        )
+    }
+
+    given Reads[GameInterface] = Reads { js =>
+        for
+            playerNumber       <- (js \ "playerNumber").validateOpt[Int]
+            startWithHearts    <- (js \ "startWithHearts").validate[Boolean]
+            keepProcessRunning <- (js \ "keepProcessRunning").validate[Boolean]
+            firstCard          <- (js \ "firstCard").validate[Boolean]
+            players            <- (js \ "players").validate[Vector[PlayerInterface]]
+            maxScore           <- (js \ "maxScore").validateOpt[Int]
+            currentPlayerIndex <- (js \ "currentPlayerIndex").validateOpt[Int]
+            trickCards         <- (js \ "trickCards").validate[List[CardInterface]]
+            highestCard        <- (js \ "highestCard").validateOpt[CardInterface]
+            currentWinnerIndex <- (js \ "currentWinnerIndex").validateOpt[Int]
+            errorOrlastCardPlayed     <- (js \ "errorOrlastCardPlayed").validate[Either[String, CardInterface]]
+        yield Game(
+            playerNumber = playerNumber,
+            startWithHearts = startWithHearts,
+            keepProcessRunning = keepProcessRunning,
+            firstCard = firstCard,
+            players = players,
+            maxScore = maxScore,
+            currentPlayerIndex = currentPlayerIndex,
+            trickCards = trickCards,
+            highestCard = highestCard,
+            currentWinnerIndex = currentWinnerIndex,
+            errorOrlastCardPlayed = errorOrlastCardPlayed
+        )
+    }
+
 

@@ -10,6 +10,7 @@ import de.htwg.se.Hearts.model.gameComponent.GameInterface
 import de.htwg.se.Hearts.controller.controllerComponent.controllerBase.State
 import de.htwg.se.Hearts.model.gameComponent.CardInterface
 import de.htwg.se.Hearts.model.gameComponent.PlayerInterface
+import de.htwg.se.Hearts.model.fileIOComponent.FileIOInterface
 
 trait ControllerInterface extends Observable:
 
@@ -27,11 +28,13 @@ trait ControllerInterface extends Observable:
     def getKeepProcessRunning: Boolean
     def getPlayerHand: List[CardInterface]
     def dealNewRound(game: GameInterface): Vector[PlayerInterface]
-    def getLastCardPlayed: Either[String,CardInterface]
+    def getErrorOrLastCardPlayed: Either[String,CardInterface]
     def setGame(game: GameInterface):Unit
     def getGame: GameInterface
     def getState: State
     def changeState(newState:State): Unit
+    def getFileIO: FileIOInterface
+    def errorOrLastCardPlayedToString: String
 
 
 

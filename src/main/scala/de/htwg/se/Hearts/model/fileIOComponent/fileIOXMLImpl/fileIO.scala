@@ -2,23 +2,28 @@ package de.htwg.se.Hearts.model.fileIOComponent.fileXMLImpl
 
 
 import scala.xml._
-import de.htwg.se.Hearts.model.fileIOComponent.fileIOInterface
+import de.htwg.se.Hearts.model.fileIOComponent.FileIOInterface
 import de.htwg.se.Hearts.model.gameComponent.GameInterface
+import de.htwg.se.Hearts.model.gameComponent.CardInterface
 import de.htwg.se.Hearts.controller.controllerComponent.controllerBase._
 import de.htwg.se.Hearts.controller.controllerComponent.controllerBase.State
 import com.google.inject.Injector
 import com.google.inject.Guice
 import de.htwg.se.Hearts.HeartsModule
 import de.htwg.se.Hearts.controller.controllerComponent.ControllerInterface
-import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
+import java.io._
 
-class fileIO extends fileIOInterface:
+class FileIO extends FileIOInterface:
 	def load(controller: Controller): GameInterface =
 		val xml = scala.xml.XML.loadFile("hearts.xml")
 		controller.state.stateFromXml((xml \\ "state").head, controller)
 		controller.game.gameFromXML((xml \\ "game").head)
 
 	def save(game: GameInterface, state: State): Unit = saveString(game, state)
+
+	def saveExists: Boolean =
+		val file = new File("hearts.xml")
+		file.exists() && file.length() > 0
 
 	def gameAndStateToXML(game: GameInterface, state: State): Elem =
 		<gameSave>
@@ -32,16 +37,13 @@ class fileIO extends fileIOInterface:
 				<maxScore>{game.getMaxScore.getOrElse("")}</maxScore>
 				<currentPlayerIndex>{game.getCurrentPlayerIndex.getOrElse("")}</currentPlayerIndex>
 				<trickCards>{game.getTrickCards.map(tc => tc.cardToXML)}</trickCards>
-				<highestCard>{game.getHighestCard}</highestCard>
+				<highestCard>{game.optCardToXml(game.getHighestCard)}</highestCard>
 				<currentWinnerIndex>{game.getCurrentWinnerIndex.getOrElse("")}</currentWinnerIndex>
-				<lastCardPlayed>{game.getLastCardPlayed}</lastCardPlayed>
+				<errorOrlastCardPlayed>{game.eitherCardToXml(game.getErrorOrLastCardPlayed)}</errorOrlastCardPlayed>
 			</game>
 		</gameSave>
 
-	//def saveXML(game: GameInterface, state: State): Unit = scala.xml.XML.save("hearts.xml", gameAndStateToXML(game, state))
-
 	def saveString(game: GameInterface, state: State): Unit =
-		import java.io._
 		val pw = new PrintWriter(new File("hearts.xml"))
 		val prettyPrinter = new PrettyPrinter(120, 4)
 		val xml = prettyPrinter.format(gameAndStateToXML(game, state))

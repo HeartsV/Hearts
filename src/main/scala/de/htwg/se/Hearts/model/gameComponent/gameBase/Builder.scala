@@ -13,7 +13,7 @@ class Director() extends DirectorInterface():
 		builder.setStartWithHearts(false)
 		builder.setTrickCards(List.empty)
 		builder.setCurrentWinnerAndHighestCard(None, None)
-		builder.setLastPlayedCard(Left("No Card"))
+		builder.setErrorOrLastPlayedCard(Left("No Card"))
 
 	def copyGameState(gameState: GameInterface): Unit =
 		builder.setPlayerNumber(gameState.getPlayerNumber)
@@ -25,7 +25,7 @@ class Director() extends DirectorInterface():
 		builder.setCurrentPlayerIndex(gameState.getCurrentPlayerIndex)
 		builder.setTrickCards(gameState.getTrickCards)
 		builder.setCurrentWinnerAndHighestCard(gameState.getCurrentWinnerIndex,gameState.getHighestCard)
-		builder.setLastPlayedCard(gameState.getLastCardPlayed)
+		builder.setErrorOrLastPlayedCard(gameState.getErrorOrLastCardPlayed)
 
 
 	def moveCard(playedCard:CardInterface): Unit =
@@ -57,7 +57,7 @@ class GameBuilder() extends BuilderInterface:
 	def setTrickCards(trick: List[CardInterface]): Unit = game = game.copy(trickCards = trick)
 	def addCard(card: CardInterface): Unit = game = game.copy(trickCards = game.trickCards :+ card)
 	def setCurrentWinnerAndHighestCard(newWinner: (Option[Int], Option[CardInterface])): Unit = game = game.copy(currentWinnerIndex = newWinner(0), highestCard = newWinner(1))
-	def setLastPlayedCard(card: Either[String, CardInterface]): Unit = game = game.copy(lastCardPlayed = card)
+	def setErrorOrLastPlayedCard(card: Either[String, CardInterface]): Unit = game = game.copy(errorOrlastCardPlayed = card)
 	def getCopy: GameInterface = game
 	def getTrickSize: Int = game.trickCards.size
 	def getPlayerNumber: Int = game.playerNumber.get

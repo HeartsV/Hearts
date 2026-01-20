@@ -34,19 +34,19 @@ class CardSpec extends AnyWordSpec with Matchers {
 		}
 
 		"toNumber" in {
-			Deck(0).rank.stringForXML should include ("Two")
-			Deck(1).rank.stringForXML should include ("Three")
-			Deck(2).rank.stringForXML should include ("Four")
-			Deck(3).rank.stringForXML should include ("Five")
-			Deck(4).rank.stringForXML should include ("Six")
-			Deck(5).rank.stringForXML should include ("Seven")
-			Deck(6).rank.stringForXML should include ("Eight")
-			Deck(7).rank.stringForXML should include ("Nine")
-			Deck(8).rank.stringForXML should include ("Ten")
-			Deck(9).rank.stringForXML should include ("Jack")
-			Deck(10).rank.stringForXML should include ("Queen")
-			Deck(11).rank.stringForXML should include ("King")
-			Deck(12).rank.stringForXML should include ("Ace")
+			Deck(0).rank.stringForSave should include ("Two")
+			Deck(1).rank.stringForSave should include ("Three")
+			Deck(2).rank.stringForSave should include ("Four")
+			Deck(3).rank.stringForSave should include ("Five")
+			Deck(4).rank.stringForSave should include ("Six")
+			Deck(5).rank.stringForSave should include ("Seven")
+			Deck(6).rank.stringForSave should include ("Eight")
+			Deck(7).rank.stringForSave should include ("Nine")
+			Deck(8).rank.stringForSave should include ("Ten")
+			Deck(9).rank.stringForSave should include ("Jack")
+			Deck(10).rank.stringForSave should include ("Queen")
+			Deck(11).rank.stringForSave should include ("King")
+			Deck(12).rank.stringForSave should include ("Ace")
 		}
 
 		"be able to compare Cards by rank" in{
@@ -74,11 +74,11 @@ class CardSpec extends AnyWordSpec with Matchers {
 			Deck(39).suit.fileName should be ("clubs")
 		}
 
-		"filenameForXML" in {
-			Deck(0).suit.fileNameForXML should be ("Hearts")
-			Deck(13).suit.fileNameForXML should be ("Spades")
-			Deck(26).suit.fileNameForXML should be ("Diamonds")
-			Deck(39).suit.fileNameForXML should be ("Clubs")
+		"filenameForSave" in {
+			Deck(0).suit.fileNameForSave should be ("Hearts")
+			Deck(13).suit.fileNameForSave should be ("Spades")
+			Deck(26).suit.fileNameForSave should be ("Diamonds")
+			Deck(39).suit.fileNameForSave should be ("Clubs")
 		}
 
 		"create the correct cardname of png" in {

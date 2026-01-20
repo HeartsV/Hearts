@@ -78,6 +78,7 @@ null/
 .scala_dependencies
 .cache-main
 *.xml
+*.json
 
 # Resource Folder
 #/src/main/resources/*

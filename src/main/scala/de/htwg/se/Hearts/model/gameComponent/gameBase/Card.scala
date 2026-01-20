@@ -5,6 +5,7 @@ import de.htwg.se.Hearts.model.gameComponent.CardInterface
 import de.htwg.se.Hearts.model.gameComponent.Suit
 import de.htwg.se.Hearts.model.gameComponent.Rank
 import scala.xml.Elem
+import scala.xml.{TopScope, Null}
 
 case class Card(rank: Rank, suit: Suit) extends CardInterface:
     override def toString: String = s"${rank.toString.padTo(2, ' ')}${suit.toString}"
@@ -14,9 +15,11 @@ case class Card(rank: Rank, suit: Suit) extends CardInterface:
     def getSuit: Suit = suit
     def cardToXML: Elem =
         <card>
-            <rank>{rank.stringForXML}</rank>
-            <suit>{suit.fileNameForXML}</suit>
+            <rank>{rank.stringForSave}</rank>
+            <suit>{suit.fileNameForSave}</suit>
         </card>
+
+
 
 
 

@@ -23,6 +23,7 @@ import de.htwg.se.Hearts.model.gameComponent.CoRInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.ChainOfResponsibility
 import de.htwg.se.Hearts.model.gameComponent.PlayerInterface
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
+import de.htwg.se.Hearts.model.fileIOComponent._
 
 class HeartsModule extends AbstractModule with ScalaModule {
 
@@ -33,7 +34,7 @@ class HeartsModule extends AbstractModule with ScalaModule {
 		bind(classOf[LeaderBoardInterface]).to(classOf[LeaderBoard])
 		bind(classOf[DirectorInterface]).to(classOf[Director])
 		bind(classOf[CoRInterface]).to(classOf[ChainOfResponsibility])
-		//bind(classOf[PlayerInterface]).to(classOf[Player])
+		bind(classOf[FileIOInterface]).to(classOf[fileXMLImpl.FileIO])
 
 		@Provides
 		def providePlayer(): PlayerInterface =

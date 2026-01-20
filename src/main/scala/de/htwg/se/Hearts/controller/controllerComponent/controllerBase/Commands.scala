@@ -9,7 +9,7 @@ import de.htwg.se.Hearts.model.gameComponent.BuilderInterface
 import de.htwg.se.Hearts.model.gameComponent.CoRInterface
 import de.htwg.se.Hearts.model.gameComponent.DirectorInterface
 import de.htwg.se.Hearts.model.gameComponent.PlayerInterface
-import de.htwg.se.Hearts.model.fileIOComponent.fileXMLImpl.fileIO
+import de.htwg.se.Hearts.model.fileIOComponent.FileIOInterface
 
 class RedoCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
     override def setup(newController:Controller):Unit = gameController = Some(newController)
@@ -45,7 +45,6 @@ class SetPlayerNumberCommand(var gameController: Option[Controller] = None, var 
     override def execute: Boolean =
         val director = injector.getInstance(classOf[DirectorInterface])
         director.copyGameState(gameController.get.game)
-        //val builder:BuilderInterface = GameBuilder(gameController.get.getGame.asInstanceOf[Game])
         if index.exists(intInput => intInput >= 3 && intInput <= 4) then
             gameController.get.changeState(GetPlayerNamesState(gameController.get))
             director.getBuilder.setPlayerNumber(Some(index.get))
@@ -112,7 +111,7 @@ class SetSortingRankCommand(var gameController: Option[Controller] = None, var b
         val director = injector.getInstance(classOf[DirectorInterface])
         director.copyGameState(gameController.get.game)
         gameController.get.setStrategy(SortByRankStrategy())
-        director.getBuilder.setLastPlayedCard(Left("Cards sorted by rank"))
+        director.getBuilder.setErrorOrLastPlayedCard(Left("Cards sorted by rank"))
         gameController.get.game = director.getBuilder.getGame
         false
 
@@ -128,7 +127,7 @@ class SetSortingSuitCommand(var gameController: Option[Controller] = None, var b
         val director = injector.getInstance(classOf[DirectorInterface])
         director.copyGameState(gameController.get.game)
         gameController.get.setStrategy(SortBySuitStrategy())
-        director.getBuilder.setLastPlayedCard(Left("Cards sorted by suit"))
+        director.getBuilder.setErrorOrLastPlayedCard(Left("Cards sorted by suit"))
         gameController.get.game = director.getBuilder.getGame
         false
 
@@ -230,7 +229,7 @@ class ContinueCommand(var gameController: Option[Controller] = None, var backup:
         director.getBuilder.setCurrentWinnerAndHighestCard(None, None)
         director.getBuilder.setFirstCard(true)
         director.getBuilder.setStartWithHearts(false)
-        director.getBuilder.setLastPlayedCard(Left(""))
+        director.getBuilder.setErrorOrLastPlayedCard(Left(""))
         gameController.get.changeState(GamePlayState(gameController.get))
         director.getBuilder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(director.getBuilder.getCopy)))
         gameController.get.game = director.getBuilder.getGame
@@ -246,7 +245,15 @@ class SaveCommand(var gameController: Option[Controller] = None, var backup: Opt
         gameController.get.state = backup.get._2
 
     override def execute: Boolean =
-        fileIO().save(gameController.get.getGame, gameController.get.getState)
+        val c = gameController.get
+        val director = injector.getInstance(classOf[DirectorInterface])
+        director.copyGameState(gameController.get.getGame)
+        c.fileIo.save(gameController.get.getGame, gameController.get.getState)
+        if c.getFileIO.saveExists then
+            director.getBuilder.setErrorOrLastPlayedCard(Left("Game saved!\n"))
+        else
+            director.getBuilder.setErrorOrLastPlayedCard(Left("Game was not saved!\n"))
+        gameController.get.game = director.getBuilder.getGame
         false
 
 class LoadCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None) extends Command:
@@ -259,8 +266,18 @@ class LoadCommand(var gameController: Option[Controller] = None, var backup: Opt
         gameController.get.state = backup.get._2
 
     override def execute: Boolean =
-        gameController.get.setGame(fileIO().load(gameController.get))
+        val c = gameController.get
+        val director = injector.getInstance(classOf[DirectorInterface])
+        if c.getFileIO.saveExists then
+            c.setGame(c.fileIo.load(c))
+            director.copyGameState(gameController.get.getGame)
+            director.getBuilder.setErrorOrLastPlayedCard(Left("Game loaded!\n"))
+        else
+            director.copyGameState(gameController.get.getGame)
+            director.getBuilder.setErrorOrLastPlayedCard(Left("No game saved!\n"))
+        gameController.get.game = director.getBuilder.getGame
         false
+
 
 
 class PlayCardCommand(var gameController: Option[Controller] = None, var backup: Option[(GameInterface, State)] = None, index: Option[Int]) extends Command:
@@ -280,7 +297,7 @@ class PlayCardCommand(var gameController: Option[Controller] = None, var backup:
             val cOR: CoRInterface = injector.getInstance((classOf[CoRInterface]))
             val result = cOR.validateMove(director.getBuilder.getCopy, gameController.get.getPlayerHand, index)
             result match
-                case Left(_) => director.getBuilder.setLastPlayedCard(result)
+                case Left(_) => director.getBuilder.setErrorOrLastPlayedCard(result)
                 case Right(cardToPlay) =>
                     director.moveCard(cardToPlay)
 
@@ -290,7 +307,7 @@ class PlayCardCommand(var gameController: Option[Controller] = None, var backup:
                             director.getBuilder.getPlayers(director.getBuilder.getCurrentWinnerIndex.get).addWonCards(director.getBuilder.getTrickCards)
                         )
 
-                    director.getBuilder.setLastPlayedCard(result)
+                    director.getBuilder.setErrorOrLastPlayedCard(result)
                     director.getBuilder.setCurrentPlayerIndex(Some(gameController.get.getNextPlayerIndex(director.getBuilder.getCopy)))
 
                     if director.getBuilder.getPlayers.forall(_.getHand.size == 0) then

@@ -6,7 +6,7 @@ import de.htwg.se.Hearts.model.gameComponent.CardInterface
 import de.htwg.se.Hearts.model.gameComponent.PlayerInterface
 import de.htwg.se.Hearts.model.gameComponent.Rank
 import de.htwg.se.Hearts.model.gameComponent.Suit
-import scala.xml.Node
+import scala.xml._
 
 case class Game(
     playerNumber: Option[Int] = None,
@@ -19,7 +19,7 @@ case class Game(
     trickCards: List[CardInterface] = Nil,
     highestCard: Option[CardInterface] = None,
     currentWinnerIndex: Option[Int] = None,
-    lastCardPlayed: Either[String, CardInterface] = Left("No Card")) extends GameInterface:
+    errorOrlastCardPlayed: Either[String, CardInterface] = Left("No Card")) extends GameInterface:
 
     def getPlayerNumber: Option[Int] = playerNumber
     def getStartWithHearts: Boolean = startWithHearts
@@ -31,10 +31,33 @@ case class Game(
     def getTrickCards: List[CardInterface] = trickCards
     def getHighestCard: Option[CardInterface] = highestCard
     def getCurrentWinnerIndex: Option[Int] = currentWinnerIndex
-    def getLastCardPlayed: Either[String, CardInterface] = lastCardPlayed
+    def getErrorOrLastCardPlayed: Either[String, CardInterface] = errorOrlastCardPlayed
     def getCurrentPlayerIndex: Option[Int] = currentPlayerIndex
 
 
+    def playerFromXML(node: scala.xml.Node): Player =
+        Player(
+            (node \ "name").text,
+            (node \ "hand" \ "card").map(n => cardFromXML(n)).toList,
+            (node \ "wonCards" \ "card").map(n => cardFromXML(n)).toList,
+            (node \ "points").text.toInt
+        )
+    def cardFromXML(node: scala.xml.Node): Card = Card(Rank.valueOf((node \ "rank").text),Suit.valueOf((node \ "suit").text))
+
+
+    def eitherCardFromXML(parent: Node, label: String): Either[String, Card] =
+    (parent \ label).headOption match
+        case None => Left(s"$label fehlt")
+
+        case Some(container) =>
+            if (container \ "right").nonEmpty then
+                val cardNodeOpt = (container \ "right" \ "card").headOption
+                cardNodeOpt match
+                case Some(cn) => Right(cardFromXML(cn))
+                case None     => Left("right whitout <card>")
+            else
+                val msg = (container \ "left" \ "message").text.stripTrailing() + "\n"
+                Left(if msg.nonEmpty then msg else "No Card\n")
     def gameFromXML(gameNode: Node): GameInterface =
 
         def optInt(label: String): Option[Int] = (gameNode \ label).headOption.map(_.text.trim).filter(_.nonEmpty).map(_.toInt)
@@ -50,13 +73,9 @@ case class Game(
 
         val highestCard: Option[Card] = (gameNode \ "highestCard" \ "card").headOption.map(cardFromXML)
 
-        val lastCardPlayed: Either[String, Card] =
-            if ((gameNode \ "lastCardPlayed" \ "right").nonEmpty)
-            Right(cardFromXML((gameNode \ "lastCardPlayed" \ "right" \ "card").head))
-            else {
-            val msg = (gameNode \ "lastCardPlayed" \ "left").text.trim
-            Left(if (msg.nonEmpty) msg else "No Card")
-            }
+        val errorOrlastCardPlayed: Either[String, Card] =
+            eitherCardFromXML(gameNode, "errorOrlastCardPlayed")
+
 
         Game(
             playerNumber        = optInt("playNumber"),
@@ -69,19 +88,24 @@ case class Game(
             trickCards          = trickCards,
             highestCard         = highestCard,
             currentWinnerIndex  = optInt("currentWinnerIndex"),
-            lastCardPlayed      = lastCardPlayed
+            errorOrlastCardPlayed      = errorOrlastCardPlayed
         )
 
+    def optCardToXml(opt: Option[CardInterface]): Elem =
+        opt match {
+            case Some(card) => card.cardToXML
+            case None       => Elem(null, "card", scala.xml.Null, TopScope, minimizeEmpty = false)
+        }
+
+    def eitherCardToXml(e: Either[String, CardInterface]): Elem =
+        val a: Elem = e match
+            case Right(card) => <right>{ card.cardToXML }</right>
+            case Left(msg) => {<left><message>{ msg }</message></left>}
+        a
 
 
-    def playerFromXML(node: scala.xml.Node): Player =
-        Player(
-            (node \ "name").text,
-            (node \ "hand" \ "card").map(n => cardFromXML(n)).toList,
-            (node \ "wonCards" \ "card").map(n => cardFromXML(n)).toList,
-            (node \ "points").text.toInt
-        )
 
-    def cardFromXML(node: scala.xml.Node): Card = Card(Rank.valueOf((node \ "rank").text),Suit.valueOf((node \ "suit").text))
+
+
 
 

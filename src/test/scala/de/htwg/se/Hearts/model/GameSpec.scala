@@ -59,7 +59,7 @@ class GameSpec extends AnyWordSpec with Matchers {
         }
 
         "get lastCardPlayed" in {
-            game.lastCardPlayed should be (Left("No Card"))
+            game.errorOrlastCardPlayed should be (Left("No Card"))
         }
 
         "get currentPlayerIndex" in {
