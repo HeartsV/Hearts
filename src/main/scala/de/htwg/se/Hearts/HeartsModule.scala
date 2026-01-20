@@ -35,6 +35,7 @@ class HeartsModule extends AbstractModule with ScalaModule {
 		bind(classOf[DirectorInterface]).to(classOf[Director])
 		bind(classOf[CoRInterface]).to(classOf[ChainOfResponsibility])
 		bind(classOf[FileIOInterface]).to(classOf[fileIOJSONImpl.FileIO])
+		//bind(classOf[FileIOInterface]).to(classOf[fileIOXMLImpl.FileIO])
 
 		@Provides
 		def providePlayer(): PlayerInterface =

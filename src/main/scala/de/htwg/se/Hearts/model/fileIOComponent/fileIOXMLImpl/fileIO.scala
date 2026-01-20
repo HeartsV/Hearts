@@ -1,4 +1,4 @@
-package de.htwg.se.Hearts.model.fileIOComponent.fileXMLImpl
+package de.htwg.se.Hearts.model.fileIOComponent.fileIOXMLImpl
 
 
 import scala.xml._
