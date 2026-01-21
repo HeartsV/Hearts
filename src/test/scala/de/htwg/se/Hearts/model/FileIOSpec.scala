@@ -288,7 +288,7 @@ class FileIOXmlSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 	}
 
 	"XML FileIO" should {
-		import fileIOComponent.fileXMLImpl._
+		import fileIOComponent.fileIOXMLImpl._
 		"create hearts.xml on save and include state + game tags" in {
 		val io = new FileIO
 		io.save(sampleGame(), DummyState)
