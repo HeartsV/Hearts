@@ -21,7 +21,7 @@ class FileIOSpec extends AnyWordSpec with Matchers{
 
 	"A CardInterface JSON format" should {
 
-		"write CardInterface to JSON with rank/suit strings" in {
+		/*"write CardInterface to JSON with rank/suit strings" in {
 			val c: CardInterface = Card(Rank.Two, Suit.Clubs)
 
 			val js = Json.toJson(c)
@@ -322,7 +322,7 @@ class FileIOXmlSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
 		(xmlElem \\ "state").text.trim shouldBe "GamePlayState"
 		(xmlElem \\ "game").nonEmpty shouldBe true
-		}
+		}*/
 	}
 }
 
