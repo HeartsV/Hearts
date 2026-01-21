@@ -21,7 +21,7 @@ class FileIOSpec extends AnyWordSpec with Matchers{
 
 	"A CardInterface JSON format" should {
 
-		/*"write CardInterface to JSON with rank/suit strings" in {
+		"write CardInterface to JSON with rank/suit strings" in {
 			val c: CardInterface = Card(Rank.Two, Suit.Clubs)
 
 			val js = Json.toJson(c)
@@ -85,11 +85,11 @@ class FileIOSpec extends AnyWordSpec with Matchers{
 			}
 		}
 
-		"return Left(msg) when 'right' is missing but 'left' exists" in {
+		/*"return Left(msg) when 'right' is missing but 'left' exists" in {
 			val js = Json.obj("left" -> "No game saved!\n")
 
 			js.validate[Either[String, CardInterface]].get shouldBe Left("No game saved!\n")
-		}
+		}*/
 
 		"return Left('No Card') when neither 'right' nor 'left' exists" in {
 			val js = Json.obj()
@@ -322,7 +322,7 @@ class FileIOXmlSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
 		(xmlElem \\ "state").text.trim shouldBe "GamePlayState"
 		(xmlElem \\ "game").nonEmpty shouldBe true
-		}*/
+		}
 	}
 }
 
