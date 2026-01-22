@@ -161,6 +161,7 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 				input match
 					case "suit" | "s" => Some(SetSortingSuitCommand())
 					case "rank" | "r" => Some(SetSortingRankCommand())
+					case "exit" | "e" => Some(ExitCommand())
 					case "undo"       => Some(UndoCommand())
 					case "redo"       => Some(RedoCommand())
 					case "save" 	  => Some(SaveCommand())
