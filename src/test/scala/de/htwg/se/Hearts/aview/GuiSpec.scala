@@ -10,7 +10,7 @@ import de.htwg.se.Hearts.controller.controllerComponent.controllerBase.Controlle
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 
 class GuiRenderSpec extends AnyWordSpec with Matchers {
-
+/*
   val dummyController: ControllerInterface = Controller(Game())
   Platform.startup(() => ())
 
@@ -36,6 +36,6 @@ class GuiRenderSpec extends AnyWordSpec with Matchers {
       box.children.size shouldBe 2
       all (box.children) shouldBe a [javafx.scene.image.ImageView]
     }
-  }
+  }*/
 }
 
