@@ -154,7 +154,7 @@ class GameSpec extends AnyWordSpec with Matchers {
             g.getFirstCard shouldBe true
         }
     }
-    
+
     "optCardToXml" should {
 
         "return an empty <card> element when Option is None (covers case None branch)" in {
@@ -209,6 +209,27 @@ class GameSpec extends AnyWordSpec with Matchers {
             p.hand shouldBe Nil
             p.wonCards shouldBe Nil
             p.points shouldBe 0
+        }
+
+         "cover wonCards.map(c => c.cardToXML) by having at least one won card" in {
+            val won = Card(Rank.Ace, Suit.Hearts)
+            val p = Player(
+                name = "Alice",
+                hand = Nil,
+                wonCards = List(won),
+                points = 10
+            )
+
+            val xml = p.playerToXML
+
+            (xml \ "name").text shouldBe "Alice"
+            (xml \ "points").text shouldBe "10"
+
+            val wonCardsXml = (xml \ "wonCards" \ "card")
+            wonCardsXml.size shouldBe 1
+
+            (wonCardsXml.head \ "rank").text.nonEmpty shouldBe true
+            (wonCardsXml.head \ "suit").text.nonEmpty shouldBe true
         }
     }
 }
