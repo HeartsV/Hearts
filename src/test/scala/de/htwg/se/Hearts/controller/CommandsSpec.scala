@@ -240,17 +240,6 @@ class CommandsSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach{
 			cmd.setup(gameCoLS)
 			cmd.storeBackup
 			cmd.execute
-			/*
-			gameCo.getGame.getErrorOrLastCardPlayed match 
-				case Left(msg) => msg.trim shouldBe "Game saved!"
-				case Right(_)   => fail("Expected Left(message)")
-
-			cmd.undoStep
-			gameCo.state shouldBe a [MainScreenState]
-			gameCo.getGame.getErrorOrLastCardPlayed match {
-				case Left(msg) => msg.trim shouldBe "No Card"
-				case Right(_)   => fail("Expected Left(message)")
-			}*/
 		}
 	}
 
@@ -272,12 +261,6 @@ class CommandsSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach{
 			cmd.storeBackup
 			cmd.execute
 
-			/*FileIO().saveExists shouldBe true
-			gameCo.getGame.getErrorOrLastCardPlayed match
-				case Left(msg) => msg.trim shouldBe "Game loaded!"
-				case Right(_)   => fail("Expected Left(message)")
-			*/
-
 		}
 
 		"set error message if no save exists" in {
@@ -295,11 +278,11 @@ class CommandsSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach{
 				case Left(msg) => msg.trim shouldBe "No game saved!"
 				case Right(_)   => fail("Expected Left(message)")
 
-			/*cmd.undoStep
+			gameCo.state = MainScreenState(gameCo)
+			gameCo.processInput(cmd)
 			gameCo.state shouldBe a [MainScreenState]
-			gameCo.getGame.getErrorOrLastCardPlayed match
-				case Left(msg) => msg.trim shouldBe "No Card"
-				case Right(_)   => fail("Expected Left(message)")*/
+			cmd.undoStep
+			gameCo.state shouldBe a [MainScreenState]
 		}
 	}
 }

@@ -16,6 +16,9 @@ import java.io.{File, PrintWriter}
 import scala.io.Source
 import scala.xml.XML
 import de.htwg.se.Hearts.controller.controllerComponent.controllerBase.{Controller, State}
+import java.nio.file.Files
+import java.nio.charset.StandardCharsets
+import java.nio.file.Paths
 
 class FileIOSpec extends AnyWordSpec with Matchers{
 
@@ -231,6 +234,28 @@ class FileIOJsonSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 		controller.passStateString shouldBe "GamePlayState"
 		}
 
+		"throw RuntimeException when game JSON cannot be validated (JsError case)" in {
+			val badJson =
+				"""{
+				|  "state": "MainScreenState",
+				|  "game": "this-is-not-a-game-object"
+				|}""".stripMargin
+
+			Files.write(
+				Paths.get("hearts.json"),
+				badJson.getBytes(StandardCharsets.UTF_8)
+			)
+
+			val controller = new Controller(Game())
+			val fileIO = new FileIO()
+
+			val ex = intercept[RuntimeException] {
+				fileIO.load(controller)
+			}
+
+			ex.getMessage should startWith ("Failed to parse hearts.json:")
+		}
+
 		"gameAndStateToJSON returns JsObject with state and game fields" in {
 		val io = new FileIO
 		val js = io.gameAndStateToJSON(sampleGame(), DummyState)
@@ -242,12 +267,12 @@ class FileIOJsonSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 }
 
 class FileIOXmlSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
+	import fileIOComponent.fileIOXMLImpl._
 
 	private val saveFile = new File("hearts.xml")
 	private var backup: Option[String] = None
 
 	override def beforeEach(): Unit = {
-		// Backup existing hearts.xml (if present)
 		if (saveFile.exists()) {
 		backup = Some(Source.fromFile(saveFile).getLines().mkString("\n"))
 		saveFile.delete()
@@ -255,7 +280,6 @@ class FileIOXmlSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 	}
 
 	override def afterEach(): Unit = {
-		// Cleanup + restore previous file
 		if (saveFile.exists()) saveFile.delete()
 		backup.foreach { content =>
 		val pw = new PrintWriter(saveFile)
@@ -282,13 +306,11 @@ class FileIOXmlSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 		)
 	}
 
-	// Dummy state: XML save uses only getStateString
 	private object DummyState extends State(null) {
 		override def getStateString: String = "GamePlayState"
 	}
 
 	"XML FileIO" should {
-		import fileIOComponent.fileIOXMLImpl._
 
 		"saveExists be false when hearts.hearts does not exist" in {
 		val io = new FileIO
@@ -296,7 +318,9 @@ class FileIOXmlSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 		}
 		"create hearts.xml on save and include state + game tags" in {
 		val io = new FileIO
+		io.save(sampleGame(Right(Card(Rank.Two, Suit.Clubs))), DummyState)
 		io.save(sampleGame(), DummyState)
+
 
 		saveFile.exists() shouldBe true
 		saveFile.length() should be > 0L
@@ -329,6 +353,31 @@ class FileIOXmlSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 		(xmlElem \\ "game").nonEmpty shouldBe true
 		}
 	}
+
+	"saveExists" should {
+
+		"return false when file exists but is empty (covers file.length() == 0)" in {
+		val file = new File("hearts.xml")
+
+		Files.write(Paths.get("hearts.xml"), Array.emptyByteArray)
+
+		val fileIO = new FileIO()
+		fileIO.saveExists shouldBe false
+
+		file.delete()
+		}
+
+		"return true when file exists and is not empty" in {
+		val file = new File("hearts.xml")
+
+		Files.write(Paths.get("hearts.xml"), "<xml></xml>".getBytes)
+
+		val fileIO = new FileIO()
+		fileIO.saveExists shouldBe true
+
+		file.delete()
+		}
+	}
 }
 
 	val saveFile1 = new File("hearts.xml")
@@ -339,5 +388,3 @@ class FileIOXmlSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 			saveFile.delete()
 
 	val a = (deleteFile(saveFile1),deleteFile(saveFile2))
-
-

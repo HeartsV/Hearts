@@ -8,6 +8,7 @@ import de.htwg.se.Hearts.model.gameComponent.gameBase.Card
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Game
 import de.htwg.se.Hearts.model.gameComponent.gameBase.Player
 import de.htwg.se.Hearts.model.gameComponent._
+import scala.xml.Node
 
 class GameSpec extends AnyWordSpec with Matchers {
     "A Game" should {
@@ -64,6 +65,150 @@ class GameSpec extends AnyWordSpec with Matchers {
 
         "get currentPlayerIndex" in {
             game.currentPlayerIndex should be (Some(0))
+        }
+    }
+    "eitherCardFromXML" should {
+
+        "return Left('<label> fehlt') when the label node is missing" in {
+            val parent: Node = <game></game>
+            val game = Game()
+
+            game.eitherCardFromXML(parent, "errorOrlastCardPlayed") shouldBe Left("errorOrlastCardPlayed fehlt")
+        }
+
+        "return Left('right without <card>') when <right> exists but has no <card>" in {
+            val game = Game()
+            val parent: Node =
+                <game>
+                <errorOrlastCardPlayed>
+                    <right></right>
+                </errorOrlastCardPlayed>
+                </game>
+
+            game.eitherCardFromXML(parent, "errorOrlastCardPlayed") shouldBe
+                Left("right without <card>")
+        }
+        "return Left(Empty) when <Left> exists but is empty" in {
+            val game = Game()
+            val parent: Node =
+                <game>
+                <errorOrlastCardPlayed>
+                    <left></left>
+                </errorOrlastCardPlayed>
+                </game>
+
+            game.eitherCardFromXML(parent, "errorOrlastCardPlayed") shouldBe
+                Left("No Card\n")
+        }
+
+        "return Right(Card(...)) when <right><card> is present" in {
+            val game = Game()
+            val parent: Node =
+                <game>
+                <errorOrlastCardPlayed>
+                    <right>
+                    <card>
+                        <rank>Ace</rank>
+                        <suit>Hearts</suit>
+                    </card>
+                    </right>
+                </errorOrlastCardPlayed>
+                </game>
+
+            val res = game.eitherCardFromXML(parent, "errorOrlastCardPlayed")
+            res.isRight shouldBe true
+        }
+    }
+
+    "gameFromXML" should {
+
+    "use default values when boolean tags are missing (covers reqBool case None => default)" in {
+      val xml =
+        <game>
+          <players></players>
+          <trickcards></trickcards>
+          {}
+        </game>
+
+      val g = Game().gameFromXML(xml)
+
+      g.getStartWithHearts shouldBe false
+      g.getKeepProcessRunning shouldBe true
+      g.getFirstCard shouldBe true
+    }
+
+        "use default values when boolean tags exist but are empty/whitespace (also covers reqBool None branch due to filter(_.nonEmpty))" in {
+            val xml =
+                <game>
+                <players></players>
+                <trickcards></trickcards>
+                <startWithHearts>   </startWithHearts>
+                <keepProcessRunning></keepProcessRunning>
+                <firstCard> </firstCard>
+                </game>
+
+            val g = Game().gameFromXML(xml)
+
+            g.getStartWithHearts shouldBe false
+            g.getKeepProcessRunning shouldBe true
+            g.getFirstCard shouldBe true
+        }
+    }
+    
+    "optCardToXml" should {
+
+        "return an empty <card> element when Option is None (covers case None branch)" in {
+            val game = Game()
+
+            val xml = game.optCardToXml(None)
+
+            xml.label shouldBe "card"
+            xml.child.isEmpty shouldBe true
+            xml.text shouldBe ""
+        }
+    }
+
+    "playerFromXML" should {
+
+        "parse name, hand cards, wonCards and points correctly" in {
+            val game = Game()
+
+            val xml =
+                <player>
+                <name>Alice</name>
+                <hand>
+                    <card><rank>Ace</rank><suit>Hearts</suit></card>
+                    <card><rank>King</rank><suit>Spades</suit></card>
+                </hand>
+                <wonCards>
+                    <card><rank>Two</rank><suit>Clubs</suit></card>
+                </wonCards>
+                <points>42</points>
+                </player>
+
+            val p = game.playerFromXML(xml)
+
+            p.name shouldBe "Alice"
+            p.hand.size shouldBe 2
+            p.wonCards.size shouldBe 1
+            p.points shouldBe 42
+        }
+
+        "return empty lists when hand/wonCards are missing" in {
+            val game = Game()
+
+            val xml =
+                <player>
+                <name>Bob</name>
+                <points>0</points>
+                </player>
+
+            val p = game.playerFromXML(xml)
+
+            p.name shouldBe "Bob"
+            p.hand shouldBe Nil
+            p.wonCards shouldBe Nil
+            p.points shouldBe 0
         }
     }
 }

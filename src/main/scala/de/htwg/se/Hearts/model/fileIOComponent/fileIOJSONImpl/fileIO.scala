@@ -16,7 +16,7 @@ class FileIO extends FileIOInterface:
 		val gameJson = (json \ "game").get
 		gameJson.validate[GameInterface] match
 			case JsSuccess(game, _) => game
-			//case e: JsError => throw new RuntimeException("Failed to parse hearts.json: " + JsError.toJson(e).toString())
+			case e: JsError => throw new RuntimeException("Failed to parse hearts.json: " + JsError.toJson(e).toString())
 	def save(game: GameInterface, state: State): Unit =
 		val pw = new PrintWriter(new File("hearts.json"))
 		pw.write(Json.prettyPrint(gameAndStateToJSON(game, state)))

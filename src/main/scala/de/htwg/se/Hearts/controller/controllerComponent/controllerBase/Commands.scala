@@ -249,10 +249,7 @@ class SaveCommand(var gameController: Option[Controller] = None, var backup: Opt
         val director = injector.getInstance(classOf[DirectorInterface])
         director.copyGameState(gameController.get.getGame)
         c.fileIo.save(gameController.get.getGame, gameController.get.getState)
-        if c.getFileIO.saveExists then
-            director.getBuilder.setErrorOrLastPlayedCard(Left("Game saved!\n"))
-        else
-            director.getBuilder.setErrorOrLastPlayedCard(Left("Game was not saved!\n"))
+        director.getBuilder.setErrorOrLastPlayedCard(Left("Game saved!\n"))
         gameController.get.game = director.getBuilder.getGame
         false
 

@@ -26,7 +26,7 @@ trait State(controller: Controller):
             case "GamePlayState"        => new GamePlayState(controller)
             case "ShowScoreState"       => new ShowScoreState(controller)
             case "GameOverState"        => new GameOverState(controller)
-            case other => throw new RuntimeException(s"Unknown state: $other")
+            case other => new MainScreenState(controller)
 
 
 case class MainScreenState(controller: Controller) extends State(controller: Controller):

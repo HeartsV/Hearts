@@ -54,10 +54,10 @@ case class Game(
                 val cardNodeOpt = (container \ "right" \ "card").headOption
                 cardNodeOpt match
                 case Some(cn) => Right(cardFromXML(cn))
-                case None     => Left("right whitout <card>")
+                case None     => Left("right without <card>")
             else
                 val msg = (container \ "left" \ "message").text.stripTrailing() + "\n"
-                Left(if msg.nonEmpty then msg else "No Card\n")
+                Left(if msg.trim.nonEmpty then msg else "No Card\n")
     def gameFromXML(gameNode: Node): GameInterface =
 
         def optInt(label: String): Option[Int] = (gameNode \ label).headOption.map(_.text.trim).filter(_.nonEmpty).map(_.toInt)
