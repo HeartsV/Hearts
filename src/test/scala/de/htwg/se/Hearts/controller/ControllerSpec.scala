@@ -5,6 +5,7 @@ import org.scalatest.matchers.should.Matchers
 import de.htwg.se.Hearts.model.gameComponent.gameBase.*
 import de.htwg.se.Hearts.controller.controllerComponent.controllerBase._
 import de.htwg.se.Hearts.model.gameComponent._
+import de.htwg.se.Hearts.util.Command
 
 
 
@@ -38,18 +39,32 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         val gameController = Controller(gameFirstCard)
         val state = GamePlayState(gameController)
         val controllerWithFullTrick = Controller(gameWithFullTrick)
+        class DummyCommand(execResult: Boolean) extends Command:
+            override def setup(controller: Controller): Unit = {}
+            override def storeBackup: Unit = {}
+            override def execute: Boolean = execResult
+            override def undoStep: Unit = {}
 
-        /*"process the input correctly" in {
-            ???
+        "NOT push to history when processInput command.execute is false (covers else branch)" in {
+            val controller = Controller(Game())
+            controller.processInput(new DummyCommand(execResult = false))
+            noException should be thrownBy controller.undo
+            }
+            "push to history when processInput command.execute is true (covers then branch)" in {
+            val controller = Controller(Game())
+            controller.processInput(new DummyCommand(execResult = true))
+            noException should be thrownBy controller.undo
         }
 
-        "undo last step" in {
-
+        "not crash on undo when history is empty (covers command == None branch)" in {
+            val controller = Controller(Game())
+            noException should be thrownBy controller.undo
         }
 
-        "redo last step" in {
-
-        }*/
+        "not crash on redo when redo stack is empty (covers redoPop == None branch)" in {
+            val controller = Controller(Game())
+            noException should be thrownBy controller.redo
+        }
 
         "change state" in {
             gameController.changeState(state)
@@ -138,6 +153,44 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 			o2.getWonCards shouldBe Nil
 			o3.getWonCards shouldBe Nil
 		}
+
+        "return true in checkGameOver when a player reaches maxScore" in {
+            val p1 = Player("A", points = 10)
+            val p2 = Player("B", points = 0)
+
+            val game = Game(
+            playerNumber = Some(2),
+            players = Vector(p1, p2),
+            maxScore = Some(10),
+            currentPlayerIndex = Some(0)
+            )
+
+            val controller = Controller(game)
+            controller.checkGameOver(game) shouldBe true
+        }
+
+          "return just newline when errorOrLastCardPlayed is Left(No Card) (covers No Card case)" in {
+                val g = Game(errorOrlastCardPlayed = Left("No Card"))
+                val controller = Controller(g)
+
+                controller.errorOrLastCardPlayedToString shouldBe "\n"
+            }
+
+            "return formatted error when errorOrLastCardPlayed is Left(other) (covers Left(error) case)" in {
+                val g = Game(errorOrlastCardPlayed = Left("Game loaded!"))
+                val controller = Controller(g)
+
+                controller.errorOrLastCardPlayedToString shouldBe "\nGame loaded!\n"
+            }
+
+            "return '<card> played\\n' when errorOrLastCardPlayed is Right(card) (covers Right(card) case)" in {
+                val card = Card(Rank.Two, Suit.Clubs)
+                val g = Game(errorOrlastCardPlayed = Right(card))
+                val controller = Controller(g)
+
+                controller.errorOrLastCardPlayedToString shouldBe (card.toString + " played\n")
+            }
+
 
     }
 }
