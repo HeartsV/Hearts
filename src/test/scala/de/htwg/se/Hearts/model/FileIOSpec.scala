@@ -85,11 +85,11 @@ class FileIOSpec extends AnyWordSpec with Matchers{
 			}
 		}
 
-		/*"return Left(msg) when 'right' is missing but 'left' exists" in {
+		"return Left(msg) when 'right' is missing but 'left' exists" in {
 			val js = Json.obj("left" -> "No game saved!\n")
 
 			js.validate[Either[String, CardInterface]].get shouldBe Left("No game saved!\n")
-		}*/
+		}
 
 		"return Left('No Card') when neither 'right' nor 'left' exists" in {
 			val js = Json.obj()
