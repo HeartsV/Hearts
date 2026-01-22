@@ -195,6 +195,13 @@ class FileIOJsonSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
 	"JSON FileIO" should {
 		import fileIOComponent.fileIOJSONImpl._
+		
+		def deleteIfExists(path: String): Unit =
+			val p = Paths.get(path)
+			if (Files.exists(p)) Files.delete(p)
+
+		deleteIfExists("hearts.json")
+
 		"saveExists be false when hearts.json does not exist" in {
 		val io = new FileIO
 			io.saveExists shouldBe false

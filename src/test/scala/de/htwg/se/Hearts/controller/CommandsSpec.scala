@@ -7,6 +7,11 @@ import de.htwg.se.Hearts.controller.controllerComponent.controllerBase._
 import de.htwg.se.Hearts.model.gameComponent.gameBase._
 import de.htwg.se.Hearts.model.gameComponent._
 import java.io.File
+import java.nio.file.Paths
+import java.nio.file.Files
+import com.google.inject.Injector
+import com.google.inject.Guice
+import de.htwg.se.Hearts.HeartsModule
 
 class CommandsSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach{
 	private val saveFile = new File("hearts.json")
@@ -240,7 +245,16 @@ class CommandsSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach{
 			cmd.setup(gameCoLS)
 			cmd.storeBackup
 			cmd.execute
+			
+			gameCo.state = MainScreenState(gameCo)
+				gameCo.processInput(cmd)
+				gameCo.state shouldBe a [MainScreenState]
+				cmd.undoStep
+				gameCo.state shouldBe a [MainScreenState]
 		}
+
+
+
 	}
 
 	"A LoadCommand" should {
@@ -284,5 +298,17 @@ class CommandsSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach{
 			cmd.undoStep
 			gameCo.state shouldBe a [MainScreenState]
 		}
+
+		"load the game and set 'Game loaded!\\n' when a save exists" in {
+			val controller = Controller(Game())
+
+			val fileIO = controller.getFileIO
+			fileIO.save(controller.getGame, controller.getState)
+			fileIO.saveExists shouldBe true
+			val cmd = new LoadCommand()
+			cmd.setup(controller)
+			cmd.execute
+			controller.getGame.getErrorOrLastCardPlayed shouldBe Left("Game loaded!\n")
+			}
+		}
 	}
-}

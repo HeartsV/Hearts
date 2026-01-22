@@ -273,7 +273,7 @@ class LoadCommand(var gameController: Option[Controller] = None, var backup: Opt
             director.copyGameState(gameController.get.getGame)
             director.getBuilder.setErrorOrLastPlayedCard(Left("No game saved!\n"))
         gameController.get.game = director.getBuilder.getGame
-        false
+        true
 
 
 
