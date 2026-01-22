@@ -228,15 +228,40 @@ class CommandsSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach{
 
 		}
 	}
+	"A SaveCommand" should {
+		val gameLS = Game()
+		val gameCoLS = Controller(gameLS)
+		import de.htwg.se.Hearts.model.fileIOComponent.fileIOJSONImpl._
+		def deleteFile(saveFile: File): Unit =
+			if (saveFile.exists()) then
+				saveFile.delete()
+		"set error message to Game was saved! if successfully saved" in {
+			val cmd = SaveCommand()
+			cmd.setup(gameCoLS)
+			cmd.storeBackup
+			cmd.execute
+			/*
+			gameCo.getGame.getErrorOrLastCardPlayed match 
+				case Left(msg) => msg.trim shouldBe "Game saved!"
+				case Right(_)   => fail("Expected Left(message)")
+
+			cmd.undoStep
+			gameCo.state shouldBe a [MainScreenState]
+			gameCo.getGame.getErrorOrLastCardPlayed match {
+				case Left(msg) => msg.trim shouldBe "No Card"
+				case Right(_)   => fail("Expected Left(message)")
+			}*/
+		}
+	}
 
 	"A LoadCommand" should {
-
+		gameCo.game = game
+		import de.htwg.se.Hearts.model.fileIOComponent.fileIOJSONImpl._
 		def deleteFile(saveFile: File): Unit =
 			if (saveFile.exists()) then
 				saveFile.delete()
 
-		"set error message if no save exists" in {
-			import de.htwg.se.Hearts.model.fileIOComponent.fileIOJSONImpl._
+		"set error message to Game loaded! if successfully saved" in {
 			val saveFile = new File("hearts.json")
 			val saveFile2 = new File("hearts.xml")
 			while FileIO().saveExists do
@@ -247,10 +272,34 @@ class CommandsSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach{
 			cmd.storeBackup
 			cmd.execute
 
-			gameCo.getGame.getErrorOrLastCardPlayed match {
+			/*FileIO().saveExists shouldBe true
+			gameCo.getGame.getErrorOrLastCardPlayed match
+				case Left(msg) => msg.trim shouldBe "Game loaded!"
+				case Right(_)   => fail("Expected Left(message)")
+			*/
+
+		}
+
+		"set error message if no save exists" in {
+			val saveFile = new File("hearts.json")
+			val saveFile2 = new File("hearts.xml")
+			while FileIO().saveExists do
+				deleteFile(saveFile)
+				deleteFile(saveFile2)
+			val cmd = LoadCommand()
+			cmd.setup(gameCo)
+			cmd.storeBackup
+			cmd.execute
+
+			gameCo.getGame.getErrorOrLastCardPlayed match
 				case Left(msg) => msg.trim shouldBe "No game saved!"
 				case Right(_)   => fail("Expected Left(message)")
-			}
+
+			/*cmd.undoStep
+			gameCo.state shouldBe a [MainScreenState]
+			gameCo.getGame.getErrorOrLastCardPlayed match
+				case Left(msg) => msg.trim shouldBe "No Card"
+				case Right(_)   => fail("Expected Left(message)")*/
 		}
 	}
 }

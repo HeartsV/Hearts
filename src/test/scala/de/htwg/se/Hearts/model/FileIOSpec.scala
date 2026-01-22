@@ -194,27 +194,27 @@ class FileIOJsonSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 		import fileIOComponent.fileIOJSONImpl._
 		"saveExists be false when hearts.json does not exist" in {
 		val io = new FileIO
-		io.saveExists shouldBe false
+			io.saveExists shouldBe false
 		}
 
 		"save creates hearts.json and saveExists becomes true" in {
-		val io = new FileIO
-		io.save(sampleGame(), DummyState)
+			val io = new FileIO
+			io.save(sampleGame(), DummyState)
 
-		io.saveExists shouldBe true
-		saveFile.exists() shouldBe true
-		saveFile.length() should be > 0L
+			io.saveExists shouldBe true
+			saveFile.exists() shouldBe true
+			saveFile.length() should be > 0L
 		}
 
 		"save writes JSON with state + game" in {
-		val io = new FileIO
-		io.save(sampleGame(), DummyState)
+			val io = new FileIO
+			io.save(sampleGame(), DummyState)
 
-		val raw = Source.fromFile(saveFile).getLines().mkString
-		val js = Json.parse(raw)
+			val raw = Source.fromFile(saveFile).getLines().mkString
+			val js = Json.parse(raw)
 
-		(js \ "state").as[String] shouldBe "GamePlayState"
-		(js \ "game").toOption.isDefined shouldBe true
+			(js \ "state").as[String] shouldBe "GamePlayState"
+			(js \ "game").toOption.isDefined shouldBe true
 		}
 
 		"load returns the saved game and sets controller state from JSON" in {
@@ -289,6 +289,11 @@ class FileIOXmlSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
 	"XML FileIO" should {
 		import fileIOComponent.fileIOXMLImpl._
+
+		"saveExists be false when hearts.hearts does not exist" in {
+		val io = new FileIO
+			io.saveExists shouldBe false
+		}
 		"create hearts.xml on save and include state + game tags" in {
 		val io = new FileIO
 		io.save(sampleGame(), DummyState)

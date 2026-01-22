@@ -66,7 +66,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
         "get the correct getRulesScreenStateString" in {
             val expected =
-                "\n\n" +"Rules:" + "\n\n" +
+                "\nRules\n\n" +
                 "Hearts is a trick-taking card game played with 3-4 players, each playing individually." + "\n" +
                 "With 4 players, the game uses all 52 cards of a standard deck." + "\n" +
                 "With 3 players, one card is removed and the remaining 51 cards are used." + "\n" +
@@ -83,15 +83,6 @@ class TuiSpec extends AnyWordSpec with Matchers:
                 "Players may only see their own hands." + "\n" +
                 "With 3 players, one card is removed from the deck, and the remaining 51 cards are dealt evenly." + "\n" +
                 "There is no passing in a 3-player game." + "\n\n\n" +
-                "Passing Cards:" + "\n\n" +
-                "After all cards have been dealt (4-player game only), the passing phase begins." + "\n" +
-                "Each player selects three cards from their hand and passes them face-down to another player." + "\n\n" +
-                "The passing rotation works as follows:" + "\n" +
-                "- 1st round: Pass to the player on your left" + "\n" +
-                "- 2nd round: Pass to the player on your right" + "\n" +
-                "- 3rd round: Pass to the player across from you" + "\n" +
-                "- 4th round: No passing:" + "\n" +
-                "- Then the cycle repeats for the rest of the game." + "\n\n\n" +
                 "How the Game Is Played:" + "\n\n" +
                 "The player holding the Two of Clubs leads the first trick." + "\n" +
                 "All players must follow suit if possible. If they cannot, they may play another suit under certain conditions." + "\n" +
@@ -159,6 +150,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
                 tui.commandFor("RulesScreenState", "b").value shouldBe a [BackCommand]
                 tui.commandFor("RulesScreenState", "back").value shouldBe a [BackCommand]
                 tui.commandFor("MainScreenState", "e").value shouldBe a [ExitCommand]
+                tui.commandFor("MainScreenState", "load").value shouldBe a [LoadCommand]
                 tui.commandFor("MainScreenState", "xyz") shouldBe None
             }
 
@@ -171,18 +163,24 @@ class TuiSpec extends AnyWordSpec with Matchers:
             "return Commands for GetPlayerNumberState correctly" in {
                 tui.commandFor("GetPlayerNumberState", "undo").value shouldBe a [UndoCommand]
                 tui.commandFor("GetPlayerNumberState", "redo").value shouldBe a [RedoCommand]
+                tui.commandFor("GetPlayerNumberState", "save").value shouldBe a [SaveCommand]
+                tui.commandFor("GetPlayerNumberState", "load").value shouldBe a [LoadCommand]
                 tui.commandFor("GetPlayerNumberState", "4").value shouldBe a [SetPlayerNumberCommand]
             }
 
             "return Commands for GetPlayerNamesState correctly" in {
                 tui.commandFor("GetPlayerNamesState", "undo").value shouldBe a [UndoCommand]
                 tui.commandFor("GetPlayerNamesState", "redo").value shouldBe a [RedoCommand]
+                tui.commandFor("GetPlayerNamesState", "save").value shouldBe a [SaveCommand]
+                tui.commandFor("GetPlayerNamesState", "load").value shouldBe a [LoadCommand]
                 tui.commandFor("GetPlayerNamesState", "Alice").value shouldBe a [AddPlayerCommand]
             }
 
             "return Commands for SetMaxScoreState correctly" in {
                 tui.commandFor("SetMaxScoreState", "undo").value shouldBe a [UndoCommand]
                 tui.commandFor("SetMaxScoreState", "redo").value shouldBe a [RedoCommand]
+                tui.commandFor("SetMaxScoreState", "save").value shouldBe a [SaveCommand]
+                tui.commandFor("SetMaxScoreState", "load").value shouldBe a [LoadCommand]
                 tui.commandFor("SetMaxScoreState", "100").value shouldBe a [SetMaxScoreCommand]
             }
 
@@ -191,14 +189,19 @@ class TuiSpec extends AnyWordSpec with Matchers:
                 tui.commandFor("GamePlayState", "suit").value shouldBe a [SetSortingSuitCommand]
                 tui.commandFor("GamePlayState", "r").value shouldBe a [SetSortingRankCommand]
                 tui.commandFor("GamePlayState", "rank").value shouldBe a [SetSortingRankCommand]
+                tui.commandFor("GamePlayState", "exit").value shouldBe a [ExitCommand]
                 tui.commandFor("GamePlayState", "undo").value shouldBe a [UndoCommand]
                 tui.commandFor("GamePlayState", "redo").value shouldBe a [RedoCommand]
+                tui.commandFor("GamePlayState", "save").value shouldBe a [SaveCommand]
+                tui.commandFor("GamePlayState", "load").value shouldBe a [LoadCommand]
                 tui.commandFor("GamePlayState", "2").value shouldBe a [PlayCardCommand]
             }
 
             "return Commands for ShowScoreState correctly" in {
                 tui.commandFor("ShowScoreState", "undo").value shouldBe a [UndoCommand]
                 tui.commandFor("ShowScoreState", "redo").value shouldBe a [RedoCommand]
+                tui.commandFor("ShowScoreState", "save").value shouldBe a [SaveCommand]
+                tui.commandFor("ShowScoreState", "load").value shouldBe a [LoadCommand]
                 tui.commandFor("ShowScoreState", "whatever").value shouldBe a [ContinueCommand]
             }
 
@@ -213,6 +216,8 @@ class TuiSpec extends AnyWordSpec with Matchers:
                 tui.commandFor("GameOverState", "e").value shouldBe a [ExitCommand]
                 tui.commandFor("GameOverState", "undo").value shouldBe a [UndoCommand]
                 tui.commandFor("GameOverState", "redo").value shouldBe a [RedoCommand]
+                tui.commandFor("GameOverState", "save").value shouldBe a [SaveCommand]
+                tui.commandFor("GameOverState", "load").value shouldBe a [LoadCommand]
                 tui.commandFor("GameOverState", "xyz") shouldBe None
             }
 

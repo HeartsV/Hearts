@@ -30,7 +30,7 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 		"- load to load saved Game" +"\n"
 
 	def getRulesScreenStateString: String =
-		"\n\n" +"Rules:" + "\n\n" +
+		"\nRules\n\n" +
 		"Hearts is a trick-taking card game played with 3-4 players, each playing individually." + "\n" +
 		"With 4 players, the game uses all 52 cards of a standard deck." + "\n" +
 		"With 3 players, one card is removed and the remaining 51 cards are used." + "\n" +
@@ -47,15 +47,6 @@ class Tui(gameController: ControllerInterface)  extends Observer:
 		"Players may only see their own hands." + "\n" +
 		"With 3 players, one card is removed from the deck, and the remaining 51 cards are dealt evenly." + "\n" +
 		"There is no passing in a 3-player game." + "\n\n\n" +
-		"Passing Cards:" + "\n\n" +
-		"After all cards have been dealt (4-player game only), the passing phase begins." + "\n" +
-		"Each player selects three cards from their hand and passes them face-down to another player." + "\n\n" +
-		"The passing rotation works as follows:" + "\n" +
-		"- 1st round: Pass to the player on your left" + "\n" +
-		"- 2nd round: Pass to the player on your right" + "\n" +
-		"- 3rd round: Pass to the player across from you" + "\n" +
-		"- 4th round: No passing:" + "\n" +
-		"- Then the cycle repeats for the rest of the game." + "\n\n\n" +
 		"How the Game Is Played:" + "\n\n" +
 		"The player holding the Two of Clubs leads the first trick." + "\n" +
 		"All players must follow suit if possible. If they cannot, they may play another suit under certain conditions." + "\n" +
