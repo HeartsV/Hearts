@@ -14,15 +14,6 @@ object Main{
         val gameCo: ControllerInterface = Controller(game)
         val gameTui = Tui(gameCo)
         gameCo.add(gameTui)
-
-        val guiThread = new Thread(() =>
-            val gameGui = Gui(gameCo)
-            gameCo.add(gameGui)
-            gameGui.main(Array.empty[String])   // start ScalaFX app
-            )
-            guiThread.setDaemon(true)
-            guiThread.start()
-
         gameTui.runGame
     }
 }
